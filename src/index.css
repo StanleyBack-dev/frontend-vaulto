@@ -1,0 +1,75 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    background:
+      radial-gradient(
+        1200px circle at 12% -8%,
+        rgba(123, 63, 242, 0.28),
+        transparent 45%
+      ),
+      radial-gradient(
+        900px circle at 88% 108%,
+        rgba(212, 175, 55, 0.14),
+        transparent 40%
+      ),
+      linear-gradient(145deg, #09090f 0%, #110f1d 45%, #171329 100%);
+    color: #f7f5ff;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-family: Sora, Manrope, "Segoe UI", sans-serif;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  ::selection {
+    background: rgba(212, 175, 55, 0.34);
+    color: #ffffff;
+  }
+}
+
+/*
+ * Chrome/Edge paint autofilled and browser-remembered inputs/selects with
+ * their own blue tint via the :-webkit-autofill pseudo-class, which is
+ * unreachable from React's inline `style` prop and overrides it. This block
+ * is deliberately left OUTSIDE any @layer so it sits above every Tailwind
+ * layer in the cascade, and !important is added since Chrome's own
+ * autofill styling otherwise still wins even against unlayered rules.
+ */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus {
+  -webkit-text-fill-color: #1a1333 !important;
+  -webkit-box-shadow: 0 0 0px 1000px #ffffff inset !important;
+  box-shadow: 0 0 0px 1000px #ffffff inset !important;
+  caret-color: #1a1333 !important;
+  transition: background-color 5000s ease-in-out 0s !important;
+}
+
+input:disabled:-webkit-autofill,
+select:disabled:-webkit-autofill,
+textarea:disabled:-webkit-autofill {
+  -webkit-text-fill-color: #6b7280 !important;
+  -webkit-box-shadow: 0 0 0px 1000px #d1d5db inset !important;
+  box-shadow: 0 0 0px 1000px #d1d5db inset !important;
+}

@@ -1,0 +1,56 @@
+export const paymentUiCopy = {
+  listing: {
+    title: "Pagamentos",
+    subtitle:
+      "Registre pagamentos e acompanhe o saldo de cada dívida, parcelada ou não.",
+    selectDebtLabel: "Dívida",
+    selectDebtPlaceholder: "Selecione uma dívida",
+    emptyDebtsMessage: "Nenhuma dívida encontrada.",
+    noDebtSelected: "Selecione uma dívida para ver os detalhes de pagamento.",
+    columns: {
+      installment: "Parcela",
+      dueDate: "Vencimento",
+      amountDue: "Valor devido",
+      amountPaid: "Valor pago",
+      paidAt: "Data do pagamento",
+      status: "Status",
+      actions: "Ações",
+    },
+    payAction: "Registrar pagamento",
+    payAgainAction: "Registrar novo pagamento",
+  },
+  form: {
+    title: "Registrar pagamento",
+    amountLabel: "Valor pago",
+    dateLabel: "Data e horário do pagamento",
+    submit: "Confirmar pagamento",
+    cancel: "Cancelar",
+  },
+  history: {
+    title: "Histórico de pagamentos",
+    subtitle: "Edite ou exclua pagamentos já registrados para esta dívida.",
+    empty: "Nenhum pagamento registrado ainda.",
+    columns: {
+      installment: "Parcela",
+      amount: "Valor pago",
+      paidAt: "Data e horário",
+      actions: "Ações",
+    },
+    deleteConfirm: "Tem certeza que deseja excluir este pagamento?",
+  },
+  success: {
+    registerPayment: "Pagamento registrado com sucesso.",
+    registerPaymentSplitPrefix: "Pagamento de",
+    registerPaymentSplitAppliedTo: "aplicado a",
+    updatePayment: "Pagamento atualizado com sucesso.",
+    deletePayment: "Pagamento excluído com sucesso.",
+  },
+  errors: {
+    loadDebtsFallback: "Não foi possível carregar as dívidas.",
+    registerPaymentFallback: "Não foi possível registrar o pagamento.",
+    updatePaymentFallback: "Não foi possível atualizar o pagamento.",
+    deletePaymentFallback: "Não foi possível excluir o pagamento.",
+    invalidResponseData: "Resposta inválida ao registrar pagamento.",
+    invalidPaymentData: "Dados inválidos para o pagamento.",
+  },
+} as const;

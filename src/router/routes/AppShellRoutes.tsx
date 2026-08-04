@@ -1,0 +1,167 @@
+import { lazy, Suspense } from "react";
+import type { ComponentType } from "react";
+import { useAuthSession } from "@/features/auth";
+import { Navigate, Route } from "react-router-dom";
+import AppLayout from "../AppLayout";
+import {
+  authRoutePaths,
+  dashboardRoutePaths,
+  debtRoutePaths,
+  paymentRoutePaths,
+  routePaths,
+  utilityRoutePaths,
+} from "../navigation";
+import RequirePageAccessRoute from "../../features/auth/guards/RequirePageAccessRoute";
+import { DebtsProviderOutlet } from "../../features/debts";
+import { ManagementRoutes } from "./ManagementRoutes";
+
+const AccessDenied = lazy(() => import("../../pages/AccessDenied"));
+const DebtsDashboardKanban = lazy(
+  () => import("../../pages/debts/DebtsDashboardKanban"),
+);
+const Debts = lazy(() => import("../../pages/debts/Debts"));
+const DebtForm = lazy(() => import("../../pages/debts/DebtForm"));
+const Payments = lazy(() => import("../../pages/payments/Payments"));
+const Profile = lazy(() => import("../../pages/Profile"));
+
+function withPageSuspense(element: React.ReactNode) {
+  return (
+    <Suspense fallback={<div className="p-6 text-sm">Carregando...</div>}>
+      {element}
+    </Suspense>
+  );
+}
+
+interface UserScopedProviderRouteProps {
+  userId?: string;
+  loginPath: string;
+  ProviderOutlet: ComponentType<{ userId?: string }>;
+}
+
+function UserScopedProviderRoute({
+  userId,
+  loginPath,
+  ProviderOutlet,
+}: UserScopedProviderRouteProps) {
+  const { session } = useAuthSession();
+
+  const resolvedUserId = userId ?? session?.user.idUsers;
+
+  if (!resolvedUserId) {
+    return <Navigate to={loginPath} replace />;
+  }
+
+  return <ProviderOutlet userId={resolvedUserId} />;
+}
+
+interface AppShellRoutesProps {
+  userId?: string;
+}
+
+export function AppShellRoutes({ userId }: AppShellRoutesProps) {
+  return (
+    <Route element={<AppLayout />}>
+      {ManagementRoutes({ userId, loginPath: authRoutePaths.login })}
+
+      {/* Dashboard - Kanban de dividas */}
+      <Route element={<RequirePageAccessRoute view="dashboard" />}>
+        <Route
+          element={
+            <UserScopedProviderRoute
+              userId={userId}
+              loginPath={authRoutePaths.login}
+              ProviderOutlet={DebtsProviderOutlet}
+            />
+          }
+        >
+          <Route
+            path={dashboardRoutePaths.list}
+            element={withPageSuspense(<DebtsDashboardKanban />)}
+          />
+        </Route>
+      </Route>
+
+      {/* Dividas - tabela + formularios */}
+      <Route element={<RequirePageAccessRoute view="debts" />}>
+        <Route
+          element={
+            <UserScopedProviderRoute
+              userId={userId}
+              loginPath={authRoutePaths.login}
+              ProviderOutlet={DebtsProviderOutlet}
+            />
+          }
+        >
+          <Route
+            path={debtRoutePaths.list}
+            element={withPageSuspense(<Debts />)}
+          />
+          <Route
+            path={debtRoutePaths.create}
+            element={withPageSuspense(<DebtForm mode="create" />)}
+          />
+          <Route
+            path={debtRoutePaths.edit()}
+            element={withPageSuspense(<DebtForm mode="edit" />)}
+          />
+        </Route>
+      </Route>
+
+      {/* Pagamentos - registro de pagamentos de parcelas */}
+      <Route element={<RequirePageAccessRoute view="payments" />}>
+        <Route
+          element={
+            <UserScopedProviderRoute
+              userId={userId}
+              loginPath={authRoutePaths.login}
+              ProviderOutlet={DebtsProviderOutlet}
+            />
+          }
+        >
+          <Route
+            path={paymentRoutePaths.list}
+            element={withPageSuspense(<Payments />)}
+          />
+        </Route>
+      </Route>
+
+      {/* Redirects legados */}
+      <Route
+        path={debtRoutePaths.legacyList}
+        element={<Navigate to={debtRoutePaths.list} replace />}
+      />
+      <Route
+        path={debtRoutePaths.management}
+        element={<Navigate to={debtRoutePaths.list} replace />}
+      />
+      <Route
+        path={debtRoutePaths.legacyManagement}
+        element={<Navigate to={debtRoutePaths.list} replace />}
+      />
+      <Route
+        path={debtRoutePaths.reports}
+        element={<Navigate to={dashboardRoutePaths.list} replace />}
+      />
+      <Route
+        path={debtRoutePaths.legacyCreate}
+        element={<Navigate to={debtRoutePaths.create} replace />}
+      />
+      <Route
+        path={debtRoutePaths.legacyEdit()}
+        element={<Navigate to={debtRoutePaths.edit()} replace />}
+      />
+      <Route
+        path={debtRoutePaths.legacyReports}
+        element={<Navigate to={dashboardRoutePaths.list} replace />}
+      />
+      <Route
+        path={routePaths.profile}
+        element={withPageSuspense(<Profile />)}
+      />
+      <Route
+        path={utilityRoutePaths.accessDenied}
+        element={withPageSuspense(<AccessDenied />)}
+      />
+    </Route>
+  );
+}

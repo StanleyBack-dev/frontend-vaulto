@@ -1,0 +1,20 @@
+import { Router } from "express";
+import authRoutes from "./modules/auth/routes.js";
+import categoriesRoutes from "./modules/categories/routes.js";
+import creditCardsRoutes from "./modules/credit-cards/routes.js";
+import usersRoutes from "./modules/users/routes.js";
+import debtsRoutes from "./modules/debts/routes.js";
+import paymentsRoutes from "./modules/payments/routes.js";
+import reportsRoutes from "./modules/reports/routes.js";
+
+const router = Router();
+
+router.use("/auth", authRoutes);
+router.use("/categories", categoriesRoutes);
+router.use("/credit-cards", creditCardsRoutes);
+router.use("/users", usersRoutes);
+router.use("/debts", debtsRoutes);
+router.use("/payments", paymentsRoutes);
+router.use("/reports", reportsRoutes);
+
+export default router;
