@@ -461,13 +461,7 @@ export default function DebtForm({ mode }: { mode: "create" | "edit" }) {
               variant="outline"
               size="sm"
               leftIcon={<Plus size={14} />}
-              onClick={() =>
-                window.open(
-                  creditCardRoutePaths.create,
-                  "_blank",
-                  "noopener,noreferrer",
-                )
-              }
+              onClick={() => navigate(creditCardRoutePaths.create)}
             >
               Novo cartão
             </Button>
@@ -503,8 +497,7 @@ export default function DebtForm({ mode }: { mode: "create" | "edit" }) {
                   style={{ color: colors.brown[500] }}
                 >
                   Nenhum cartão cadastrado ainda. Use o botão "Novo cartão"
-                  acima para cadastrar um em uma nova aba, sem perder o que já
-                  foi preenchido aqui.
+                  acima para cadastrar um.
                 </p>
               )}
               {selectedCreditCard && (
