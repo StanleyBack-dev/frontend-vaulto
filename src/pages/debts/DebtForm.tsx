@@ -28,6 +28,7 @@ interface DebtFormErrors {
   category?: string;
   totalAmount?: string;
   dueDate?: string;
+  acquiredAt?: string;
   installmentCount?: string;
   installmentAmount?: string;
   status?: string;
@@ -38,6 +39,12 @@ function parseNumber(value: string): number {
   const normalized = value.replace(/\./g, "").replace(",", ".");
   const parsed = Number(normalized);
   return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function todayDateInputValue(): string {
+  const now = new Date();
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
 }
 
 function toErrorMessage(error: unknown, fallback: string): string {
@@ -188,6 +195,11 @@ export default function DebtForm({ mode }: { mode: "create" | "edit" }) {
         nextErrors.totalAmount = "Informe um valor total válido.";
       }
 
+      if (values.idCreditCard && !values.acquiredAt) {
+        nextErrors.acquiredAt =
+          "Informe a data da compra para calcular o vencimento no cartão.";
+      }
+
       if (values.hasInstallments) {
         if (!values.dueDate && !values.idCreditCard) {
           nextErrors.dueDate = "Informe a data de vencimento da 1a parcela.";
@@ -254,7 +266,9 @@ export default function DebtForm({ mode }: { mode: "create" | "edit" }) {
         totalAmount,
         dueDate: form.idCreditCard ? undefined : form.dueDate || undefined,
         acquiredAt:
-          form.hasInstallments && form.acquiredAt ? form.acquiredAt : undefined,
+          (form.hasInstallments || form.idCreditCard) && form.acquiredAt
+            ? form.acquiredAt
+            : undefined,
         hasInstallments: form.hasInstallments,
         installmentCount,
         installmentAmount,
@@ -367,6 +381,10 @@ export default function DebtForm({ mode }: { mode: "create" | "edit" }) {
                     ...current,
                     idCreditCard: event.target.value,
                     dueDate: event.target.value ? "" : current.dueDate,
+                    acquiredAt:
+                      event.target.value && !current.acquiredAt
+                        ? todayDateInputValue()
+                        : current.acquiredAt,
                   }))
                 }
               >
@@ -542,10 +560,15 @@ export default function DebtForm({ mode }: { mode: "create" | "edit" }) {
             </label>
           </div>
 
-          {form.hasInstallments && (
-            <>
+          {(form.hasInstallments ||
+            (mode === "create" && Boolean(form.idCreditCard))) && (
+            <div>
               <Input
-                label="Data de início (opcional)"
+                label={
+                  mode === "create" && form.idCreditCard
+                    ? "Data da compra"
+                    : "Data de início (opcional)"
+                }
                 type="date"
                 value={form.acquiredAt}
                 onChange={(event) =>
@@ -554,8 +577,23 @@ export default function DebtForm({ mode }: { mode: "create" | "edit" }) {
                     acquiredAt: event.target.value,
                   }))
                 }
+                required={mode === "create" && Boolean(form.idCreditCard)}
+                error={errors.acquiredAt}
               />
+              {mode === "create" && form.idCreditCard && (
+                <p
+                  className="mt-1 text-xs"
+                  style={{ color: colors.brown[500] }}
+                >
+                  Usada para calcular em qual fatura a compra cai — importante
+                  para dívidas antigas que não foram compradas hoje.
+                </p>
+              )}
+            </div>
+          )}
 
+          {form.hasInstallments && (
+            <>
               <Input
                 label="Quantidade de parcelas"
                 inputMode="numeric"

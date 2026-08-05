@@ -34,7 +34,7 @@ export const emptyDebtFormValues: DebtFormValues = {
 
 export const debtTypeOptions: Array<{ value: DebtType; label: string }> = [
   { value: "FIXED", label: "Fixa" },
-  { value: "VARIABLE", label: "Variavel" },
+  { value: "VARIABLE", label: "Variável" },
 ];
 
 export const debtStatusOptions: Array<{ value: DebtStatus; label: string }> = [
