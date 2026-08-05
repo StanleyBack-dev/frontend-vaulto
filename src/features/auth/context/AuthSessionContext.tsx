@@ -6,6 +6,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { registerAuthRefreshHandler } from "../../../api/shared/http-client";
 import type { AuthSessionResponse } from "../../../api/auth/schema";
 import type { PageAccessKey } from "../../../api/users/schema";
 import type { ActiveView } from "../../../types/views";
@@ -75,6 +76,18 @@ export function AuthSessionProvider({ children }: AuthSessionProviderProps) {
       });
   }, []);
 
+  // Used by the http client's silent-refresh path: a background token
+  // renewal must swap in the new session without toggling `isInitializing`,
+  // which would otherwise replace the whole app with the splash screen every
+  // time the access token cookie is renewed behind the scenes.
+  const applySessionSilently = useCallback(
+    (nextSession: AuthSessionResponse) => {
+      setSessionState(nextSession);
+      setStoredAuthSession(nextSession);
+    },
+    [],
+  );
+
   const clearSession = useCallback(() => {
     setSessionState(null);
     setPagePermissions([]);
@@ -121,6 +134,28 @@ export function AuthSessionProvider({ children }: AuthSessionProviderProps) {
       clearSession();
     });
   }, [applySession, clearSession]);
+
+  useEffect(() => {
+    // Any request can hit a 401 once the short-lived access token cookie
+    // expires. The http client calls this handler to silently renew the
+    // session (via the refresh token cookie) and retry the request instead
+    // of forcing the user back to the login screen every few minutes.
+    registerAuthRefreshHandler(async () => {
+      const refreshedSession = await refreshSessionFromCookie();
+
+      if (refreshedSession?.authenticated) {
+        applySessionSilently(refreshedSession);
+        return true;
+      }
+
+      clearSession();
+      return false;
+    });
+
+    return () => {
+      registerAuthRefreshHandler(null);
+    };
+  }, [applySessionSilently, clearSession]);
 
   useEffect(() => {}, [pagePermissions]);
 
