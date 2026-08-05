@@ -1,12 +1,14 @@
 import DataTable from "@/components/organisms/DataTable";
+import ConfirmDialog from "@molecules/ConfirmDialog";
 import FilterBar from "@/components/molecules/FilterBar";
 import SearchIcon from "@/components/atoms/icons/SearchIcon";
 import Select from "@/components/atoms/Select";
 import { colors } from "@/config";
-import { Plus } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { debtRoutePaths } from "@/router";
+import type { Debt } from "@/api/debts/schema";
 import {
   debtStatusOptions,
   debtTypeOptions,
@@ -30,6 +32,7 @@ export default function Debts() {
     prevPage,
     debtCategories,
     load,
+    remove,
   } = useDebtsContext();
 
   useEffect(() => {
@@ -38,6 +41,8 @@ export default function Debts() {
   }, []);
 
   const [search, setSearch] = useState("");
+  const [debtPendingDelete, setDebtPendingDelete] = useState<Debt | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const filteredDebts = useMemo(
     () => filterDebtsBySearch(debts, search),
@@ -48,9 +53,22 @@ export default function Debts() {
     () =>
       getDebtTableColumns({
         onEdit: (debt) => navigate(debtRoutePaths.edit(debt.idDebt)),
+        onDelete: (debt) => setDebtPendingDelete(debt),
       }),
     [navigate],
   );
+
+  async function handleConfirmDelete() {
+    if (!debtPendingDelete) return;
+
+    setIsDeleting(true);
+    const deleted = await remove(debtPendingDelete.idDebt);
+    setIsDeleting(false);
+
+    if (deleted) {
+      setDebtPendingDelete(null);
+    }
+  }
 
   return (
     <div className="space-y-4">
@@ -203,6 +221,28 @@ export default function Debts() {
           </div>
         </>
       )}
+
+      <ConfirmDialog
+        open={Boolean(debtPendingDelete)}
+        title="Excluir dívida"
+        description={
+          <>
+            Tem certeza que deseja excluir a dívida{" "}
+            <strong>{debtPendingDelete?.title}</strong>? Todo o histórico de
+            pagamentos, parcelas e demais dados associados a ela serão perdidos.
+            Esta ação é irreversível.
+          </>
+        }
+        confirmLabel="Excluir"
+        cancelLabel="Cancelar"
+        variant="danger"
+        icon={<Trash2 size={20} />}
+        loading={isDeleting}
+        onConfirm={() => {
+          void handleConfirmDelete();
+        }}
+        onCancel={() => setDebtPendingDelete(null)}
+      />
     </div>
   );
 }

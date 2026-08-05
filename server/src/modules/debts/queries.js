@@ -89,3 +89,13 @@ export const UPDATE_DEBT_DETAILS_MUTATION = `
     }
   }
 `;
+
+export const DELETE_DEBT_MUTATION = `
+  mutation DeleteDebt($idDebt: String!) {
+    deleteDebt(idDebt: $idDebt) {
+      success
+      message
+      code
+    }
+  }
+`;

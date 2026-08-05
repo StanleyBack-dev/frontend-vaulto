@@ -2,6 +2,7 @@ import { HttpError } from "../../shared/http/http-error.js";
 import { executeGraphql } from "../../shared/http/graphql-client.js";
 import {
   CREATE_DEBT_MUTATION,
+  DELETE_DEBT_MUTATION,
   GET_DEBT_BY_ID_QUERY,
   GET_MY_DEBTS_QUERY,
   UPDATE_DEBT_DETAILS_MUTATION,
@@ -75,4 +76,15 @@ export async function updateDebtDetails(input, authContext, requestId) {
     data.updateDebtDetails?.data,
     "Invalid debt details response.",
   );
+}
+
+export async function deleteDebt(idDebt, authContext, requestId) {
+  const data = await executeGraphql({
+    query: DELETE_DEBT_MUTATION,
+    variables: { idDebt },
+    requestId,
+    ...authContext,
+  });
+
+  return requireData(data.deleteDebt, "Invalid delete debt response.");
 }
