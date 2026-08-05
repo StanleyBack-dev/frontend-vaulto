@@ -28,9 +28,9 @@ function getInstallmentAmount(debt: Debt): number {
     return debt.installments[0].amountDue;
   }
 
-  return debt.installmentCount > 0
-    ? debt.totalAmount / debt.installmentCount
-    : 0;
+  const installmentCount = debt.installmentCount ?? 0;
+
+  return installmentCount > 0 ? debt.totalAmount / installmentCount : 0;
 }
 
 function getStatusPillStyle(status: Debt["status"]) {
