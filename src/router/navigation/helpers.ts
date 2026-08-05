@@ -4,6 +4,7 @@ import {
   creditCardRoutePaths,
   dashboardRoutePaths,
   debtRoutePaths,
+  debtsStatementRoutePaths,
   paymentRoutePaths,
   routePaths,
   userRoutePaths,
@@ -26,6 +27,10 @@ export function getActiveView(pathname: string): ActiveView {
     pathname.startsWith(debtRoutePaths.legacyList)
   ) {
     return "debts";
+  }
+
+  if (pathname.startsWith(debtsStatementRoutePaths.list)) {
+    return "debtsStatement";
   }
 
   if (pathname.startsWith(paymentRoutePaths.list)) {
@@ -64,6 +69,8 @@ export function getPathForView(view: ActiveView) {
       return routePaths.profile;
     case "payments":
       return paymentRoutePaths.list;
+    case "debtsStatement":
+      return debtsStatementRoutePaths.list;
     case "debts":
     default:
       return debtRoutePaths.list;

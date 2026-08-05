@@ -4,6 +4,7 @@ export const routePaths: Record<ActiveView, string> = {
   dashboard: "/dashboard",
   users: "/usuarios",
   debts: "/dividas",
+  debtsStatement: "/extrato",
   payments: "/pagamentos",
   categories: "/categorias",
   creditCards: "/cartoes-de-credito",
@@ -34,6 +35,10 @@ export const debtRoutePaths = {
   legacyCreate: "/debts/new",
   legacyEdit: (id = ":id") => `/debts/${id}/edit`,
   legacyReports: "/debts/reports",
+};
+
+export const debtsStatementRoutePaths = {
+  list: "/extrato",
 };
 
 export const paymentRoutePaths = {

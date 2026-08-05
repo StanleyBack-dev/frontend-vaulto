@@ -4,6 +4,7 @@ export {
   creditCardRoutePaths,
   dashboardRoutePaths,
   debtRoutePaths,
+  debtsStatementRoutePaths,
   paymentRoutePaths,
   routePaths,
   utilityRoutePaths,
