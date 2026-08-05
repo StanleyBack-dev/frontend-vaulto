@@ -8,6 +8,7 @@ import {
   dashboardRoutePaths,
   debtRoutePaths,
   debtsStatementRoutePaths,
+  incomeReceiptRoutePaths,
   incomeRoutePaths,
   paymentRoutePaths,
   routePaths,
@@ -28,6 +29,9 @@ const DebtsStatement = lazy(() => import("../../pages/debts/DebtsStatement"));
 const Incomes = lazy(() => import("../../pages/incomes/Incomes"));
 const IncomeForm = lazy(() => import("../../pages/incomes/IncomeForm"));
 const Payments = lazy(() => import("../../pages/payments/Payments"));
+const Recebimentos = lazy(
+  () => import("../../pages/income-receipts/Recebimentos"),
+);
 const Profile = lazy(() => import("../../pages/Profile"));
 
 function withPageSuspense(element: React.ReactNode) {
@@ -171,6 +175,24 @@ export function AppShellRoutes({ userId }: AppShellRoutesProps) {
           <Route
             path={paymentRoutePaths.list}
             element={withPageSuspense(<Payments />)}
+          />
+        </Route>
+      </Route>
+
+      {/* Recebimentos - registro de recebimentos de parcelas de receitas */}
+      <Route element={<RequirePageAccessRoute view="incomeReceipts" />}>
+        <Route
+          element={
+            <UserScopedProviderRoute
+              userId={userId}
+              loginPath={authRoutePaths.login}
+              ProviderOutlet={IncomesProviderOutlet}
+            />
+          }
+        >
+          <Route
+            path={incomeReceiptRoutePaths.list}
+            element={withPageSuspense(<Recebimentos />)}
           />
         </Route>
       </Route>

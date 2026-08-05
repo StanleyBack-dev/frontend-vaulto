@@ -5,14 +5,27 @@ const INCOME_FIELDS = `
   title
   description
   incomeType
-  expectedAmount
-  expectedDate
-  receivedAmount
-  receivedAt
+  totalAmount
+  dueDate
+  endDate
+  startDate
+  hasInstallments
+  installmentCount
   isRecurring
   status
+  receivedAt
   createdAt
   updatedAt
+  installments {
+    idIncomeInstallment
+    idIncome
+    installmentNumber
+    amountDue
+    amountReceived
+    dueDate
+    receivedAt
+    status
+  }
 `;
 
 export const GET_MY_INCOMES_QUERY = `

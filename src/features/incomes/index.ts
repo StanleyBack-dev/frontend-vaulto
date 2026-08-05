@@ -13,7 +13,12 @@ export {
   incomeTypeOptions,
   type IncomeFormValues,
 } from "./model/form";
-export { filterIncomesBySearch, getIncomeTableColumns } from "./model/listing";
+export {
+  filterIncomesBySearch,
+  getIncomeTableColumns,
+  getNearestDueDate,
+  getReceivedInstallmentsCount,
+} from "./model/listing";
 export {
   fetchIncomeById,
   fetchIncomes,

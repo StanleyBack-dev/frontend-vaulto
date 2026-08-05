@@ -5,6 +5,7 @@ import {
   dashboardRoutePaths,
   debtRoutePaths,
   debtsStatementRoutePaths,
+  incomeReceiptRoutePaths,
   incomeRoutePaths,
   paymentRoutePaths,
   routePaths,
@@ -42,6 +43,10 @@ export function getActiveView(pathname: string): ActiveView {
     return "payments";
   }
 
+  if (pathname.startsWith(incomeReceiptRoutePaths.list)) {
+    return "incomeReceipts";
+  }
+
   if (
     pathname.startsWith(categoryRoutePaths.list) ||
     pathname.startsWith(categoryRoutePaths.legacyList)
@@ -74,6 +79,8 @@ export function getPathForView(view: ActiveView) {
       return routePaths.profile;
     case "payments":
       return paymentRoutePaths.list;
+    case "incomeReceipts":
+      return incomeReceiptRoutePaths.list;
     case "debtsStatement":
       return debtsStatementRoutePaths.list;
     case "incomes":

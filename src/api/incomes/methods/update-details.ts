@@ -12,10 +12,8 @@ export async function updateIncomeDetails(
         description: payload.description,
         idCategory: payload.idCategory,
         incomeType: payload.incomeType,
-        expectedAmount: payload.expectedAmount,
-        expectedDate: payload.expectedDate,
-        receivedAmount: payload.receivedAmount,
-        receivedAt: payload.receivedAt,
+        dueDate: payload.dueDate,
+        totalAmount: payload.totalAmount,
         isRecurring: payload.isRecurring,
       },
     );

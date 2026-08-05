@@ -1,8 +1,7 @@
-import { Check, Trash2, X } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import type { Income } from "@/api/incomes/schema";
 import type { DataTableColumn } from "@/components/organisms/DataTable";
 import EditIcon from "@/components/atoms/icons/EditIcon";
-import Input from "@/components/atoms/Input";
 import { formatDateDisplay } from "@/utils/format";
 import { incomeStatusLabel, incomeTypeLabel } from "./form";
 
@@ -17,8 +16,61 @@ function formatDate(value?: string | null): string {
   return formatDateDisplay(value ?? undefined) || "-";
 }
 
-function getBalance(income: Income): number {
-  return Math.max(income.expectedAmount - income.receivedAmount, 0);
+function getReceivedAmount(income: Income): number {
+  return income.installments.reduce(
+    (sum, installment) => sum + installment.amountReceived,
+    0,
+  );
+}
+
+function getRemainingAmount(income: Income): number {
+  return Math.max(income.totalAmount - getReceivedAmount(income), 0);
+}
+
+function getInstallmentAmount(income: Income): number {
+  if (income.installments[0]) {
+    return income.installments[0].amountDue;
+  }
+
+  const installmentCount = income.installmentCount ?? 0;
+
+  return installmentCount > 0 ? income.totalAmount / installmentCount : 0;
+}
+
+export function getReceivedInstallmentsCount(income: Income): number {
+  return income.installments.filter(
+    (installment) => installment.status === "RECEIVED",
+  ).length;
+}
+
+// The due date column must always reflect what's actually pending, not the
+// original registration date: for an installment income that's the
+// unreceived installment whose due date sits closest to today (covering both
+// an upcoming installment and one that's already overdue), not necessarily
+// the first or last one in the schedule.
+export function getNearestDueDate(income: Income): string | null {
+  if (!income.hasInstallments) {
+    return income.dueDate ?? null;
+  }
+
+  const pendingInstallments = income.installments.filter(
+    (installment) => installment.status !== "RECEIVED",
+  );
+
+  if (!pendingInstallments.length) {
+    return null;
+  }
+
+  const now = Date.now();
+
+  return pendingInstallments.reduce((nearest, installment) => {
+    const nearestDiff = Math.abs(new Date(nearest.dueDate).getTime() - now);
+    const installmentDiff = Math.abs(
+      new Date(installment.dueDate).getTime() - now,
+    );
+
+    return installmentDiff < nearestDiff ? installment : nearest;
+  }, pendingInstallments[0]).dueDate;
 }
 
 function getStatusPillStyle(status: Income["status"]) {
@@ -51,100 +103,40 @@ export function filterIncomesBySearch(
   });
 }
 
-export interface IncomeReceiptEditState {
-  editingIncomeId: string | null;
-  receivedAmount: string;
-  receivedAt: string;
-  saving: boolean;
-  onReceivedAmountChange: (value: string) => void;
-  onReceivedAtChange: (value: string) => void;
-  onStart: (income: Income) => void;
-  onCancel: () => void;
-  onConfirm: (income: Income) => void;
-}
-
 export function getIncomeTableColumns(actions: {
   onEdit: (income: Income) => void;
   onDelete: (income: Income) => void;
-  receipt: IncomeReceiptEditState;
 }): DataTableColumn<Income>[] {
   return [
     {
       key: "actions",
       label: "Ações",
-      render: (income) => {
-        const isEditingReceipt =
-          actions.receipt.editingIncomeId === income.idIncome;
-
-        if (isEditingReceipt) {
-          return (
-            <div className="flex items-center gap-3">
-              <button
-                type="button"
-                title="Confirmar recebimento"
-                className="text-emerald-700 transition hover:text-emerald-900 disabled:opacity-50"
-                disabled={actions.receipt.saving}
-                onClick={(event) => {
-                  event.stopPropagation();
-                  actions.receipt.onConfirm(income);
-                }}
-              >
-                <Check size={18} />
-              </button>
-              <button
-                type="button"
-                title="Cancelar"
-                className="text-rose-600 transition hover:text-rose-800 disabled:opacity-50"
-                disabled={actions.receipt.saving}
-                onClick={(event) => {
-                  event.stopPropagation();
-                  actions.receipt.onCancel();
-                }}
-              >
-                <X size={18} />
-              </button>
-            </div>
-          );
-        }
-
-        return (
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              title="Editar"
-              className="text-violet-700 transition hover:text-violet-900"
-              onClick={(event) => {
-                event.stopPropagation();
-                actions.onEdit(income);
-              }}
-            >
-              <EditIcon size={18} />
-            </button>
-            <button
-              type="button"
-              title="Registrar recebimento"
-              className="text-emerald-700 transition hover:text-emerald-900"
-              onClick={(event) => {
-                event.stopPropagation();
-                actions.receipt.onStart(income);
-              }}
-            >
-              <Check size={18} />
-            </button>
-            <button
-              type="button"
-              title="Excluir"
-              className="text-rose-600 transition hover:text-rose-800"
-              onClick={(event) => {
-                event.stopPropagation();
-                actions.onDelete(income);
-              }}
-            >
-              <Trash2 size={18} />
-            </button>
-          </div>
-        );
-      },
+      render: (income) => (
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            title="Editar"
+            className="text-violet-700 transition hover:text-violet-900"
+            onClick={(event) => {
+              event.stopPropagation();
+              actions.onEdit(income);
+            }}
+          >
+            <EditIcon size={18} />
+          </button>
+          <button
+            type="button"
+            title="Excluir"
+            className="text-rose-600 transition hover:text-rose-800"
+            onClick={(event) => {
+              event.stopPropagation();
+              actions.onDelete(income);
+            }}
+          >
+            <Trash2 size={18} />
+          </button>
+        </div>
+      ),
     },
     {
       key: "title",
@@ -174,46 +166,58 @@ export function getIncomeTableColumns(actions: {
       ),
     },
     {
-      key: "expectedAmount",
-      label: "Valor esperado",
+      key: "totalAmount",
+      label: "Valor",
       render: (income) => (
         <span className="text-sm font-semibold text-[#1a1333]">
-          {formatCurrency(income.expectedAmount)}
+          {formatCurrency(income.totalAmount)}
+        </span>
+      ),
+    },
+    {
+      key: "installmentCount",
+      label: "Parcelas",
+      render: (income) => (
+        <span className="text-sm text-[#5a4e7a]">
+          {income.hasInstallments ? income.installmentCount : "-"}
+        </span>
+      ),
+    },
+    {
+      key: "receivedInstallmentsCount",
+      label: "Parcelas recebidas",
+      render: (income) => (
+        <span className="text-sm text-[#5a4e7a]">
+          {income.hasInstallments ? getReceivedInstallmentsCount(income) : "-"}
+        </span>
+      ),
+    },
+    {
+      key: "installmentAmount",
+      label: "Valor da parcela",
+      render: (income) => (
+        <span className="text-sm text-[#5a4e7a]">
+          {income.hasInstallments
+            ? formatCurrency(getInstallmentAmount(income))
+            : "-"}
         </span>
       ),
     },
     {
       key: "receivedAmount",
       label: "Valor recebido",
-      render: (income) => {
-        if (actions.receipt.editingIncomeId === income.idIncome) {
-          return (
-            <div className="min-w-[140px]" onClick={(e) => e.stopPropagation()}>
-              <Input
-                inputMode="decimal"
-                value={actions.receipt.receivedAmount}
-                onChange={(event) =>
-                  actions.receipt.onReceivedAmountChange(event.target.value)
-                }
-                placeholder="0,00"
-              />
-            </div>
-          );
-        }
-
-        return (
-          <span className="text-sm text-emerald-700">
-            {formatCurrency(income.receivedAmount)}
-          </span>
-        );
-      },
+      render: (income) => (
+        <span className="text-sm text-emerald-700">
+          {formatCurrency(getReceivedAmount(income))}
+        </span>
+      ),
     },
     {
-      key: "balance",
-      label: "Saldo",
+      key: "remainingAmount",
+      label: "Valor restante",
       render: (income) => (
         <span className="text-sm text-[#5a4e7a]">
-          {formatCurrency(getBalance(income))}
+          {formatCurrency(getRemainingAmount(income))}
         </span>
       ),
     },
@@ -229,38 +233,22 @@ export function getIncomeTableColumns(actions: {
       ),
     },
     {
-      key: "expectedDate",
+      key: "dueDate",
       label: "Data esperada",
       render: (income) => (
         <span className="text-sm text-[#4a3f6b]">
-          {formatDate(income.expectedDate)}
+          {formatDate(getNearestDueDate(income))}
         </span>
       ),
     },
     {
       key: "receivedAt",
       label: "Data de recebimento",
-      render: (income) => {
-        if (actions.receipt.editingIncomeId === income.idIncome) {
-          return (
-            <div className="min-w-[160px]" onClick={(e) => e.stopPropagation()}>
-              <Input
-                type="date"
-                value={actions.receipt.receivedAt}
-                onChange={(event) =>
-                  actions.receipt.onReceivedAtChange(event.target.value)
-                }
-              />
-            </div>
-          );
-        }
-
-        return (
-          <span className="text-sm text-[#4a3f6b]">
-            {formatDate(income.receivedAt)}
-          </span>
-        );
-      },
+      render: (income) => (
+        <span className="text-sm text-[#4a3f6b]">
+          {formatDate(income.receivedAt)}
+        </span>
+      ),
     },
   ];
 }

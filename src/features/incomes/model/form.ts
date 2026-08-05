@@ -5,11 +5,13 @@ export interface IncomeFormValues {
   idCategory: string;
   description: string;
   incomeType: IncomeType;
-  expectedAmount: string;
-  expectedDate: string;
+  totalAmount: string;
+  dueDate: string;
+  hasInstallments: boolean;
+  installmentCount: string;
+  installmentAmount: string;
+  installmentEntryMode: "TOTAL" | "INSTALLMENT";
   isRecurring: boolean;
-  receivedAmount: string;
-  receivedAt: string;
   status: IncomeStatus;
 }
 
@@ -18,11 +20,13 @@ export const emptyIncomeFormValues: IncomeFormValues = {
   idCategory: "",
   description: "",
   incomeType: "FIXED",
-  expectedAmount: "",
-  expectedDate: "",
+  totalAmount: "",
+  dueDate: "",
+  hasInstallments: false,
+  installmentCount: "",
+  installmentAmount: "",
+  installmentEntryMode: "TOTAL",
   isRecurring: false,
-  receivedAmount: "",
-  receivedAt: "",
   status: "PENDING",
 };
 

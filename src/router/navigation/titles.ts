@@ -18,6 +18,10 @@ export const viewTitles: Record<
     title: "Pagamentos",
     subtitle: "Registro de pagamentos de parcelas",
   },
+  incomeReceipts: {
+    title: "Recebimentos",
+    subtitle: "Registro de recebimentos de parcelas de receitas",
+  },
   categories: { title: "Categorias", subtitle: "Cadastro de categorias" },
   creditCards: {
     title: "Cartões de Crédito",

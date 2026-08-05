@@ -25,8 +25,8 @@ router.get("/", async (req, res) => {
       "status",
       "incomeType",
       "idCategory",
-      "expectedDateFrom",
-      "expectedDateTo",
+      "dueDateFrom",
+      "dueDateTo",
     ]);
     const incomes = await listIncomes(input, authContext, req.requestId);
     res.json(incomes);
@@ -69,10 +69,8 @@ router.patch("/:idIncome/details", async (req, res) => {
         description: req.body?.description,
         idCategory: req.body?.idCategory,
         incomeType: req.body?.incomeType,
-        expectedAmount: req.body?.expectedAmount,
-        expectedDate: req.body?.expectedDate,
-        receivedAmount: req.body?.receivedAmount,
-        receivedAt: req.body?.receivedAt,
+        dueDate: req.body?.dueDate,
+        totalAmount: req.body?.totalAmount,
         isRecurring: req.body?.isRecurring,
       },
       authContext,

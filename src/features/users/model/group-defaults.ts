@@ -8,6 +8,7 @@ export const defaultByGroup: Record<UserGroup, PageAccessKey[]> = {
     "DEBTS_STATEMENT",
     "INCOMES",
     "PAYMENTS",
+    "INCOME_RECEIPTS",
     "CREDIT_CARDS",
   ],
   ADMIN: [
@@ -17,6 +18,7 @@ export const defaultByGroup: Record<UserGroup, PageAccessKey[]> = {
     "DEBTS_STATEMENT",
     "INCOMES",
     "PAYMENTS",
+    "INCOME_RECEIPTS",
     "CREDIT_CARDS",
   ],
   ADMIN_MASTER: [
@@ -26,6 +28,7 @@ export const defaultByGroup: Record<UserGroup, PageAccessKey[]> = {
     "DEBTS_STATEMENT",
     "INCOMES",
     "PAYMENTS",
+    "INCOME_RECEIPTS",
     "CREDIT_CARDS",
     "USERS",
   ],

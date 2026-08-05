@@ -4,6 +4,7 @@ import DebtsIcon from "../../components/atoms/icons/DebtsIcon";
 import {
   Banknote,
   CreditCard,
+  HandCoins,
   LayoutDashboard,
   Receipt,
   Tags,
@@ -24,6 +25,11 @@ export const primaryNavigationItems: NavigationItem[] = [
   { id: "debtsStatement", label: "Extrato", icon: <Receipt size={20} /> },
   { id: "incomes", label: "Receitas", icon: <Banknote size={20} /> },
   { id: "payments", label: "Pagamentos", icon: <Wallet size={20} /> },
+  {
+    id: "incomeReceipts",
+    label: "Recebimentos",
+    icon: <HandCoins size={20} />,
+  },
   { id: "categories", label: "Categorias", icon: <Tags size={20} /> },
   {
     id: "creditCards",

@@ -4,6 +4,7 @@ export type ActiveView =
   | "debtsStatement"
   | "incomes"
   | "payments"
+  | "incomeReceipts"
   | "categories"
   | "creditCards"
   | "users"

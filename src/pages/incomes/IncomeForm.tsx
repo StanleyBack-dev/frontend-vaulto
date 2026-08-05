@@ -15,15 +15,21 @@ import {
 import type { IncomeStatus } from "@/api/incomes/schema";
 import { incomeRoutePaths } from "@/router";
 import { useToast } from "@/shared/toast/useToast";
-import { formatCurrencyForInput, maskCurrencyInput } from "@/utils/format";
+import {
+  formatCurrencyForInput,
+  maskCurrencyInput,
+  onlyDigits,
+} from "@/utils/format";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 interface IncomeFormErrors {
   title?: string;
   category?: string;
-  expectedAmount?: string;
-  expectedDate?: string;
+  totalAmount?: string;
+  dueDate?: string;
+  installmentCount?: string;
+  installmentAmount?: string;
   status?: string;
 }
 
@@ -75,11 +81,18 @@ export default function IncomeForm({ mode }: { mode: "create" | "edit" }) {
           idCategory: income.idCategory,
           description: income.description || "",
           incomeType: income.incomeType,
-          expectedAmount: formatCurrencyForInput(income.expectedAmount),
-          expectedDate: income.expectedDate.slice(0, 10),
+          totalAmount: formatCurrencyForInput(income.totalAmount),
+          dueDate: income.dueDate?.slice(0, 10) || "",
+          hasInstallments: income.hasInstallments,
+          installmentCount: String(income.installmentCount || ""),
+          installmentAmount:
+            income.hasInstallments && income.installmentCount
+              ? formatCurrencyForInput(
+                  income.totalAmount / income.installmentCount,
+                )
+              : "",
+          installmentEntryMode: "TOTAL",
           isRecurring: income.isRecurring,
-          receivedAmount: formatCurrencyForInput(income.receivedAmount),
-          receivedAt: income.receivedAt?.slice(0, 10) || "",
           status: income.status,
         });
         setOriginalStatus(income.status);
@@ -108,6 +121,38 @@ export default function IncomeForm({ mode }: { mode: "create" | "edit" }) {
     return mode === "create" ? "Cadastro de receita" : "Editar receita";
   }, [mode]);
 
+  const calculatedTotalAmount = useMemo(() => {
+    if (!form.hasInstallments || form.installmentEntryMode !== "INSTALLMENT") {
+      return parseNumber(form.totalAmount);
+    }
+
+    const installments = Number(form.installmentCount || 0);
+    const installmentAmount = parseNumber(form.installmentAmount);
+    return Number((installments * installmentAmount).toFixed(2));
+  }, [
+    form.hasInstallments,
+    form.installmentAmount,
+    form.installmentCount,
+    form.installmentEntryMode,
+    form.totalAmount,
+  ]);
+
+  const calculatedInstallmentAmount = useMemo(() => {
+    if (!form.hasInstallments || form.installmentEntryMode !== "TOTAL") {
+      return parseNumber(form.installmentAmount);
+    }
+
+    const installments = Number(form.installmentCount || 0);
+    if (!installments) return 0;
+    return Number((parseNumber(form.totalAmount) / installments).toFixed(2));
+  }, [
+    form.hasInstallments,
+    form.installmentAmount,
+    form.installmentCount,
+    form.installmentEntryMode,
+    form.totalAmount,
+  ]);
+
   function validate(values: IncomeFormValues): IncomeFormErrors {
     const nextErrors: IncomeFormErrors = {};
 
@@ -119,16 +164,44 @@ export default function IncomeForm({ mode }: { mode: "create" | "edit" }) {
       nextErrors.category = "Selecione a categoria da receita.";
     }
 
-    if (parseNumber(values.expectedAmount) <= 0) {
-      nextErrors.expectedAmount = "Informe um valor esperado válido.";
-    }
+    if (mode === "create") {
+      const totalAmount =
+        values.hasInstallments && values.installmentEntryMode === "INSTALLMENT"
+          ? parseNumber(values.installmentAmount) *
+            Number(values.installmentCount || 0)
+          : parseNumber(values.totalAmount);
 
-    if (!values.expectedDate) {
-      nextErrors.expectedDate = "Informe a data esperada do recebimento.";
+      if (totalAmount <= 0) {
+        nextErrors.totalAmount = "Informe um valor total válido.";
+      }
+
+      if (values.hasInstallments) {
+        if (!values.dueDate) {
+          nextErrors.dueDate = "Informe a data de vencimento da 1ª parcela.";
+        }
+
+        const installments = Number(values.installmentCount);
+        if (!Number.isInteger(installments) || installments < 2) {
+          nextErrors.installmentCount = "Informe pelo menos 2 parcelas.";
+        }
+
+        if (
+          values.installmentEntryMode === "INSTALLMENT" &&
+          parseNumber(values.installmentAmount) <= 0
+        ) {
+          nextErrors.installmentAmount = "Informe um valor de parcela válido.";
+        }
+      }
     }
 
     if (mode === "edit" && !values.status) {
       nextErrors.status = "Selecione um status.";
+    }
+
+    if (mode === "edit" && !values.hasInstallments) {
+      if (parseNumber(values.totalAmount) <= 0) {
+        nextErrors.totalAmount = "Informe um valor total válido.";
+      }
     }
 
     return nextErrors;
@@ -145,13 +218,30 @@ export default function IncomeForm({ mode }: { mode: "create" | "edit" }) {
     }
 
     if (mode === "create") {
+      const installmentCount = form.hasInstallments
+        ? Number(form.installmentCount)
+        : undefined;
+      const installmentAmount =
+        form.hasInstallments && form.installmentEntryMode === "INSTALLMENT"
+          ? parseNumber(form.installmentAmount)
+          : undefined;
+      const totalAmount =
+        form.hasInstallments && form.installmentEntryMode === "INSTALLMENT"
+          ? Number(
+              ((installmentAmount ?? 0) * (installmentCount ?? 0)).toFixed(2),
+            )
+          : parseNumber(form.totalAmount);
+
       const created = await create({
         title: form.title.trim(),
         idCategory: form.idCategory,
         description: form.description.trim() || undefined,
         incomeType: form.incomeType,
-        expectedAmount: parseNumber(form.expectedAmount),
-        expectedDate: form.expectedDate,
+        totalAmount,
+        dueDate: form.dueDate || undefined,
+        hasInstallments: form.hasInstallments,
+        installmentCount,
+        installmentAmount,
         isRecurring: form.isRecurring,
       });
 
@@ -173,10 +263,10 @@ export default function IncomeForm({ mode }: { mode: "create" | "edit" }) {
       description: form.description.trim(),
       idCategory: form.idCategory,
       incomeType: form.incomeType,
-      expectedAmount: parseNumber(form.expectedAmount),
-      expectedDate: form.expectedDate,
-      receivedAmount: parseNumber(form.receivedAmount),
-      receivedAt: form.receivedAt || undefined,
+      dueDate: !form.hasInstallments && form.dueDate ? form.dueDate : undefined,
+      totalAmount: !form.hasInstallments
+        ? parseNumber(form.totalAmount)
+        : undefined,
       isRecurring: form.isRecurring,
     });
 
@@ -217,7 +307,7 @@ export default function IncomeForm({ mode }: { mode: "create" | "edit" }) {
     <form onSubmit={handleSubmit} className="space-y-4">
       <SectionCard
         title={title}
-        description="Fluxo de receitas para cadastro e controle de recebimentos."
+        description="Fluxo de receitas para cadastro e controle de status."
       >
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <Input
@@ -281,15 +371,37 @@ export default function IncomeForm({ mode }: { mode: "create" | "edit" }) {
                 }))
               }
               required
+              disabled={
+                originalStatus === "RECEIVED" ||
+                originalStatus === "PARTIALLY_RECEIVED"
+              }
               error={errors.status}
             >
-              {incomeStatusOptions.map((status) => (
-                <option key={status.value} value={status.value}>
-                  {status.label}
-                </option>
-              ))}
+              {incomeStatusOptions
+                .filter(
+                  (status) =>
+                    status.value === "PENDING" ||
+                    status.value === "OVERDUE" ||
+                    status.value === form.status,
+                )
+                .map((status) => (
+                  <option key={status.value} value={status.value}>
+                    {status.label}
+                  </option>
+                ))}
             </Select>
           )}
+          {mode === "edit" &&
+            (originalStatus === "RECEIVED" ||
+              originalStatus === "PARTIALLY_RECEIVED") && (
+              <p
+                className="mt-1 text-xs md:col-span-2"
+                style={{ color: colors.brown[500] }}
+              >
+                Este status é atualizado automaticamente pelos recebimentos
+                registrados.
+              </p>
+            )}
 
           <div className="md:col-span-2">
             <label className="flex items-center gap-2 text-sm text-[#4a3f6b]">
@@ -326,73 +438,145 @@ export default function IncomeForm({ mode }: { mode: "create" | "edit" }) {
 
       <SectionCard
         title="Valores"
-        description="Valor esperado e, se já houver recebimento, quanto já foi recebido."
+        description="Valor total da receita e, se for parcelada (ex: valor a receber de um devedor), como as parcelas são calculadas."
       >
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <Input
-            label="Valor esperado"
+            label="Valor total"
             inputMode="decimal"
-            value={form.expectedAmount}
+            value={
+              form.hasInstallments &&
+              form.installmentEntryMode === "INSTALLMENT"
+                ? formatCurrencyForInput(calculatedTotalAmount)
+                : form.totalAmount
+            }
             onChange={(event) =>
               setForm((current) => ({
                 ...current,
-                expectedAmount: maskCurrencyInput(event.target.value),
+                totalAmount: maskCurrencyInput(event.target.value),
               }))
             }
             placeholder="0,00"
-            required
-            error={errors.expectedAmount}
+            disabled={
+              (mode === "edit" && form.hasInstallments) ||
+              (mode === "create" &&
+                form.hasInstallments &&
+                form.installmentEntryMode === "INSTALLMENT")
+            }
+            required={
+              (mode === "create" &&
+                !(
+                  form.hasInstallments &&
+                  form.installmentEntryMode === "INSTALLMENT"
+                )) ||
+              (mode === "edit" && !form.hasInstallments)
+            }
+            error={errors.totalAmount}
           />
 
-          {mode === "edit" && (
-            <Input
-              label="Valor recebido"
-              inputMode="decimal"
-              value={form.receivedAmount}
-              onChange={(event) =>
-                setForm((current) => ({
-                  ...current,
-                  receivedAmount: maskCurrencyInput(event.target.value),
-                }))
-              }
-              placeholder="0,00"
-            />
+          <div className="flex items-center md:col-span-2">
+            <label className="flex items-center gap-2 text-sm text-[#4a3f6b]">
+              <input
+                type="checkbox"
+                checked={form.hasInstallments}
+                onChange={(event) =>
+                  setForm((current) => ({
+                    ...current,
+                    hasInstallments: event.target.checked,
+                    installmentCount: event.target.checked
+                      ? current.installmentCount
+                      : "",
+                  }))
+                }
+                disabled={mode === "edit"}
+              />
+              Possui parcelamento (ex: valor a receber dividido em parcelas)
+            </label>
+          </div>
+
+          {form.hasInstallments && (
+            <>
+              <Input
+                label="Quantidade de parcelas"
+                inputMode="numeric"
+                value={form.installmentCount}
+                onChange={(event) =>
+                  setForm((current) => ({
+                    ...current,
+                    installmentCount: onlyDigits(event.target.value, 3),
+                  }))
+                }
+                disabled={mode === "edit"}
+                required={mode === "create"}
+                error={errors.installmentCount}
+              />
+
+              <Select
+                label="Forma de preenchimento"
+                value={form.installmentEntryMode}
+                onChange={(event) =>
+                  setForm((current) => ({
+                    ...current,
+                    installmentEntryMode: event.target
+                      .value as IncomeFormValues["installmentEntryMode"],
+                  }))
+                }
+                disabled={mode === "edit"}
+              >
+                <option value="TOTAL">Informar valor total</option>
+                <option value="INSTALLMENT">Informar valor da parcela</option>
+              </Select>
+
+              {form.installmentEntryMode === "INSTALLMENT" ? (
+                <Input
+                  label="Valor da parcela"
+                  inputMode="decimal"
+                  value={form.installmentAmount}
+                  onChange={(event) =>
+                    setForm((current) => ({
+                      ...current,
+                      installmentAmount: maskCurrencyInput(event.target.value),
+                    }))
+                  }
+                  disabled={mode === "edit"}
+                  required={mode === "create"}
+                  error={errors.installmentAmount}
+                />
+              ) : (
+                <Input
+                  label="Valor da parcela (calculado)"
+                  value={formatCurrencyForInput(calculatedInstallmentAmount)}
+                  disabled
+                />
+              )}
+            </>
           )}
         </div>
       </SectionCard>
 
       <SectionCard
-        title="Datas"
-        description="Quando a receita é esperada e, se já recebida, quando isso ocorreu."
+        title="Datas e vencimento"
+        description="Quando a receita é esperada, ou quando vence a 1ª parcela, se parcelada."
       >
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <Input
-            label="Data esperada"
+            label={
+              form.hasInstallments
+                ? "Data de vencimento (1ª parcela)"
+                : "Data de vencimento (opcional)"
+            }
             type="date"
-            value={form.expectedDate}
+            value={form.dueDate}
             onChange={(event) =>
               setForm((current) => ({
                 ...current,
-                expectedDate: event.target.value,
+                dueDate: event.target.value,
               }))
             }
-            required
-            error={errors.expectedDate}
+            disabled={mode === "edit" && form.hasInstallments}
+            required={mode === "create" && form.hasInstallments}
+            error={errors.dueDate}
           />
-
-          {mode === "edit" && (
-            <Input
-              label="Data de recebimento (opcional)"
-              type="date"
-              value={form.receivedAt}
-              onChange={(event) =>
-                setForm((current) => ({
-                  ...current,
-                  receivedAt: event.target.value,
-                }))
-              }
-            />
-          )}
         </div>
       </SectionCard>
 

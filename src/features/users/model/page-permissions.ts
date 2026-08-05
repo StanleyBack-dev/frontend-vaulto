@@ -13,6 +13,7 @@ export const pagePermissionOptions: PagePermissionOption[] = [
   { key: "DEBTS_STATEMENT", label: "Extrato de Dívidas" },
   { key: "INCOMES", label: "Receitas" },
   { key: "PAYMENTS", label: "Pagamentos" },
+  { key: "INCOME_RECEIPTS", label: "Recebimentos" },
   { key: "CREDIT_CARDS", label: "Cartões de Crédito" },
   { key: "USERS", label: "Usuários" },
 ];
