@@ -1,8 +1,5 @@
 import { z } from "zod";
-import {
-  IncomeInstallmentSchema,
-  IncomeStatusSchema,
-} from "../incomes/schema";
+import { IncomeInstallmentSchema, IncomeStatusSchema } from "../incomes/schema";
 
 export const IncomeReceiptSchema = z.object({
   idIncomeReceipt: z.string().optional(),

@@ -160,9 +160,7 @@ function DebtCard({ debt, onEdit }: DebtCardProps) {
         </div>
       )}
 
-      <div className="text-xs text-[#8b7fac]">
-        {debt.description || " "}
-      </div>
+      <div className="text-xs text-[#8b7fac]">{debt.description || " "}</div>
     </div>
   );
 }
@@ -310,7 +308,8 @@ export default function DebtsDashboardKanban() {
   // "esperado"/"devido" haven't happened yet and would distort the real
   // cash position for the month.
   const incomeReceivedTotal = incomes.reduce(
-    (sum, income) => sum + getIncomeReceivedAmount(income, dueDateFrom, dueDateTo),
+    (sum, income) =>
+      sum + getIncomeReceivedAmount(income, dueDateFrom, dueDateTo),
     0,
   );
   const incomeDueTotal = incomes.reduce(
@@ -594,7 +593,6 @@ export default function DebtsDashboardKanban() {
           </div>
         ))}
       </div>
-
     </div>
   );
 }

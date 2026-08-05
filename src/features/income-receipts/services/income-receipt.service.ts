@@ -12,7 +12,10 @@ import {
   type UpdateIncomeReceiptPayload,
   type UpdateIncomeReceiptResponse,
 } from "@/api/income-receipts/schema";
-import { IncomeReceiptSchema, type IncomeReceipt } from "@/api/income-receipts/schema";
+import {
+  IncomeReceiptSchema,
+  type IncomeReceipt,
+} from "@/api/income-receipts/schema";
 import { incomeReceiptUiCopy } from "../model/messages";
 
 export async function receiveInstallment(

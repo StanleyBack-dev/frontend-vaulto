@@ -18,10 +18,7 @@ import {
   receiveInstallment,
   updateIncomeReceipt,
 } from "@/features/income-receipts";
-import type {
-  Income,
-  IncomeInstallment,
-} from "@/api/incomes/schema";
+import type { Income, IncomeInstallment } from "@/api/incomes/schema";
 import type { IncomeReceipt } from "@/api/income-receipts/schema";
 import { useToast } from "@/shared/toast/useToast";
 import {
@@ -118,9 +115,7 @@ export default function Recebimentos() {
   const [receiveAmount, setReceiveAmount] = useState("");
   const [receiveDate, setReceiveDate] = useState(nowInputValue());
   const [submitting, setSubmitting] = useState(false);
-  const [editingReceiptId, setEditingReceiptId] = useState<string | null>(
-    null,
-  );
+  const [editingReceiptId, setEditingReceiptId] = useState<string | null>(null);
   const [editAmount, setEditAmount] = useState("");
   const [editDate, setEditDate] = useState("");
   const [receipts, setReceipts] = useState<IncomeReceipt[]>([]);
@@ -197,7 +192,9 @@ export default function Recebimentos() {
         idIncome: installment.idIncome,
         idIncomeInstallment: installment.idIncomeInstallment,
         amountReceived: amount,
-        receivedAt: receiveDate ? new Date(receiveDate).toISOString() : undefined,
+        receivedAt: receiveDate
+          ? new Date(receiveDate).toISOString()
+          : undefined,
       });
 
       showSuccess(
@@ -385,8 +382,7 @@ export default function Recebimentos() {
                   const isReceived = installment.status === "RECEIVED";
                   const isLocked = isReceived && incomeDetail.hasInstallments;
                   const isEditingRow =
-                    receivingInstallmentId ===
-                    installment.idIncomeInstallment;
+                    receivingInstallmentId === installment.idIncomeInstallment;
 
                   return (
                     <tr key={installment.idIncomeInstallment}>
@@ -535,9 +531,7 @@ export default function Recebimentos() {
                       const isEditingRow =
                         editingReceiptId === receipt.idIncomeReceipt;
                       const installmentNumber = receipt.idIncomeInstallment
-                        ? installmentNumberById.get(
-                            receipt.idIncomeInstallment,
-                          )
+                        ? installmentNumberById.get(receipt.idIncomeInstallment)
                         : undefined;
 
                       return (
