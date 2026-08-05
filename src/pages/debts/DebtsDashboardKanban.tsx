@@ -9,6 +9,7 @@ import { debtRoutePaths } from "@/router";
 import {
   debtStatusLabel,
   debtTypeOptions,
+  getNearestDueDate,
   useDebtsContext,
 } from "@/features/debts";
 import {
@@ -133,7 +134,7 @@ function DebtCard({ debt, onEdit }: DebtCardProps) {
       </div>
 
       <div className="flex items-center justify-between text-xs text-[#b7afcf]">
-        <span>Vence: {formatDate(debt.dueDate)}</span>
+        <span>Vence: {formatDate(getNearestDueDate(debt))}</span>
         <span className="text-[#d7cfff] font-medium">
           {formatCurrency(debt.totalAmount)}
         </span>

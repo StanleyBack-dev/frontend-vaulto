@@ -13,7 +13,12 @@ export {
   emptyDebtFormValues,
   type DebtFormValues,
 } from "./model/form";
-export { filterDebtsBySearch, getDebtTableColumns } from "./model/listing";
+export {
+  filterDebtsBySearch,
+  getDebtTableColumns,
+  getNearestDueDate,
+  getPaidInstallmentsCount,
+} from "./model/listing";
 export {
   fetchDebtById,
   fetchDebts,
