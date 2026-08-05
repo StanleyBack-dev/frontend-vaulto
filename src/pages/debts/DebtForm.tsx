@@ -13,13 +13,14 @@ import {
   useDebtsContext,
 } from "@/features/debts";
 import type { DebtStatus } from "@/api/debts/schema";
-import { debtRoutePaths } from "@/router";
+import { creditCardRoutePaths, debtRoutePaths } from "@/router";
 import { useToast } from "@/shared/toast/useToast";
 import {
   formatCurrencyForInput,
   maskCurrencyInput,
   onlyDigits,
 } from "@/utils/format";
+import { Plus } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -371,47 +372,6 @@ export default function DebtForm({ mode }: { mode: "create" | "edit" }) {
             ))}
           </Select>
 
-          {mode === "create" && (
-            <div>
-              <Select
-                label="Cartão de crédito (opcional)"
-                value={form.idCreditCard}
-                onChange={(event) =>
-                  setForm((current) => ({
-                    ...current,
-                    idCreditCard: event.target.value,
-                    dueDate: event.target.value ? "" : current.dueDate,
-                    acquiredAt:
-                      event.target.value && !current.acquiredAt
-                        ? todayDateInputValue()
-                        : current.acquiredAt,
-                  }))
-                }
-              >
-                <option value="">Nenhum</option>
-                {debtCreditCards.map((card) => (
-                  <option key={card.idCreditCard} value={card.idCreditCard}>
-                    {card.name}
-                  </option>
-                ))}
-              </Select>
-              {selectedCreditCard && (
-                <p
-                  className="mt-1 text-xs"
-                  style={{ color: colors.brown[500] }}
-                >
-                  Limite disponível:{" "}
-                  {new Intl.NumberFormat("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  }).format(selectedCreditCard.availableLimit)}
-                  . A data de vencimento será calculada automaticamente pelo
-                  cartão (dia {selectedCreditCard.dueDay}).
-                </p>
-              )}
-            </div>
-          )}
-
           <Select
             label="Tipo da dívida"
             value={form.debtType}
@@ -429,72 +389,6 @@ export default function DebtForm({ mode }: { mode: "create" | "edit" }) {
               </option>
             ))}
           </Select>
-
-          <Input
-            label="Valor total"
-            inputMode="decimal"
-            value={
-              form.hasInstallments &&
-              form.installmentEntryMode === "INSTALLMENT"
-                ? formatCurrencyForInput(calculatedTotalAmount)
-                : form.totalAmount
-            }
-            onChange={(event) =>
-              setForm((current) => ({
-                ...current,
-                totalAmount: maskCurrencyInput(event.target.value),
-              }))
-            }
-            placeholder="0,00"
-            disabled={
-              (mode === "edit" && form.hasInstallments) ||
-              (mode === "create" &&
-                form.hasInstallments &&
-                form.installmentEntryMode === "INSTALLMENT")
-            }
-            required={
-              (mode === "create" &&
-                !(
-                  form.hasInstallments &&
-                  form.installmentEntryMode === "INSTALLMENT"
-                )) ||
-              (mode === "edit" && !form.hasInstallments)
-            }
-            error={errors.totalAmount}
-          />
-
-          <div>
-            <Input
-              label={
-                form.hasInstallments
-                  ? "Data de vencimento (1a parcela)"
-                  : "Data de vencimento (opcional)"
-              }
-              type="date"
-              value={form.dueDate}
-              onChange={(event) =>
-                setForm((current) => ({
-                  ...current,
-                  dueDate: event.target.value,
-                }))
-              }
-              disabled={
-                (mode === "edit" &&
-                  (form.hasInstallments || Boolean(linkedCreditCard))) ||
-                (mode === "create" && Boolean(form.idCreditCard))
-              }
-              required={
-                mode === "create" && form.hasInstallments && !form.idCreditCard
-              }
-              error={errors.dueDate}
-            />
-            {mode === "edit" && linkedCreditCard && (
-              <p className="mt-1 text-xs" style={{ color: colors.brown[500] }}>
-                Vencimento calculado automaticamente pelo cartão{" "}
-                {linkedCreditCard}.
-              </p>
-            )}
-          </div>
 
           {mode === "edit" && (
             <div>
@@ -541,7 +435,130 @@ export default function DebtForm({ mode }: { mode: "create" | "edit" }) {
           )}
 
           <div className="md:col-span-2">
-            <label className="flex items-center gap-2 text-sm text-[#c5bbeb]">
+            <Textarea
+              label="Descrição"
+              value={form.description}
+              onChange={(event) =>
+                setForm((current) => ({
+                  ...current,
+                  description: event.target.value,
+                }))
+              }
+              placeholder="Contexto da dívida e observações operacionais"
+              rows={4}
+            />
+          </div>
+        </div>
+      </SectionCard>
+
+      {mode === "create" && (
+        <SectionCard
+          title="Cartão de crédito"
+          description="Vincule a dívida a um cartão para calcular o vencimento automaticamente pela fatura, ou deixe em branco para uma dívida sem cartão."
+          action={
+            <Button
+              type="button"
+              variant="primary"
+              size="sm"
+              leftIcon={<Plus size={14} />}
+              onClick={() => navigate(creditCardRoutePaths.create)}
+            >
+              Novo cartão
+            </Button>
+          }
+        >
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="md:col-span-2">
+              <Select
+                label="Cartão de crédito (opcional)"
+                value={form.idCreditCard}
+                onChange={(event) =>
+                  setForm((current) => ({
+                    ...current,
+                    idCreditCard: event.target.value,
+                    dueDate: event.target.value ? "" : current.dueDate,
+                    acquiredAt:
+                      event.target.value && !current.acquiredAt
+                        ? todayDateInputValue()
+                        : current.acquiredAt,
+                  }))
+                }
+              >
+                <option value="">Nenhum</option>
+                {debtCreditCards.map((card) => (
+                  <option key={card.idCreditCard} value={card.idCreditCard}>
+                    {card.name}
+                  </option>
+                ))}
+              </Select>
+              {debtCreditCards.length === 0 && (
+                <p
+                  className="mt-1 text-xs"
+                  style={{ color: colors.brown[500] }}
+                >
+                  Nenhum cartão cadastrado ainda. Use o botão "Novo cartão"
+                  acima para cadastrar um.
+                </p>
+              )}
+              {selectedCreditCard && (
+                <p
+                  className="mt-1 text-xs"
+                  style={{ color: colors.brown[500] }}
+                >
+                  Limite disponível:{" "}
+                  {new Intl.NumberFormat("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  }).format(selectedCreditCard.availableLimit)}
+                  . A data de vencimento será calculada automaticamente pelo
+                  cartão (dia {selectedCreditCard.dueDay}).
+                </p>
+              )}
+            </div>
+          </div>
+        </SectionCard>
+      )}
+
+      <SectionCard
+        title="Valores"
+        description="Valor total da dívida e, se for parcelada, como as parcelas são calculadas."
+      >
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <Input
+            label="Valor total"
+            inputMode="decimal"
+            value={
+              form.hasInstallments &&
+              form.installmentEntryMode === "INSTALLMENT"
+                ? formatCurrencyForInput(calculatedTotalAmount)
+                : form.totalAmount
+            }
+            onChange={(event) =>
+              setForm((current) => ({
+                ...current,
+                totalAmount: maskCurrencyInput(event.target.value),
+              }))
+            }
+            placeholder="0,00"
+            disabled={
+              (mode === "edit" && form.hasInstallments) ||
+              (mode === "create" &&
+                form.hasInstallments &&
+                form.installmentEntryMode === "INSTALLMENT")
+            }
+            required={
+              (mode === "create" &&
+                !(
+                  form.hasInstallments &&
+                  form.installmentEntryMode === "INSTALLMENT"
+                )) ||
+              (mode === "edit" && !form.hasInstallments)
+            }
+            error={errors.totalAmount}
+          />
+
+          <div className="flex items-center md:col-span-2">
+            <label className="flex items-center gap-2 text-sm text-[#4a3f6b]">
               <input
                 type="checkbox"
                 checked={form.hasInstallments}
@@ -559,38 +576,6 @@ export default function DebtForm({ mode }: { mode: "create" | "edit" }) {
               Possui parcelamento
             </label>
           </div>
-
-          {(form.hasInstallments ||
-            (mode === "create" && Boolean(form.idCreditCard))) && (
-            <div>
-              <Input
-                label={
-                  mode === "create" && form.idCreditCard
-                    ? "Data da compra"
-                    : "Data de início (opcional)"
-                }
-                type="date"
-                value={form.acquiredAt}
-                onChange={(event) =>
-                  setForm((current) => ({
-                    ...current,
-                    acquiredAt: event.target.value,
-                  }))
-                }
-                required={mode === "create" && Boolean(form.idCreditCard)}
-                error={errors.acquiredAt}
-              />
-              {mode === "create" && form.idCreditCard && (
-                <p
-                  className="mt-1 text-xs"
-                  style={{ color: colors.brown[500] }}
-                >
-                  Usada para calcular em qual fatura a compra cai — importante
-                  para dívidas antigas que não foram compradas hoje.
-                </p>
-              )}
-            </div>
-          )}
 
           {form.hasInstallments && (
             <>
@@ -649,21 +634,78 @@ export default function DebtForm({ mode }: { mode: "create" | "edit" }) {
               )}
             </>
           )}
+        </div>
+      </SectionCard>
 
-          <div className="md:col-span-2">
-            <Textarea
-              label="Descrição"
-              value={form.description}
+      <SectionCard
+        title="Datas e vencimento"
+        description="Quando a dívida vence e, se necessário, quando ela foi contraída ou comprada."
+      >
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div>
+            <Input
+              label={
+                form.hasInstallments
+                  ? "Data de vencimento (1a parcela)"
+                  : "Data de vencimento (opcional)"
+              }
+              type="date"
+              value={form.dueDate}
               onChange={(event) =>
                 setForm((current) => ({
                   ...current,
-                  description: event.target.value,
+                  dueDate: event.target.value,
                 }))
               }
-              placeholder="Contexto da dívida e observações operacionais"
-              rows={4}
+              disabled={
+                (mode === "edit" &&
+                  (form.hasInstallments || Boolean(linkedCreditCard))) ||
+                (mode === "create" && Boolean(form.idCreditCard))
+              }
+              required={
+                mode === "create" && form.hasInstallments && !form.idCreditCard
+              }
+              error={errors.dueDate}
             />
+            {mode === "edit" && linkedCreditCard && (
+              <p className="mt-1 text-xs" style={{ color: colors.brown[500] }}>
+                Vencimento calculado automaticamente pelo cartão{" "}
+                {linkedCreditCard}.
+              </p>
+            )}
           </div>
+
+          {(form.hasInstallments ||
+            (mode === "create" && Boolean(form.idCreditCard))) && (
+            <div>
+              <Input
+                label={
+                  mode === "create" && form.idCreditCard
+                    ? "Data da compra"
+                    : "Data de início (opcional)"
+                }
+                type="date"
+                value={form.acquiredAt}
+                onChange={(event) =>
+                  setForm((current) => ({
+                    ...current,
+                    acquiredAt: event.target.value,
+                  }))
+                }
+                required={mode === "create" && Boolean(form.idCreditCard)}
+                error={errors.acquiredAt}
+              />
+              {mode === "create" && form.idCreditCard && (
+                <p
+                  className="mt-1 text-xs"
+                  style={{ color: colors.brown[500] }}
+                >
+                  Usada para calcular em qual fatura a compra cai — importante
+                  para dívidas antigas que não foram compradas hoje.
+                </p>
+              )}
+            </div>
+          )}
         </div>
       </SectionCard>
 
