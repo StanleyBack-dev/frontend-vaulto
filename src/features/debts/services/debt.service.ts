@@ -1,4 +1,5 @@
 import { createDebt } from "@/api/debts/methods/create";
+import { deleteDebt } from "@/api/debts/methods/delete";
 import { getDebtById } from "@/api/debts/methods/get-by-id";
 import { getMyDebts } from "@/api/debts/methods/get";
 import { updateDebtDetails } from "@/api/debts/methods/update-details";
@@ -89,6 +90,10 @@ export async function saveDebtStatus(payload: UpdateDebtStatusPayload) {
   }
 
   return parsedResponse.data;
+}
+
+export async function removeDebt(idDebt: string): Promise<void> {
+  await deleteDebt(idDebt);
 }
 
 export async function saveDebtDetails(payload: UpdateDebtDetailsPayload) {

@@ -4,6 +4,7 @@ import { buildErrorResponse } from "../../shared/http/error-response.js";
 import { buildListInput } from "../../shared/http/parse-pagination.js";
 import {
   createDebt,
+  deleteDebt,
   getDebtById,
   listDebts,
   updateDebtDetails,
@@ -93,6 +94,20 @@ router.patch("/:idDebt/status", async (req, res) => {
       req.requestId,
     );
     res.json(debt);
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
+router.delete("/:idDebt", async (req, res) => {
+  try {
+    const authContext = getAuthContext(req);
+    const result = await deleteDebt(
+      req.params.idDebt,
+      authContext,
+      req.requestId,
+    );
+    res.json(result);
   } catch (error) {
     sendError(res, error);
   }

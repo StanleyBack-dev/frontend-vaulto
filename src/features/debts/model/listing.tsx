@@ -1,3 +1,4 @@
+import { Trash2 } from "lucide-react";
 import type { Debt } from "@/api/debts/schema";
 import type { DataTableColumn } from "@/components/organisms/DataTable";
 import EditIcon from "@/components/atoms/icons/EditIcon";
@@ -99,23 +100,37 @@ export function filterDebtsBySearch(debts: Debt[], search: string): Debt[] {
 
 export function getDebtTableColumns(actions: {
   onEdit: (debt: Debt) => void;
+  onDelete: (debt: Debt) => void;
 }): DataTableColumn<Debt>[] {
   return [
     {
       key: "actions",
       label: "Ações",
       render: (debt) => (
-        <button
-          type="button"
-          title="Editar"
-          className="text-violet-700 transition hover:text-violet-900"
-          onClick={(event) => {
-            event.stopPropagation();
-            actions.onEdit(debt);
-          }}
-        >
-          <EditIcon size={18} />
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            title="Editar"
+            className="text-violet-700 transition hover:text-violet-900"
+            onClick={(event) => {
+              event.stopPropagation();
+              actions.onEdit(debt);
+            }}
+          >
+            <EditIcon size={18} />
+          </button>
+          <button
+            type="button"
+            title="Excluir"
+            className="text-rose-600 transition hover:text-rose-800"
+            onClick={(event) => {
+              event.stopPropagation();
+              actions.onDelete(debt);
+            }}
+          >
+            <Trash2 size={18} />
+          </button>
+        </div>
       ),
     },
     {

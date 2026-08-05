@@ -15,6 +15,7 @@ import { fetchCategories } from "@/features/categories/services/category.service
 import { fetchCreditCards } from "@/features/credit-cards/services/credit-card.service";
 import {
   fetchDebts,
+  removeDebt,
   saveDebt,
   saveDebtDetails,
   saveDebtStatus,
@@ -49,6 +50,7 @@ export interface UseDebtsResult {
   create: (payload: CreateDebtPayload) => Promise<Debt | null>;
   updateStatus: (payload: UpdateDebtStatusPayload) => Promise<Debt | null>;
   updateDetails: (payload: UpdateDebtDetailsPayload) => Promise<Debt | null>;
+  remove: (idDebt: string) => Promise<boolean>;
 }
 
 const DEFAULT_LIMIT = 10;
@@ -330,6 +332,31 @@ export function useDebts(): UseDebtsResult {
     [load, showError, showSuccess],
   );
 
+  const remove = useCallback(
+    async (idDebt: string) => {
+      setSaving(true);
+      setError(null);
+
+      try {
+        await removeDebt(idDebt);
+        showSuccess(debtUiCopy.success.deleteDebt);
+        await load();
+        return true;
+      } catch (err) {
+        const message = toErrorMessage(
+          err,
+          debtUiCopy.errors.deleteDebtFallback,
+        );
+        setError(message);
+        showError(debtUiCopy.errors.deleteDebtFallback, message);
+        return false;
+      } finally {
+        setSaving(false);
+      }
+    },
+    [load, showError, showSuccess],
+  );
+
   return {
     debts,
     debtCategories,
@@ -349,5 +376,6 @@ export function useDebts(): UseDebtsResult {
     create,
     updateStatus,
     updateDetails,
+    remove,
   };
 }
