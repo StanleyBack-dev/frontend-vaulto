@@ -33,6 +33,42 @@ function getInstallmentAmount(debt: Debt): number {
   return installmentCount > 0 ? debt.totalAmount / installmentCount : 0;
 }
 
+export function getPaidInstallmentsCount(debt: Debt): number {
+  return debt.installments.filter(
+    (installment) => installment.status === "PAID",
+  ).length;
+}
+
+// The due date column must always reflect what's actually pending, not the
+// original registration date: for an installment debt that's the unpaid
+// installment whose due date sits closest to today (covering both an
+// upcoming installment and one that's already overdue), not necessarily the
+// first or last one in the schedule.
+export function getNearestDueDate(debt: Debt): string | null {
+  if (!debt.hasInstallments) {
+    return debt.dueDate ?? null;
+  }
+
+  const pendingInstallments = debt.installments.filter(
+    (installment) => installment.status !== "PAID",
+  );
+
+  if (!pendingInstallments.length) {
+    return null;
+  }
+
+  const now = Date.now();
+
+  return pendingInstallments.reduce((nearest, installment) => {
+    const nearestDiff = Math.abs(new Date(nearest.dueDate).getTime() - now);
+    const installmentDiff = Math.abs(
+      new Date(installment.dueDate).getTime() - now,
+    );
+
+    return installmentDiff < nearestDiff ? installment : nearest;
+  }, pendingInstallments[0]).dueDate;
+}
+
 function getStatusPillStyle(status: Debt["status"]) {
   switch (status) {
     case "PAID":
@@ -128,6 +164,15 @@ export function getDebtTableColumns(actions: {
       ),
     },
     {
+      key: "paidInstallmentsCount",
+      label: "Parcelas pagas",
+      render: (debt) => (
+        <span className="text-sm text-[#5a4e7a]">
+          {debt.hasInstallments ? getPaidInstallmentsCount(debt) : "-"}
+        </span>
+      ),
+    },
+    {
       key: "installmentAmount",
       label: "Valor da parcela",
       render: (debt) => (
@@ -161,7 +206,7 @@ export function getDebtTableColumns(actions: {
       label: "Vencimento",
       render: (debt) => (
         <span className="text-sm text-[#4a3f6b]">
-          {formatDate(debt.dueDate)}
+          {formatDate(getNearestDueDate(debt))}
         </span>
       ),
     },
