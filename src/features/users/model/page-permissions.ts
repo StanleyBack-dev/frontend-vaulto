@@ -10,6 +10,7 @@ export const pagePermissionOptions: PagePermissionOption[] = [
   { key: "DASHBOARD", label: "Dashboard" },
   { key: "CATEGORIES", label: "Categorias" },
   { key: "DEBTS", label: "Dívidas" },
+  { key: "DEBTS_STATEMENT", label: "Extrato de Dívidas" },
   { key: "PAYMENTS", label: "Pagamentos" },
   { key: "CREDIT_CARDS", label: "Cartões de Crédito" },
   { key: "USERS", label: "Usuários" },

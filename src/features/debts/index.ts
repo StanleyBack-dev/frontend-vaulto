@@ -20,6 +20,15 @@ export {
   getPaidInstallmentsCount,
 } from "./model/listing";
 export {
+  currentMonthValue,
+  formatMonthLabel,
+  monthToDueDateRange,
+} from "./model/period";
+export {
+  buildDebtStatementLines,
+  type DebtStatementLine,
+} from "./model/statement";
+export {
   fetchDebtById,
   fetchDebts,
   saveDebt,

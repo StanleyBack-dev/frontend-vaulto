@@ -7,6 +7,7 @@ import {
   authRoutePaths,
   dashboardRoutePaths,
   debtRoutePaths,
+  debtsStatementRoutePaths,
   paymentRoutePaths,
   routePaths,
   utilityRoutePaths,
@@ -21,6 +22,7 @@ const DebtsDashboardKanban = lazy(
 );
 const Debts = lazy(() => import("../../pages/debts/Debts"));
 const DebtForm = lazy(() => import("../../pages/debts/DebtForm"));
+const DebtsStatement = lazy(() => import("../../pages/debts/DebtsStatement"));
 const Payments = lazy(() => import("../../pages/payments/Payments"));
 const Profile = lazy(() => import("../../pages/Profile"));
 
@@ -103,6 +105,24 @@ export function AppShellRoutes({ userId }: AppShellRoutesProps) {
           <Route
             path={debtRoutePaths.edit()}
             element={withPageSuspense(<DebtForm mode="edit" />)}
+          />
+        </Route>
+      </Route>
+
+      {/* Extrato - extrato detalhado de dividas por periodo */}
+      <Route element={<RequirePageAccessRoute view="debtsStatement" />}>
+        <Route
+          element={
+            <UserScopedProviderRoute
+              userId={userId}
+              loginPath={authRoutePaths.login}
+              ProviderOutlet={DebtsProviderOutlet}
+            />
+          }
+        >
+          <Route
+            path={debtsStatementRoutePaths.list}
+            element={withPageSuspense(<DebtsStatement />)}
           />
         </Route>
       </Route>
