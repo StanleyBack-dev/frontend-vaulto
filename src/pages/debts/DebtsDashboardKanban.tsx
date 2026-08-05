@@ -1,11 +1,18 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AlertCircle, Clock, CheckCircle2, CircleDot } from "lucide-react";
+import {
+  AlertCircle,
+  Clock,
+  CheckCircle2,
+  CircleDot,
+  Hourglass,
+} from "lucide-react";
 import type { Debt } from "@/api/debts/schema";
+import type { Income } from "@/api/incomes/schema";
 import Input from "@/components/atoms/Input";
 import Select from "@/components/atoms/Select";
 import { colors } from "@/config";
-import { debtRoutePaths } from "@/router";
+import { debtRoutePaths, incomeRoutePaths } from "@/router";
 import {
   currentMonthValue,
   debtStatusLabel,
@@ -15,6 +22,7 @@ import {
   monthToDueDateRange,
   useDebtsContext,
 } from "@/features/debts";
+import { fetchIncomes, incomeStatusLabel } from "@/features/incomes";
 import {
   fetchDebtsReport,
   reportUiCopy,
@@ -67,6 +75,93 @@ const COLUMNS: {
     icon: <CheckCircle2 size={15} />,
   },
 ];
+
+const INCOME_COLUMNS: {
+  status: Income["status"];
+  label: string;
+  color: string;
+  icon: React.ReactNode;
+}[] = [
+  {
+    status: "PENDING",
+    label: "Pendentes",
+    color: "#7c3aed",
+    icon: <CircleDot size={15} />,
+  },
+  {
+    status: "OVERDUE",
+    label: "Vencidas",
+    color: "#f43f5e",
+    icon: <AlertCircle size={15} />,
+  },
+  {
+    status: "PARTIALLY_RECEIVED",
+    label: "Parc. recebidas",
+    color: "#f59e0b",
+    icon: <Hourglass size={15} />,
+  },
+  {
+    status: "RECEIVED",
+    label: "Recebidas",
+    color: "#10b981",
+    icon: <CheckCircle2 size={15} />,
+  },
+];
+
+interface IncomeCardProps {
+  income: Income;
+  onEdit: () => void;
+}
+
+function IncomeCard({ income, onEdit }: IncomeCardProps) {
+  const progress =
+    income.expectedAmount > 0
+      ? Math.min((income.receivedAmount / income.expectedAmount) * 100, 100)
+      : 0;
+
+  return (
+    <div className="rounded-xl border border-[#3a2f5e] bg-[#141225] p-4 space-y-3 hover:border-[#5b4a9e] transition-colors">
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0">
+          <p className="text-sm font-semibold text-[#f7f5ff] truncate">
+            {income.title}
+          </p>
+          <p className="text-xs text-[#b7afcf] mt-0.5">{income.category}</p>
+        </div>
+        <button
+          type="button"
+          onClick={onEdit}
+          className="shrink-0 rounded border border-[#3a2f5e] px-2 py-1 text-xs text-[#c5bbeb] hover:bg-[#1f1832] transition-colors"
+        >
+          Editar
+        </button>
+      </div>
+
+      <div className="flex items-center justify-between text-xs text-[#b7afcf]">
+        <span>Esperado: {formatDate(income.expectedDate)}</span>
+        <span className="text-[#d7cfff] font-medium">
+          {formatCurrency(income.expectedAmount)}
+        </span>
+      </div>
+
+      <div className="space-y-1">
+        <div className="flex justify-between text-xs text-[#b7afcf]">
+          <span>Recebido: {formatCurrency(income.receivedAmount)}</span>
+        </div>
+        <div className="h-1.5 rounded-full bg-[#1e1830]">
+          <div
+            className="h-1.5 rounded-full bg-gradient-to-r from-[#10b981] to-[#D4AF37] transition-all"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+      </div>
+
+      <div className="text-xs text-[#8b7fac]">
+        {income.description || " "}
+      </div>
+    </div>
+  );
+}
 
 interface DebtCardProps {
   debt: Debt;
@@ -147,6 +242,9 @@ export default function DebtsDashboardKanban() {
   const [report, setReport] = useState<DebtsReport | null>(null);
   const [reportLoading, setReportLoading] = useState(false);
 
+  const [incomes, setIncomes] = useState<Income[]>([]);
+  const [incomesLoading, setIncomesLoading] = useState(false);
+
   const [search, setSearch] = useState("");
   const [debtType, setDebtType] = useState("");
   const [idCategory, setIdCategory] = useState("");
@@ -160,6 +258,41 @@ export default function DebtsDashboardKanban() {
     void setFilters({ dueDateFrom, dueDateTo });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dueDateFrom, dueDateTo]);
+
+  useEffect(() => {
+    let cancelled = false;
+    setIncomesLoading(true);
+
+    fetchIncomes({
+      page: 1,
+      limit: DASHBOARD_PAGE_SIZE,
+      expectedDateFrom: dueDateFrom,
+      expectedDateTo: dueDateTo,
+    })
+      .then((data) => {
+        if (!cancelled) {
+          setIncomes(data.items);
+        }
+      })
+      .catch((error) => {
+        if (!cancelled) {
+          showError(
+            "Falha ao carregar receitas",
+            error instanceof Error ? error.message : undefined,
+          );
+          setIncomes([]);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setIncomesLoading(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [dueDateFrom, dueDateTo, showError]);
 
   useEffect(() => {
     let cancelled = false;
@@ -220,6 +353,16 @@ export default function DebtsDashboardKanban() {
     return map;
   }, [filtered]);
 
+  const incomeGrouped = useMemo(() => {
+    const map = new Map<Income["status"], Income[]>();
+    for (const col of INCOME_COLUMNS) map.set(col.status, []);
+    for (const i of incomes) {
+      const list = map.get(i.status);
+      if (list) list.push(i);
+    }
+    return map;
+  }, [incomes]);
+
   const totals = {
     total: report?.totalAmountDue ?? 0,
     paid: report?.totalAmountPaid ?? 0,
@@ -227,6 +370,16 @@ export default function DebtsDashboardKanban() {
     open: report?.countByStatus.open ?? 0,
     overdue: report?.countByStatus.overdue ?? 0,
   };
+
+  // Balance always reflects money that actually moved — received income
+  // against paid debts — never the merely expected/due amounts, since
+  // "esperado"/"devido" haven't happened yet and would distort the real
+  // cash position for the month.
+  const incomeReceivedTotal = incomes.reduce(
+    (sum, income) => sum + income.receivedAmount,
+    0,
+  );
+  const monthBalance = incomeReceivedTotal - totals.paid;
 
   return (
     <div className="space-y-5">
@@ -282,6 +435,39 @@ export default function DebtsDashboardKanban() {
           </p>
           <p className="mt-1 text-lg font-bold text-rose-300">
             {reportLoading ? "..." : totals.overdue}
+          </p>
+        </div>
+      </div>
+
+      {/* Saldo do mes: receitas recebidas x dividas quitadas */}
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <div className="rounded-xl border border-[#3a2f5e] bg-[#141225] p-4">
+          <p className="text-xs uppercase tracking-wide text-[#b7afcf]">
+            Receitas recebidas
+          </p>
+          <p className="mt-1 text-lg font-bold text-emerald-300">
+            {incomesLoading ? "..." : formatCurrency(incomeReceivedTotal)}
+          </p>
+        </div>
+        <div className="rounded-xl border border-[#3a2f5e] bg-[#141225] p-4">
+          <p className="text-xs uppercase tracking-wide text-[#b7afcf]">
+            Dívidas quitadas
+          </p>
+          <p className="mt-1 text-lg font-bold text-amber-300">
+            {reportLoading ? "..." : formatCurrency(totals.paid)}
+          </p>
+        </div>
+        <div className="rounded-xl border border-[#3a2f5e] bg-[#141225] p-4">
+          <p className="text-xs uppercase tracking-wide text-[#b7afcf]">
+            Saldo
+          </p>
+          <p
+            className="mt-1 text-lg font-bold"
+            style={{ color: monthBalance >= 0 ? "#6ee7b7" : "#fda4af" }}
+          >
+            {incomesLoading || reportLoading
+              ? "..."
+              : formatCurrency(monthBalance)}
           </p>
         </div>
       </div>
@@ -449,6 +635,107 @@ export default function DebtsDashboardKanban() {
               style={{ background: col.color }}
             />
             {debtStatusLabel(col.status)}
+          </div>
+        ))}
+      </div>
+
+      {/* Board de receitas */}
+      <div className="pt-2">
+        <h2 className="text-lg font-bold text-[#f7f5ff]">
+          Dashboard de Receitas
+        </h2>
+        <p className="text-sm text-[#b7afcf]">
+          {viewAllTime
+            ? "Todas as receitas, de qualquer período"
+            : `Receitas esperadas de ${formatMonthLabel(month)}`}
+        </p>
+      </div>
+
+      {incomesLoading ? (
+        <div className="flex items-center justify-center h-64">
+          <div
+            className="w-9 h-9 rounded-full border-2 animate-spin"
+            style={{
+              borderColor: colors.gold[500],
+              borderTopColor: "transparent",
+            }}
+          />
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {INCOME_COLUMNS.map((col) => {
+            const cards = incomeGrouped.get(col.status) ?? [];
+            const columnTotal = cards.reduce(
+              (s, i) => s + i.expectedAmount,
+              0,
+            );
+
+            return (
+              <div key={col.status} className="flex flex-col gap-3">
+                {/* Column header */}
+                <div
+                  className="flex items-center justify-between rounded-lg px-3 py-2"
+                  style={{
+                    background: `${col.color}22`,
+                    border: `1px solid ${col.color}44`,
+                  }}
+                >
+                  <div
+                    className="flex items-center gap-2"
+                    style={{ color: col.color }}
+                  >
+                    {col.icon}
+                    <span className="text-sm font-semibold">{col.label}</span>
+                  </div>
+                  <div className="text-right">
+                    <span
+                      className="rounded-full px-2 py-0.5 text-xs font-bold"
+                      style={{ background: `${col.color}33`, color: col.color }}
+                    >
+                      {cards.length}
+                    </span>
+                    <p className="text-xs text-[#b7afcf] mt-0.5">
+                      {formatCurrency(columnTotal)}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Cards */}
+                <div className="flex flex-col gap-2 min-h-[120px]">
+                  {cards.length === 0 ? (
+                    <div className="flex items-center justify-center rounded-xl border border-dashed border-[#3a2f5e] py-8">
+                      <p className="text-xs text-[#6b6080]">Nenhuma receita</p>
+                    </div>
+                  ) : (
+                    cards.map((income) => (
+                      <IncomeCard
+                        key={income.idIncome}
+                        income={income}
+                        onEdit={() =>
+                          navigate(incomeRoutePaths.edit(income.idIncome))
+                        }
+                      />
+                    ))
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Legenda de status das receitas */}
+      <div className="flex flex-wrap gap-3 pt-2">
+        {INCOME_COLUMNS.map((col) => (
+          <div
+            key={col.status}
+            className="flex items-center gap-1.5 text-xs text-[#b7afcf]"
+          >
+            <span
+              className="w-2 h-2 rounded-full"
+              style={{ background: col.color }}
+            />
+            {incomeStatusLabel(col.status)}
           </div>
         ))}
       </div>

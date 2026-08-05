@@ -16,9 +16,25 @@ import {
   incomeTypeOptions,
   useIncomesContext,
 } from "@/features/incomes";
+import { useToast } from "@/shared/toast/useToast";
+import { formatCurrencyForInput, maskCurrencyInput } from "@/utils/format";
+
+function todayDateInputValue(): string {
+  const now = new Date();
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+}
+
+function parseAmount(value: string): number {
+  if (!value) return 0;
+  const normalized = value.replace(/\./g, "").replace(",", ".");
+  const parsed = Number(normalized);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
 
 export default function Incomes() {
   const navigate = useNavigate();
+  const { showError } = useToast();
   const {
     incomes,
     loading,
@@ -33,6 +49,7 @@ export default function Incomes() {
     incomeCategories,
     load,
     remove,
+    updateDetails,
   } = useIncomesContext();
 
   useEffect(() => {
@@ -46,18 +63,74 @@ export default function Incomes() {
   );
   const [isDeleting, setIsDeleting] = useState(false);
 
+  const [editingIncomeId, setEditingIncomeId] = useState<string | null>(null);
+  const [receivedAmount, setReceivedAmount] = useState("");
+  const [receivedAt, setReceivedAt] = useState("");
+
   const filteredIncomes = useMemo(
     () => filterIncomesBySearch(incomes, search),
     [incomes, search],
   );
+
+  function startReceipt(income: Income) {
+    setEditingIncomeId(income.idIncome);
+    setReceivedAmount(
+      formatCurrencyForInput(
+        income.receivedAmount > 0
+          ? income.receivedAmount
+          : income.expectedAmount,
+      ),
+    );
+    setReceivedAt(income.receivedAt?.slice(0, 10) || todayDateInputValue());
+  }
+
+  function cancelReceipt() {
+    setEditingIncomeId(null);
+    setReceivedAmount("");
+    setReceivedAt("");
+  }
+
+  async function confirmReceipt(income: Income) {
+    const amount = parseAmount(receivedAmount);
+
+    if (!Number.isFinite(amount) || amount < 0) {
+      showError("Valor inválido", "Informe um valor de recebimento válido.");
+      return;
+    }
+
+    const updated = await updateDetails({
+      idIncome: income.idIncome,
+      receivedAmount: amount,
+      receivedAt: receivedAt || undefined,
+    });
+
+    if (updated) {
+      cancelReceipt();
+    }
+  }
 
   const columns = useMemo(
     () =>
       getIncomeTableColumns({
         onEdit: (income) => navigate(incomeRoutePaths.edit(income.idIncome)),
         onDelete: (income) => setIncomePendingDelete(income),
+        receipt: {
+          editingIncomeId,
+          receivedAmount,
+          receivedAt,
+          saving,
+          onReceivedAmountChange: (value) =>
+            setReceivedAmount(maskCurrencyInput(value)),
+          onReceivedAtChange: setReceivedAt,
+          onStart: startReceipt,
+          onCancel: cancelReceipt,
+          onConfirm: (income) => {
+            void confirmReceipt(income);
+          },
+        },
       }),
-    [navigate],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [navigate, editingIncomeId, receivedAmount, receivedAt, saving],
   );
 
   async function handleConfirmDelete() {
