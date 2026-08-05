@@ -458,7 +458,7 @@ export default function DebtForm({ mode }: { mode: "create" | "edit" }) {
           action={
             <Button
               type="button"
-              variant="outline"
+              variant="primary"
               size="sm"
               leftIcon={<Plus size={14} />}
               onClick={() => navigate(creditCardRoutePaths.create)}
