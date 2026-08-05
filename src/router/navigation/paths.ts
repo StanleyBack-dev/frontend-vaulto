@@ -5,6 +5,7 @@ export const routePaths: Record<ActiveView, string> = {
   users: "/usuarios",
   debts: "/dividas",
   debtsStatement: "/extrato",
+  incomes: "/receitas",
   payments: "/pagamentos",
   categories: "/categorias",
   creditCards: "/cartoes-de-credito",
@@ -39,6 +40,12 @@ export const debtRoutePaths = {
 
 export const debtsStatementRoutePaths = {
   list: "/extrato",
+};
+
+export const incomeRoutePaths = {
+  list: "/receitas",
+  create: "/receitas/new",
+  edit: (id = ":id") => `/receitas/${id}/edit`,
 };
 
 export const paymentRoutePaths = {

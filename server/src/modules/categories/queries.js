@@ -2,6 +2,7 @@ const CATEGORY_FIELDS = `
   idCategory
   idUsers
   name
+  type
   status
   inactivatedAt
   createdAt

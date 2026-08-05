@@ -6,6 +6,8 @@ export {
 export { useCategoriesContext } from "./context/useCategoriesContext";
 export { categoryUiCopy } from "./model/messages";
 export {
+  categoryTypeLabel,
+  categoryTypeOptions,
   emptyCategoryFormValues,
   mapCategoryToFormValues,
   type CategoryFormValues,

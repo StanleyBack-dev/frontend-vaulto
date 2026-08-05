@@ -8,12 +8,14 @@ import {
   dashboardRoutePaths,
   debtRoutePaths,
   debtsStatementRoutePaths,
+  incomeRoutePaths,
   paymentRoutePaths,
   routePaths,
   utilityRoutePaths,
 } from "../navigation";
 import RequirePageAccessRoute from "../../features/auth/guards/RequirePageAccessRoute";
 import { DebtsProviderOutlet } from "../../features/debts";
+import { IncomesProviderOutlet } from "../../features/incomes";
 import { ManagementRoutes } from "./ManagementRoutes";
 
 const AccessDenied = lazy(() => import("../../pages/AccessDenied"));
@@ -23,6 +25,8 @@ const DebtsDashboardKanban = lazy(
 const Debts = lazy(() => import("../../pages/debts/Debts"));
 const DebtForm = lazy(() => import("../../pages/debts/DebtForm"));
 const DebtsStatement = lazy(() => import("../../pages/debts/DebtsStatement"));
+const Incomes = lazy(() => import("../../pages/incomes/Incomes"));
+const IncomeForm = lazy(() => import("../../pages/incomes/IncomeForm"));
 const Payments = lazy(() => import("../../pages/payments/Payments"));
 const Profile = lazy(() => import("../../pages/Profile"));
 
@@ -123,6 +127,32 @@ export function AppShellRoutes({ userId }: AppShellRoutesProps) {
           <Route
             path={debtsStatementRoutePaths.list}
             element={withPageSuspense(<DebtsStatement />)}
+          />
+        </Route>
+      </Route>
+
+      {/* Receitas - cadastro e controle de entradas */}
+      <Route element={<RequirePageAccessRoute view="incomes" />}>
+        <Route
+          element={
+            <UserScopedProviderRoute
+              userId={userId}
+              loginPath={authRoutePaths.login}
+              ProviderOutlet={IncomesProviderOutlet}
+            />
+          }
+        >
+          <Route
+            path={incomeRoutePaths.list}
+            element={withPageSuspense(<Incomes />)}
+          />
+          <Route
+            path={incomeRoutePaths.create}
+            element={withPageSuspense(<IncomeForm mode="create" />)}
+          />
+          <Route
+            path={incomeRoutePaths.edit()}
+            element={withPageSuspense(<IncomeForm mode="edit" />)}
           />
         </Route>
       </Route>

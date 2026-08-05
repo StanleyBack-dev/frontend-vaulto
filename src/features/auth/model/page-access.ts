@@ -7,6 +7,7 @@ const pageAccessByView: Partial<Record<ActiveView, PageAccessKey>> = {
   categories: "CATEGORIES",
   debts: "DEBTS",
   debtsStatement: "DEBTS_STATEMENT",
+  incomes: "INCOMES",
   payments: "PAYMENTS",
   creditCards: "CREDIT_CARDS",
   users: "USERS",

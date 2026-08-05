@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import type { ActiveView } from "../../types/views";
 import DebtsIcon from "../../components/atoms/icons/DebtsIcon";
 import {
+  Banknote,
   CreditCard,
   LayoutDashboard,
   Receipt,
@@ -21,6 +22,7 @@ export const primaryNavigationItems: NavigationItem[] = [
   { id: "dashboard", label: "Dashboard", icon: <LayoutDashboard size={20} /> },
   { id: "debts", label: "Dívidas", icon: <DebtsIcon size={20} /> },
   { id: "debtsStatement", label: "Extrato", icon: <Receipt size={20} /> },
+  { id: "incomes", label: "Receitas", icon: <Banknote size={20} /> },
   { id: "payments", label: "Pagamentos", icon: <Wallet size={20} /> },
   { id: "categories", label: "Categorias", icon: <Tags size={20} /> },
   {

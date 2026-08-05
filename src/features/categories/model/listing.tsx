@@ -1,6 +1,7 @@
 import type { Category } from "@/api/categories/schema";
 import type { DataTableColumn } from "@/components/organisms/DataTable";
 import EditIcon from "@/components/atoms/icons/EditIcon";
+import { categoryTypeLabel } from "./form";
 
 export function filterCategoriesBySearch(
   categories: Category[],
@@ -41,6 +42,21 @@ export function getCategoryTableColumns(actions: {
       render: (category) => (
         <span className="text-sm font-semibold text-[#1a1333]">
           {category.name}
+        </span>
+      ),
+    },
+    {
+      key: "type",
+      label: "Tipo",
+      render: (category) => (
+        <span
+          className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${
+            category.type === "INCOME"
+              ? "bg-emerald-100 text-emerald-800 border border-emerald-300"
+              : "bg-violet-100 text-violet-800 border border-violet-300"
+          }`}
+        >
+          {categoryTypeLabel(category.type)}
         </span>
       ),
     },
