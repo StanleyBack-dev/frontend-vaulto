@@ -4,6 +4,7 @@ import Select from "@/components/atoms/Select";
 import SectionCard from "@/components/organisms/SectionCard";
 import { colors } from "@/config";
 import {
+  categoryTypeOptions,
   categoryUiCopy,
   emptyCategoryFormValues,
   fetchCategoryById,
@@ -11,6 +12,7 @@ import {
   type CategoryFormValues,
   useCategoriesContext,
 } from "@/features/categories";
+import type { CategoryType } from "@/api/categories/schema";
 import { categoryRoutePaths } from "@/router";
 import { useToast } from "@/shared/toast/useToast";
 import { useEffect, useMemo, useState } from "react";
@@ -100,6 +102,7 @@ export default function CategoryForm({ mode }: { mode: "create" | "edit" }) {
             create: true as const,
             data: {
               name: values.name.trim(),
+              type: values.type,
               status: values.status,
             },
           }
@@ -108,6 +111,7 @@ export default function CategoryForm({ mode }: { mode: "create" | "edit" }) {
             data: {
               idCategory: id ?? "",
               name: values.name.trim(),
+              type: values.type,
               status: values.status,
             },
           };
@@ -154,6 +158,23 @@ export default function CategoryForm({ mode }: { mode: "create" | "edit" }) {
             required
             error={errors.name}
           />
+
+          <Select
+            label="Tipo"
+            value={values.type}
+            onChange={(event) =>
+              setValues((current) => ({
+                ...current,
+                type: event.target.value as CategoryType,
+              }))
+            }
+          >
+            {categoryTypeOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </Select>
 
           <Select
             label="Status"

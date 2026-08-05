@@ -10,9 +10,17 @@ export const viewTitles: Record<
     title: "Extrato de Dívidas",
     subtitle: "Extrato detalhado de parcelas e dívidas por período",
   },
+  incomes: {
+    title: "Receitas",
+    subtitle: "Cadastro e controle de entradas de dinheiro",
+  },
   payments: {
     title: "Pagamentos",
     subtitle: "Registro de pagamentos de parcelas",
+  },
+  incomeReceipts: {
+    title: "Recebimentos",
+    subtitle: "Registro de recebimentos de parcelas de receitas",
   },
   categories: { title: "Categorias", subtitle: "Cadastro de categorias" },
   creditCards: {

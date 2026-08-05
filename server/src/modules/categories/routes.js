@@ -18,7 +18,7 @@ function sendError(res, error) {
 
 router.get("/", async (req, res) => {
   try {
-    const input = buildListInput(req.query, ["status"]);
+    const input = buildListInput(req.query, ["status", "type"]);
     if (typeof input.status === "string") {
       if (input.status === "true") {
         input.status = true;
@@ -72,6 +72,7 @@ router.patch("/:idCategory", async (req, res) => {
       {
         idCategory: req.params.idCategory,
         name: req.body?.name,
+        type: req.body?.type,
         status: req.body?.status,
       },
       getAuthContext(req),

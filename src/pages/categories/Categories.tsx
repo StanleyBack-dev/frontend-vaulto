@@ -7,11 +7,13 @@ import DataTable from "@/components/organisms/DataTable";
 import FilterBar from "@/components/molecules/FilterBar";
 import { colors } from "@/config";
 import {
+  categoryTypeOptions,
   categoryUiCopy,
   filterCategoriesBySearch,
   getCategoryTableColumns,
   useCategoriesContext,
 } from "@/features/categories";
+import type { CategoryType } from "@/api/categories/schema";
 import { categoryRoutePaths } from "@/router";
 
 export default function Categories() {
@@ -33,6 +35,7 @@ export default function Categories() {
 
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<"" | "true" | "false">("");
+  const [typeFilter, setTypeFilter] = useState<"" | CategoryType>("");
 
   const filteredCategories = useMemo(() => {
     let result = filterCategoriesBySearch(categories, search);
@@ -40,8 +43,11 @@ export default function Categories() {
       const active = statusFilter === "true";
       result = result.filter((c) => c.status === active);
     }
+    if (typeFilter !== "") {
+      result = result.filter((c) => c.type === typeFilter);
+    }
     return result;
-  }, [categories, search, statusFilter]);
+  }, [categories, search, statusFilter, typeFilter]);
 
   const columns = useMemo(
     () =>
@@ -81,11 +87,27 @@ export default function Categories() {
           <option value="false">Inativa</option>
         </Select>
 
-        <div className="md:col-span-3 flex items-end justify-end">
+        <Select
+          label="Tipo"
+          value={typeFilter}
+          onChange={(event) =>
+            setTypeFilter(event.target.value as "" | CategoryType)
+          }
+        >
+          <option value="">Todos</option>
+          {categoryTypeOptions.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </Select>
+
+        <div className="md:col-span-2 flex items-end justify-end">
           <button
             type="button"
             onClick={() => {
               setStatusFilter("");
+              setTypeFilter("");
               setSearch("");
             }}
             className="rounded border border-[#3a2f5e] px-3 py-2 text-sm font-semibold text-[#c5bbeb] hover:bg-[#1f1832]"

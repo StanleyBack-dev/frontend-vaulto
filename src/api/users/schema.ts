@@ -6,7 +6,9 @@ export const PageAccessKeySchema = z.enum([
   "CATEGORIES",
   "DEBTS",
   "DEBTS_STATEMENT",
+  "INCOMES",
   "PAYMENTS",
+  "INCOME_RECEIPTS",
   "CREDIT_CARDS",
   "USERS",
 ]);

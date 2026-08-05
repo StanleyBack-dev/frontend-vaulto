@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AlertCircle, Clock, CheckCircle2, CircleDot } from "lucide-react";
 import type { Debt } from "@/api/debts/schema";
+import type { Income } from "@/api/incomes/schema";
 import Input from "@/components/atoms/Input";
 import Select from "@/components/atoms/Select";
 import { colors } from "@/config";
@@ -15,6 +16,7 @@ import {
   monthToDueDateRange,
   useDebtsContext,
 } from "@/features/debts";
+import { fetchIncomes } from "@/features/incomes";
 import {
   fetchDebtsReport,
   reportUiCopy,
@@ -34,6 +36,43 @@ function formatCurrency(value: number): string {
 
 function formatDate(value?: string | null): string {
   return formatDateDisplay(value ?? undefined) || "-";
+}
+
+// Both Debt and Income installments can span several different months. The
+// board (and its totals) must only reflect the slice of a record whose
+// installments are actually due within the month currently being viewed —
+// otherwise an installment settled in a different month would leak into the
+// figures shown for the month being displayed.
+function getInstallmentsDueInRange<T extends { dueDate: string }>(
+  installments: T[],
+  dueDateFrom?: string,
+  dueDateTo?: string,
+): T[] {
+  if (!dueDateFrom && !dueDateTo) {
+    return installments;
+  }
+
+  const from = dueDateFrom ? new Date(dueDateFrom).getTime() : undefined;
+  const to = dueDateTo ? new Date(dueDateTo).getTime() : undefined;
+
+  return installments.filter((installment) => {
+    const due = new Date(installment.dueDate).getTime();
+    if (from !== undefined && due < from) return false;
+    if (to !== undefined && due > to) return false;
+    return true;
+  });
+}
+
+function getIncomeReceivedAmount(
+  income: Income,
+  dueDateFrom?: string,
+  dueDateTo?: string,
+): number {
+  return getInstallmentsDueInRange(
+    income.installments,
+    dueDateFrom,
+    dueDateTo,
+  ).reduce((sum, installment) => sum + installment.amountReceived, 0);
 }
 
 const COLUMNS: {
@@ -121,9 +160,7 @@ function DebtCard({ debt, onEdit }: DebtCardProps) {
         </div>
       )}
 
-      <div className="text-xs text-[#8b7fac]">
-        {debt.description || "\u00a0"}
-      </div>
+      <div className="text-xs text-[#8b7fac]">{debt.description || " "}</div>
     </div>
   );
 }
@@ -147,6 +184,9 @@ export default function DebtsDashboardKanban() {
   const [report, setReport] = useState<DebtsReport | null>(null);
   const [reportLoading, setReportLoading] = useState(false);
 
+  const [incomes, setIncomes] = useState<Income[]>([]);
+  const [incomesLoading, setIncomesLoading] = useState(false);
+
   const [search, setSearch] = useState("");
   const [debtType, setDebtType] = useState("");
   const [idCategory, setIdCategory] = useState("");
@@ -160,6 +200,41 @@ export default function DebtsDashboardKanban() {
     void setFilters({ dueDateFrom, dueDateTo });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dueDateFrom, dueDateTo]);
+
+  useEffect(() => {
+    let cancelled = false;
+    setIncomesLoading(true);
+
+    fetchIncomes({
+      page: 1,
+      limit: DASHBOARD_PAGE_SIZE,
+      dueDateFrom,
+      dueDateTo,
+    })
+      .then((data) => {
+        if (!cancelled) {
+          setIncomes(data.items);
+        }
+      })
+      .catch((error) => {
+        if (!cancelled) {
+          showError(
+            "Falha ao carregar receitas",
+            error instanceof Error ? error.message : undefined,
+          );
+          setIncomes([]);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setIncomesLoading(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [dueDateFrom, dueDateTo, showError]);
 
   useEffect(() => {
     let cancelled = false;
@@ -228,6 +303,31 @@ export default function DebtsDashboardKanban() {
     overdue: report?.countByStatus.overdue ?? 0,
   };
 
+  // Balance always reflects money that actually moved — received income
+  // against paid debts — never the merely expected/due amounts, since
+  // "esperado"/"devido" haven't happened yet and would distort the real
+  // cash position for the month.
+  const incomeReceivedTotal = incomes.reduce(
+    (sum, income) =>
+      sum + getIncomeReceivedAmount(income, dueDateFrom, dueDateTo),
+    0,
+  );
+  const incomeDueTotal = incomes.reduce(
+    (sum, income) =>
+      sum +
+      getInstallmentsDueInRange(
+        income.installments,
+        dueDateFrom,
+        dueDateTo,
+      ).reduce((s, installment) => s + installment.amountDue, 0),
+    0,
+  );
+  const incomeReceivableTotal = Math.max(
+    incomeDueTotal - incomeReceivedTotal,
+    0,
+  );
+  const monthBalance = incomeReceivedTotal - totals.paid;
+
   return (
     <div className="space-y-5">
       {/* Header */}
@@ -282,6 +382,47 @@ export default function DebtsDashboardKanban() {
           </p>
           <p className="mt-1 text-lg font-bold text-rose-300">
             {reportLoading ? "..." : totals.overdue}
+          </p>
+        </div>
+      </div>
+
+      {/* Saldo do mes: receitas recebidas x dividas quitadas */}
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="rounded-xl border border-[#3a2f5e] bg-[#141225] p-4">
+          <p className="text-xs uppercase tracking-wide text-[#b7afcf]">
+            Receitas recebidas
+          </p>
+          <p className="mt-1 text-lg font-bold text-emerald-300">
+            {incomesLoading ? "..." : formatCurrency(incomeReceivedTotal)}
+          </p>
+        </div>
+        <div className="rounded-xl border border-[#3a2f5e] bg-[#141225] p-4">
+          <p className="text-xs uppercase tracking-wide text-[#b7afcf]">
+            Receitas a receber
+          </p>
+          <p className="mt-1 text-lg font-bold text-violet-300">
+            {incomesLoading ? "..." : formatCurrency(incomeReceivableTotal)}
+          </p>
+        </div>
+        <div className="rounded-xl border border-[#3a2f5e] bg-[#141225] p-4">
+          <p className="text-xs uppercase tracking-wide text-[#b7afcf]">
+            Dívidas quitadas
+          </p>
+          <p className="mt-1 text-lg font-bold text-amber-300">
+            {reportLoading ? "..." : formatCurrency(totals.paid)}
+          </p>
+        </div>
+        <div className="rounded-xl border border-[#3a2f5e] bg-[#141225] p-4">
+          <p className="text-xs uppercase tracking-wide text-[#b7afcf]">
+            Saldo
+          </p>
+          <p
+            className="mt-1 text-lg font-bold"
+            style={{ color: monthBalance >= 0 ? "#6ee7b7" : "#fda4af" }}
+          >
+            {incomesLoading || reportLoading
+              ? "..."
+              : formatCurrency(monthBalance)}
           </p>
         </div>
       </div>
