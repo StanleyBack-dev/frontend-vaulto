@@ -20,6 +20,18 @@ export const LOGIN_MUTATION = `
   }
 `;
 
+export const LOGIN_WITH_GOOGLE_MUTATION = `
+  mutation LoginWithGoogle($input: LoginWithGoogleInputDto!) {
+    loginWithGoogle(input: $input) {
+      authenticated
+      mustChangePassword
+      user {
+        ${USER_FIELDS}
+      }
+    }
+  }
+`;
+
 export const REFRESH_SESSION_QUERY = `
   query RefreshAuthSession {
     refreshAuthSession {
