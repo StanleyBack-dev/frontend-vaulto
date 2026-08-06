@@ -38,7 +38,7 @@ export default function Sidebar({
         aria-hidden={!mobileOpen}
       />
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex min-h-screen w-72 max-w-[85vw] flex-col transition-transform duration-300 lg:sticky lg:top-0 lg:z-0 lg:w-64 lg:max-w-none ${
+        className={`fixed inset-y-0 left-0 z-50 flex h-screen w-72 max-w-[85vw] flex-col transition-transform duration-300 lg:w-64 lg:max-w-none ${
           mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
         style={{ background: colors.brown[800] }}
