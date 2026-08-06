@@ -5,6 +5,7 @@ import {
   dashboardRoutePaths,
   debtRoutePaths,
   debtsStatementRoutePaths,
+  faqRoutePaths,
   incomeReceiptRoutePaths,
   incomeRoutePaths,
   paymentRoutePaths,
@@ -62,6 +63,10 @@ export function getActiveView(pathname: string): ActiveView {
     return "profile";
   }
 
+  if (pathname.startsWith(faqRoutePaths.list)) {
+    return "faq";
+  }
+
   return "dashboard";
 }
 
@@ -77,6 +82,8 @@ export function getPathForView(view: ActiveView) {
       return userRoutePaths.list;
     case "profile":
       return routePaths.profile;
+    case "faq":
+      return faqRoutePaths.list;
     case "payments":
       return paymentRoutePaths.list;
     case "incomeReceipts":

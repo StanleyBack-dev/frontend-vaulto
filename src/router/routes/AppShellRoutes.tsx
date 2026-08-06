@@ -8,6 +8,7 @@ import {
   dashboardRoutePaths,
   debtRoutePaths,
   debtsStatementRoutePaths,
+  faqRoutePaths,
   incomeReceiptRoutePaths,
   incomeRoutePaths,
   paymentRoutePaths,
@@ -33,6 +34,7 @@ const Recebimentos = lazy(
   () => import("../../pages/income-receipts/Recebimentos"),
 );
 const Profile = lazy(() => import("../../pages/Profile"));
+const Manual = lazy(() => import("../../pages/Manual"));
 
 function withPageSuspense(element: React.ReactNode) {
   return (
@@ -230,6 +232,8 @@ export function AppShellRoutes({ userId }: AppShellRoutesProps) {
         path={routePaths.profile}
         element={withPageSuspense(<Profile />)}
       />
+      {/* Manual/Ajuda - documentação de uso, comum a todos os usuários */}
+      <Route path={faqRoutePaths.list} element={withPageSuspense(<Manual />)} />
       <Route
         path={utilityRoutePaths.accessDenied}
         element={withPageSuspense(<AccessDenied />)}

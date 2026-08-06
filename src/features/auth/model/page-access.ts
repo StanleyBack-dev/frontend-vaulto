@@ -24,7 +24,7 @@ export function hasPageAccess(
   view: ActiveView,
   pagePermissions: PageAccessKey[],
 ): boolean {
-  if (view === "profile") {
+  if (view === "profile" || view === "faq") {
     return true;
   }
 
@@ -37,5 +37,5 @@ export function hasPageAccess(
 }
 
 export function isRoutedView(view: ActiveView): boolean {
-  return view !== "profile";
+  return view !== "profile" && view !== "faq";
 }

@@ -32,4 +32,9 @@ export const viewTitles: Record<
     subtitle: "Gerenciar usuários de acesso",
   },
   profile: { title: "Perfil", subtitle: "Informações da empresa" },
+  faq: {
+    title: "Manual do Sistema",
+    subtitle:
+      "Guia de uso, dúvidas frequentes e regras de cada área do sistema",
+  },
 };

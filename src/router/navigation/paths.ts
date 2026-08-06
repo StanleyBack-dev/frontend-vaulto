@@ -11,6 +11,7 @@ export const routePaths: Record<ActiveView, string> = {
   categories: "/categorias",
   creditCards: "/cartoes-de-credito",
   profile: "/perfil",
+  faq: "/manual",
 };
 
 export const dashboardRoutePaths = {
@@ -77,6 +78,10 @@ export const authRoutePaths = {
   firstAccessChangePassword: "/primeiro-acesso/alterar-senha",
   passwordRecovery: "/recuperar-senha",
   passwordRecoveryReset: "/recuperar-senha/nova-senha",
+};
+
+export const faqRoutePaths = {
+  list: "/manual",
 };
 
 export const utilityRoutePaths = {
