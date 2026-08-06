@@ -5,6 +5,7 @@ import {
   changeMyPassword,
   getMyPagePermissions,
   login,
+  loginWithGoogle,
   logout,
   refreshAuthSession,
   requestPasswordRecovery,
@@ -38,6 +39,20 @@ function forwardSetCookie(res, setCookie = []) {
 router.post("/login", async (req, res) => {
   try {
     const { session, setCookie } = await login(
+      req.body,
+      optionalAuthContext(req),
+      req.requestId,
+    );
+    forwardSetCookie(res, setCookie);
+    res.json(session);
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
+router.post("/login/google", async (req, res) => {
+  try {
+    const { session, setCookie } = await loginWithGoogle(
       req.body,
       optionalAuthContext(req),
       req.requestId,

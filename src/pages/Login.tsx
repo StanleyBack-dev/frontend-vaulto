@@ -1,6 +1,15 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginWithPassword, useLoginForm } from "../features/auth";
+import {
+  GoogleLogin,
+  GoogleOAuthProvider,
+  type CredentialResponse,
+} from "@react-oauth/google";
+import {
+  loginWithGoogle,
+  loginWithPassword,
+  useLoginForm,
+} from "../features/auth";
 import Input from "../components/atoms/Input";
 import Button from "../components/atoms/Button";
 import Toggle from "../components/atoms/Toggle";
@@ -11,6 +20,10 @@ import { useToast } from "../shared/toast/useToast";
 import { authRoutePaths, routePaths } from "../router";
 import { useAuthSession } from "../features/auth";
 import { AuthApiError } from "../api/auth/methods/http-error";
+
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID as
+  | string
+  | undefined;
 
 export default function Login() {
   const navigate = useNavigate();
@@ -85,6 +98,45 @@ export default function Login() {
       }
     },
   });
+
+  async function handleGoogleSuccess(credentialResponse: CredentialResponse) {
+    if (!credentialResponse.credential) {
+      showError(
+        "Falha no login",
+        "Não foi possível obter as credenciais do Google.",
+      );
+      return;
+    }
+
+    try {
+      const session = await loginWithGoogle(credentialResponse.credential);
+
+      if (!session.authenticated) {
+        showError(
+          "Falha no login",
+          "Não foi possível autenticar com sua conta Google.",
+        );
+        return;
+      }
+
+      setSession(session);
+      showSuccess("Login realizado", `Bem-vindo, ${session.user.name}.`);
+
+      if (session.mustChangePassword) {
+        navigate(authRoutePaths.firstAccessChangePassword, { replace: true });
+        return;
+      }
+
+      navigate(routePaths.dashboard, { replace: true });
+    } catch (error) {
+      const message =
+        error instanceof AuthApiError || error instanceof Error
+          ? error.message
+          : "Não foi possível realizar o login com o Google. Tente novamente.";
+
+      showError("Erro ao entrar", message);
+    }
+  }
 
   return (
     <div
@@ -211,6 +263,43 @@ export default function Login() {
               Esqueci minha senha
             </button>
           </form>
+
+          {GOOGLE_CLIENT_ID && (
+            <>
+              <div className="flex items-center gap-3 mt-6 mb-4">
+                <div
+                  className="h-px flex-1"
+                  style={{ background: colors.brown[100] }}
+                />
+                <span className="text-xs" style={{ color: colors.brown[300] }}>
+                  ou
+                </span>
+                <div
+                  className="h-px flex-1"
+                  style={{ background: colors.brown[100] }}
+                />
+              </div>
+
+              <div className="flex justify-center">
+                <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+                  <GoogleLogin
+                    onSuccess={(credentialResponse) => {
+                      void handleGoogleSuccess(credentialResponse);
+                    }}
+                    onError={() => {
+                      showError(
+                        "Erro ao entrar",
+                        "Não foi possível autenticar com o Google.",
+                      );
+                    }}
+                    theme="filled_black"
+                    text="signin_with"
+                    shape="pill"
+                  />
+                </GoogleOAuthProvider>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Rodapé */}

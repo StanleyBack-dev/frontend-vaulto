@@ -6,7 +6,7 @@ export {
   changePasswordFormSchema,
   emptyChangePasswordFormValues,
 } from "./model/change-password-form";
-export { loginWithPassword } from "./services/auth.service";
+export { loginWithPassword, loginWithGoogle } from "./services/auth.service";
 export {
   logoutCurrentSession,
   refreshSessionFromCookie,

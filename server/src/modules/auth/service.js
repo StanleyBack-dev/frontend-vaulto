@@ -3,6 +3,7 @@ import { executeGraphql } from "../../shared/http/graphql-client.js";
 import {
   CHANGE_PASSWORD_MUTATION,
   LOGIN_MUTATION,
+  LOGIN_WITH_GOOGLE_MUTATION,
   LOGOUT_MUTATION,
   MY_PAGE_PERMISSIONS_QUERY,
   REFRESH_SESSION_QUERY,
@@ -30,6 +31,24 @@ export async function login(input, authContext, requestId) {
 
   return {
     session: requireData(result.data.login, "Invalid login response."),
+    setCookie: result.responseHeaders?.setCookie ?? [],
+  };
+}
+
+export async function loginWithGoogle(input, authContext, requestId) {
+  const result = await executeGraphql({
+    query: LOGIN_WITH_GOOGLE_MUTATION,
+    variables: { input },
+    requestId,
+    captureResponseMeta: true,
+    ...authContext,
+  });
+
+  return {
+    session: requireData(
+      result.data.loginWithGoogle,
+      "Invalid login response.",
+    ),
     setCookie: result.responseHeaders?.setCookie ?? [],
   };
 }
