@@ -25,7 +25,7 @@ const DebtsDashboardKanban = lazy(
 );
 const Debts = lazy(() => import("../../pages/debts/Debts"));
 const DebtForm = lazy(() => import("../../pages/debts/DebtForm"));
-const DebtsStatement = lazy(() => import("../../pages/debts/DebtsStatement"));
+const Statement = lazy(() => import("../../pages/statement/Statement"));
 const Incomes = lazy(() => import("../../pages/incomes/Incomes"));
 const IncomeForm = lazy(() => import("../../pages/incomes/IncomeForm"));
 const Payments = lazy(() => import("../../pages/payments/Payments"));
@@ -117,7 +117,7 @@ export function AppShellRoutes({ userId }: AppShellRoutesProps) {
         </Route>
       </Route>
 
-      {/* Extrato - extrato detalhado de dividas por periodo */}
+      {/* Extratos - extrato detalhado de dividas, receitas ou ambas por periodo */}
       <Route element={<RequirePageAccessRoute view="debtsStatement" />}>
         <Route
           element={
@@ -130,7 +130,7 @@ export function AppShellRoutes({ userId }: AppShellRoutesProps) {
         >
           <Route
             path={debtsStatementRoutePaths.list}
-            element={withPageSuspense(<DebtsStatement />)}
+            element={withPageSuspense(<Statement />)}
           />
         </Route>
       </Route>
