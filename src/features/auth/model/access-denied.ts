@@ -33,6 +33,8 @@ export function getDeniedViewLabel(deniedView?: ActiveView): string {
       return "Recebimentos";
     case "profile":
       return "Perfil";
+    case "faq":
+      return "Manual do Sistema";
     default:
       return "esta área";
   }

@@ -8,4 +8,5 @@ export type ActiveView =
   | "categories"
   | "creditCards"
   | "users"
-  | "profile";
+  | "profile"
+  | "faq";

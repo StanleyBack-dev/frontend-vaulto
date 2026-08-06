@@ -5,6 +5,7 @@ import {
   Banknote,
   CreditCard,
   HandCoins,
+  HelpCircle,
   LayoutDashboard,
   Receipt,
   Tags,
@@ -41,4 +42,5 @@ export const primaryNavigationItems: NavigationItem[] = [
 
 export const secondaryNavigationItems: NavigationItem[] = [
   { id: "profile", label: "Perfil", icon: <User size={20} /> },
+  { id: "faq", label: "Ajuda", icon: <HelpCircle size={20} /> },
 ];
