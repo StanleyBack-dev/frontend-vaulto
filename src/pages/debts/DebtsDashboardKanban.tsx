@@ -26,6 +26,11 @@ import { useToast } from "@/shared/toast/useToast";
 import { formatDateDisplay } from "@/utils/format";
 
 const DASHBOARD_PAGE_SIZE = 100;
+// Caps how many cards render per column before the "Ver todas" link takes
+// over — without this, a status with dozens of debts would make its column
+// (and the internal scroll area) unreasonably long instead of just handing
+// off to the full, paginated Dívidas list.
+const DASHBOARD_CARD_LIMIT = 8;
 
 function formatCurrency(value: number): string {
   return new Intl.NumberFormat("pt-BR", {
@@ -555,21 +560,37 @@ export default function DebtsDashboardKanban() {
                 </div>
 
                 {/* Cards */}
-                <div className="flex flex-col gap-2 min-h-[120px]">
+                <div className="flex min-h-[120px] max-h-[480px] flex-col gap-2 overflow-y-auto pr-1">
                   {cards.length === 0 ? (
                     <div className="flex items-center justify-center rounded-xl border border-dashed border-[#3a2f5e] py-8">
                       <p className="text-xs text-[#6b6080]">Nenhuma dívida</p>
                     </div>
                   ) : (
-                    cards.map((debt) => (
-                      <DebtCard
-                        key={debt.idDebt}
-                        debt={debt}
-                        onEdit={() =>
-                          navigate(debtRoutePaths.edit(debt.idDebt))
-                        }
-                      />
-                    ))
+                    <>
+                      {cards.slice(0, DASHBOARD_CARD_LIMIT).map((debt) => (
+                        <DebtCard
+                          key={debt.idDebt}
+                          debt={debt}
+                          onEdit={() =>
+                            navigate(debtRoutePaths.edit(debt.idDebt))
+                          }
+                        />
+                      ))}
+                      {cards.length > DASHBOARD_CARD_LIMIT && (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            navigate(
+                              `${debtRoutePaths.list}?status=${col.status}`,
+                            )
+                          }
+                          className="shrink-0 rounded-lg border border-dashed px-3 py-2.5 text-xs font-semibold transition-colors hover:bg-[#1f1832]"
+                          style={{ borderColor: col.color, color: col.color }}
+                        >
+                          Ver todas as {cards.length} dívidas
+                        </button>
+                      )}
+                    </>
                   )}
                 </div>
               </div>
