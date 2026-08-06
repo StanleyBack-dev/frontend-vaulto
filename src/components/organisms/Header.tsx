@@ -3,16 +3,11 @@ import BellIcon from "../atoms/icons/BellIcon";
 import PageHeader from "@atoms/PageHeader";
 import SearchBar from "@atoms/SearchBar";
 import Button from "@atoms/Button";
-import ConfirmDialog from "@molecules/ConfirmDialog";
 import { useState } from "react";
-import { LogOut, Menu } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Menu } from "lucide-react";
 
 import type { ActiveView } from "../../types/views";
-import { authRoutePaths } from "../../router";
-import { logoutCurrentSession, useAuthSession } from "../../features/auth";
-import { useToast } from "../../shared/toast/useToast";
-import { AuthApiError } from "../../api/auth/methods/http-error";
+import { useAuthSession } from "../../features/auth";
 import { brand, colors } from "../../config";
 import {
   primaryNavigationItems,
@@ -35,17 +30,13 @@ export default function Header({
   onNavigate,
   onMenuClick,
 }: HeaderProps) {
-  const navigate = useNavigate();
-  const { session, clearSession, hasPageAccess } = useAuthSession();
-  const { showSuccess, showError } = useToast();
+  const { session, hasPageAccess } = useAuthSession();
 
   const info = viewTitles[activeView as keyof typeof viewTitles] || {
     title: "Painel",
     subtitle: "",
   };
   const [search, setSearch] = useState("");
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
   const sidebarItems = [
     ...primaryNavigationItems.filter((item) => hasPageAccess(item.id)),
     ...secondaryNavigationItems,
@@ -56,27 +47,6 @@ export default function Header({
           item.label.toLowerCase().includes(search.toLowerCase()),
         )
       : [];
-
-  async function handleLogout() {
-    setIsLoggingOut(true);
-
-    try {
-      await logoutCurrentSession();
-      showSuccess("Sessão encerrada", "Logout realizado com sucesso.");
-    } catch (error) {
-      const message =
-        error instanceof AuthApiError || error instanceof Error
-          ? error.message
-          : "Não foi possível encerrar a sessão no servidor.";
-
-      showError("Logout parcial", message);
-    } finally {
-      clearSession();
-      setIsLoggingOut(false);
-      setIsLogoutDialogOpen(false);
-      navigate(authRoutePaths.login, { replace: true });
-    }
-  }
 
   return (
     <>
@@ -159,34 +129,9 @@ export default function Header({
                   {session?.user?.group || "Administrador"}
                 </p>
               </div>
-              <button
-                type="button"
-                onClick={() => setIsLogoutDialogOpen(true)}
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border transition-colors hover:bg-[#fdecef]"
-                style={{ borderColor: "#f3d0d9", color: "#b4233f" }}
-                aria-label="Sair"
-                title="Sair"
-              >
-                <LogOut size={17} />
-              </button>
             </div>
           </>
         }
-      />
-
-      <ConfirmDialog
-        open={isLogoutDialogOpen}
-        title="Encerrar sessão"
-        description="Você perderá a sessão atual e precisará fazer login novamente para continuar. Deseja mesmo sair?"
-        confirmLabel="Sair"
-        cancelLabel="Cancelar"
-        variant="danger"
-        icon={<LogOut size={20} />}
-        loading={isLoggingOut}
-        onConfirm={() => {
-          void handleLogout();
-        }}
-        onCancel={() => setIsLogoutDialogOpen(false)}
       />
     </>
   );
