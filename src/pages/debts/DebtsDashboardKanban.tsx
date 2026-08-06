@@ -26,10 +26,9 @@ import { useToast } from "@/shared/toast/useToast";
 import { formatDateDisplay } from "@/utils/format";
 
 const DASHBOARD_PAGE_SIZE = 100;
-// Caps how many cards render per column before the "Ver todas" link takes
-// over — without this, a status with dozens of debts would make its column
-// (and the internal scroll area) unreasonably long instead of just handing
-// off to the full, paginated Dívidas list.
+// Caps how many cards render per column before "Ver mais" reveals another
+// page in place — without this, a status with dozens of debts would make its
+// column (and the internal scroll area) unreasonably long right away.
 const DASHBOARD_CARD_LIMIT = 8;
 
 function formatCurrency(value: number): string {
@@ -195,6 +194,9 @@ export default function DebtsDashboardKanban() {
   const [search, setSearch] = useState("");
   const [debtType, setDebtType] = useState("");
   const [idCategory, setIdCategory] = useState("");
+  const [visibleCounts, setVisibleCounts] = useState<
+    Record<Debt["status"], number>
+  >({} as Record<Debt["status"], number>);
 
   useEffect(() => {
     void setLimit(DASHBOARD_PAGE_SIZE);
@@ -298,6 +300,10 @@ export default function DebtsDashboardKanban() {
       if (list) list.push(d);
     }
     return map;
+  }, [filtered]);
+
+  useEffect(() => {
+    setVisibleCounts({} as Record<Debt["status"], number>);
   }, [filtered]);
 
   const totals = {
@@ -528,6 +534,9 @@ export default function DebtsDashboardKanban() {
           {COLUMNS.map((col) => {
             const cards = grouped.get(col.status) ?? [];
             const columnTotal = cards.reduce((s, d) => s + d.totalAmount, 0);
+            const visibleCount =
+              visibleCounts[col.status] ?? DASHBOARD_CARD_LIMIT;
+            const remaining = cards.length - visibleCount;
 
             return (
               <div key={col.status} className="flex flex-col gap-3">
@@ -567,7 +576,7 @@ export default function DebtsDashboardKanban() {
                     </div>
                   ) : (
                     <>
-                      {cards.slice(0, DASHBOARD_CARD_LIMIT).map((debt) => (
+                      {cards.slice(0, visibleCount).map((debt) => (
                         <DebtCard
                           key={debt.idDebt}
                           debt={debt}
@@ -576,18 +585,20 @@ export default function DebtsDashboardKanban() {
                           }
                         />
                       ))}
-                      {cards.length > DASHBOARD_CARD_LIMIT && (
+                      {remaining > 0 && (
                         <button
                           type="button"
                           onClick={() =>
-                            navigate(
-                              `${debtRoutePaths.list}?status=${col.status}`,
-                            )
+                            setVisibleCounts((current) => ({
+                              ...current,
+                              [col.status]: visibleCount + DASHBOARD_CARD_LIMIT,
+                            }))
                           }
                           className="shrink-0 rounded-lg border border-dashed px-3 py-2.5 text-xs font-semibold transition-colors hover:bg-[#1f1832]"
                           style={{ borderColor: col.color, color: col.color }}
                         >
-                          Ver todas as {cards.length} dívidas
+                          Ver mais {Math.min(remaining, DASHBOARD_CARD_LIMIT)} (
+                          {remaining} restantes)
                         </button>
                       )}
                     </>
