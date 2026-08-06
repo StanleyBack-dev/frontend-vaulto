@@ -1,5 +1,7 @@
+import { useState } from "react";
+import { ChevronDown } from "lucide-react";
 import SectionCard from "@/components/organisms/SectionCard";
-import { colors } from "@/config";
+import { colors, radii } from "@/config";
 
 interface ManualTopic {
   id: string;
@@ -212,7 +214,78 @@ const faqs: { question: string; answer: React.ReactNode }[] = [
   },
 ];
 
+interface ManualTopicCardProps {
+  topic: ManualTopic;
+  isOpen: boolean;
+  onToggle: () => void;
+}
+
+function ManualTopicCard({ topic, isOpen, onToggle }: ManualTopicCardProps) {
+  return (
+    <div
+      className="overflow-hidden rounded-2xl border bg-white shadow-sm"
+      style={{ borderColor: colors.brown[100], borderRadius: radii.lg }}
+    >
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        className="flex w-full items-center justify-between gap-3 px-4 py-4 text-left sm:px-6 sm:py-5"
+      >
+        <h3
+          className="text-base font-semibold sm:text-lg"
+          style={{ color: colors.brown[800] }}
+        >
+          {topic.title}
+        </h3>
+        <ChevronDown
+          size={18}
+          className="shrink-0 transition-transform duration-200"
+          style={{
+            color: colors.brown[500],
+            transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+          }}
+        />
+      </button>
+      {isOpen && (
+        <div
+          className="border-t px-4 py-4 sm:px-6 sm:py-5"
+          style={{ borderColor: colors.brown[100] }}
+        >
+          <p
+            className="mb-3 text-sm leading-6"
+            style={{ color: colors.brown[500] }}
+          >
+            {topic.description}
+          </p>
+          <div className="space-y-3 text-sm leading-6 text-[#2C1810]">
+            {topic.content}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function Manual() {
+  const [openTopics, setOpenTopics] = useState<Set<string>>(new Set());
+
+  function toggleTopic(id: string) {
+    setOpenTopics((current) => {
+      const next = new Set(current);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  }
+
+  function openTopic(id: string) {
+    setOpenTopics((current) => new Set(current).add(id));
+  }
+
   return (
     <div className="space-y-6">
       <SectionCard
@@ -231,6 +304,7 @@ export default function Manual() {
               <a
                 key={topic.id}
                 href={`#${topic.id}`}
+                onClick={() => openTopic(topic.id)}
                 className="rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors hover:opacity-80"
                 style={{
                   borderColor: colors.brown[100],
@@ -256,11 +330,11 @@ export default function Manual() {
 
       {topics.map((topic) => (
         <div key={topic.id} id={topic.id} className="scroll-mt-6">
-          <SectionCard title={topic.title} description={topic.description}>
-            <div className="space-y-3 text-sm leading-6 text-[#2C1810]">
-              {topic.content}
-            </div>
-          </SectionCard>
+          <ManualTopicCard
+            topic={topic}
+            isOpen={openTopics.has(topic.id)}
+            onToggle={() => toggleTopic(topic.id)}
+          />
         </div>
       ))}
 
