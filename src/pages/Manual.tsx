@@ -180,35 +180,6 @@ const topics: ManualTopic[] = [
       </>
     ),
   },
-  {
-    id: "usuarios",
-    title: "Usuários",
-    description: "Gerenciamento de acesso — visível apenas a administradores.",
-    content: (
-      <>
-        <p>
-          Controla quem tem acesso ao sistema e o que cada pessoa pode ver ou
-          fazer. Existem três perfis: <strong>Usuário</strong>,{" "}
-          <strong>Administrador</strong> e <strong>Administrador Master</strong>
-          . Somente o Administrador Master pode criar novos usuários e alterar
-          as permissões de acesso de cada página.
-        </p>
-      </>
-    ),
-  },
-  {
-    id: "perfil",
-    title: "Perfil",
-    description: "Informações institucionais, apenas para consulta.",
-    content: (
-      <>
-        <p>
-          Reúne os dados cadastrais da empresa — razão social, CNPJ, telefone e
-          e-mail de contato — organizados para consulta rápida.
-        </p>
-      </>
-    ),
-  },
 ];
 
 const faqs: { question: string; answer: React.ReactNode }[] = [
