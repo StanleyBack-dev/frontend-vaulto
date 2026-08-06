@@ -59,17 +59,29 @@ export default function Statement() {
   const [hasGenerated, setHasGenerated] = useState(false);
   const [lines, setLines] = useState<UnifiedStatementLine[]>([]);
 
-  const monthLabel = useMemo(() => formatMonthLabel(month), [month]);
+  // The boards/table below must only reflect the month + type that were
+  // actually used to build `lines` — not whatever the user has since typed
+  // into the filters — otherwise switching the type (or the month) before
+  // pressing "Gerar" instantly relabels the still-stale data, showing e.g.
+  // income headers over debt rows.
+  const [generatedMonth, setGeneratedMonth] = useState(currentMonthValue);
+  const [generatedType, setGeneratedType] = useState<StatementType>("debts");
+
+  const monthLabel = useMemo(
+    () => formatMonthLabel(generatedMonth),
+    [generatedMonth],
+  );
 
   async function handleGenerate() {
     const { dueDateFrom, dueDateTo } = monthToDueDateRange(month);
+    const typeToGenerate = statementType;
 
     setLoading(true);
 
     try {
       const nextLines: UnifiedStatementLine[] = [];
 
-      if (statementType === "debts" || statementType === "both") {
+      if (typeToGenerate === "debts" || typeToGenerate === "both") {
         const result = await fetchDebts({
           page: 1,
           limit: STATEMENT_PAGE_SIZE,
@@ -97,7 +109,7 @@ export default function Statement() {
         }
       }
 
-      if (statementType === "incomes" || statementType === "both") {
+      if (typeToGenerate === "incomes" || typeToGenerate === "both") {
         const result = await fetchIncomes({
           page: 1,
           limit: STATEMENT_PAGE_SIZE,
@@ -126,6 +138,8 @@ export default function Statement() {
 
       nextLines.sort((a, b) => a.dueDate.localeCompare(b.dueDate));
       setLines(nextLines);
+      setGeneratedMonth(month);
+      setGeneratedType(typeToGenerate);
       setHasGenerated(true);
     } catch (error) {
       showError("Falha ao gerar extrato", toErrorMessage(error));
@@ -169,11 +183,11 @@ export default function Statement() {
 
   const columns = useMemo<DataTableColumn<UnifiedStatementLine>[]>(() => {
     const amountExpectedLabel =
-      statementType === "debts" ? "Valor devido" : "Valor esperado";
+      generatedType === "debts" ? "Valor devido" : "Valor esperado";
     const amountRealizedLabel =
-      statementType === "debts"
+      generatedType === "debts"
         ? "Valor pago"
-        : statementType === "incomes"
+        : generatedType === "incomes"
           ? "Valor recebido"
           : "Valor realizado";
 
@@ -189,7 +203,7 @@ export default function Statement() {
       },
     ];
 
-    if (statementType === "both") {
+    if (generatedType === "both") {
       base.push({
         key: "kind",
         label: "Tipo",
@@ -204,7 +218,7 @@ export default function Statement() {
     base.push(
       {
         key: "title",
-        label: statementType === "incomes" ? "Receita" : "Título",
+        label: generatedType === "incomes" ? "Receita" : "Título",
         render: (line) => (
           <span className="text-sm font-semibold text-[#1a1333]">
             {line.title}
@@ -220,7 +234,7 @@ export default function Statement() {
       },
     );
 
-    if (statementType === "debts") {
+    if (generatedType === "debts") {
       base.push({
         key: "creditCard",
         label: "Cartão",
@@ -281,12 +295,12 @@ export default function Statement() {
     );
 
     return base;
-  }, [statementType]);
+  }, [generatedType]);
 
   const emptyMessage =
-    statementType === "debts"
+    generatedType === "debts"
       ? "Nenhuma parcela ou dívida com vencimento neste período."
-      : statementType === "incomes"
+      : generatedType === "incomes"
         ? "Nenhuma parcela ou receita com vencimento neste período."
         : "Nenhuma parcela, dívida ou receita com vencimento neste período.";
 
@@ -337,10 +351,10 @@ export default function Statement() {
         <>
           <div
             className={`grid grid-cols-1 gap-3 sm:grid-cols-3 ${
-              statementType === "both" ? "lg:grid-cols-4" : ""
+              generatedType === "both" ? "lg:grid-cols-4" : ""
             }`}
           >
-            {(statementType === "debts" || statementType === "both") && (
+            {(generatedType === "debts" || generatedType === "both") && (
               <div className="rounded-xl border border-[#3a2f5e] bg-[#141225] p-4">
                 <p className="text-xs uppercase tracking-wide text-[#b7afcf]">
                   Total devido em {monthLabel}
@@ -350,7 +364,7 @@ export default function Statement() {
                 </p>
               </div>
             )}
-            {(statementType === "debts" || statementType === "both") && (
+            {(generatedType === "debts" || generatedType === "both") && (
               <div className="rounded-xl border border-[#3a2f5e] bg-[#141225] p-4">
                 <p className="text-xs uppercase tracking-wide text-[#b7afcf]">
                   Total pago
@@ -360,7 +374,7 @@ export default function Statement() {
                 </p>
               </div>
             )}
-            {statementType === "incomes" && (
+            {generatedType === "incomes" && (
               <div className="rounded-xl border border-[#3a2f5e] bg-[#141225] p-4">
                 <p className="text-xs uppercase tracking-wide text-[#b7afcf]">
                   Total esperado em {monthLabel}
@@ -370,7 +384,7 @@ export default function Statement() {
                 </p>
               </div>
             )}
-            {(statementType === "incomes" || statementType === "both") && (
+            {(generatedType === "incomes" || generatedType === "both") && (
               <div className="rounded-xl border border-[#3a2f5e] bg-[#141225] p-4">
                 <p className="text-xs uppercase tracking-wide text-[#b7afcf]">
                   Total recebido
@@ -382,13 +396,13 @@ export default function Statement() {
             )}
             <div className="rounded-xl border border-[#3a2f5e] bg-[#141225] p-4">
               <p className="text-xs uppercase tracking-wide text-[#b7afcf]">
-                {statementType === "both" ? "Saldo do período" : "Saldo"}
+                {generatedType === "both" ? "Saldo do período" : "Saldo"}
               </p>
               <p
                 className="mt-1 text-lg font-bold"
                 style={{
                   color:
-                    statementType === "both"
+                    generatedType === "both"
                       ? totals.balance >= 0
                         ? "#6ee7b7"
                         : "#fda4af"
@@ -396,9 +410,9 @@ export default function Statement() {
                 }}
               >
                 {formatCurrency(
-                  statementType === "both"
+                  generatedType === "both"
                     ? totals.balance
-                    : statementType === "debts"
+                    : generatedType === "debts"
                       ? Math.max(totals.totalDue - totals.totalPaid, 0)
                       : Math.max(
                           totals.totalExpectedIncome - totals.totalReceived,
