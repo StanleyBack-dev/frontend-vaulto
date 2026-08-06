@@ -27,7 +27,7 @@ export default function Sidebar({
   onClose,
 }: SidebarProps) {
   const navigate = useNavigate();
-  const { hasPageAccess, clearSession } = useAuthSession();
+  const { session, hasPageAccess, clearSession } = useAuthSession();
   const { showSuccess, showError } = useToast();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
@@ -110,6 +110,25 @@ export default function Sidebar({
           >
             Fechar
           </button>
+        </div>
+
+        <div
+          className="flex items-center gap-3 border-b px-5 py-4 lg:px-6"
+          style={{ borderColor: colors.brown[100] }}
+        >
+          <div
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
+            style={{
+              background: `linear-gradient(135deg, ${colors.purple[700]}, ${colors.gold[500]})`,
+            }}
+          >
+            {session?.user?.name?.slice(0, 2).toUpperCase() || brand.initials}
+          </div>
+          <div className="min-w-0">
+            <p className="truncate text-sm font-semibold text-white">
+              {session?.user?.name || brand.name}
+            </p>
+          </div>
         </div>
 
         <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-5 lg:py-6">

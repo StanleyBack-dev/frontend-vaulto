@@ -1,14 +1,11 @@
 import SearchIcon from "../atoms/icons/SearchIcon";
-import BellIcon from "../atoms/icons/BellIcon";
 import PageHeader from "@atoms/PageHeader";
 import SearchBar from "@atoms/SearchBar";
-import Button from "@atoms/Button";
 import { useState } from "react";
 import { Menu } from "lucide-react";
 
 import type { ActiveView } from "../../types/views";
 import { useAuthSession } from "../../features/auth";
-import { brand, colors } from "../../config";
 import {
   primaryNavigationItems,
   secondaryNavigationItems,
@@ -19,7 +16,6 @@ interface HeaderProps {
   activeView: ActiveView;
   search?: string;
   onSearchChange?: (value: string) => void;
-  onBellClick?: () => void;
   actions?: React.ReactNode;
   onNavigate?: (view: ActiveView) => void;
   onMenuClick?: () => void;
@@ -30,7 +26,7 @@ export default function Header({
   onNavigate,
   onMenuClick,
 }: HeaderProps) {
-  const { session, hasPageAccess } = useAuthSession();
+  const { hasPageAccess } = useAuthSession();
 
   const info = viewTitles[activeView as keyof typeof viewTitles] || {
     title: "Painel",
@@ -90,45 +86,6 @@ export default function Header({
                   ))}
                 </div>
               )}
-            </div>
-            <Button
-              variant="secondary"
-              size="sm"
-              className="shrink-0"
-              style={{
-                position: "relative",
-                background: "#19142b",
-                color: "#f5f2ff",
-              }}
-              onClick={() => {}}
-            >
-              <BellIcon size={16} />
-              <span
-                className="absolute top-1 right-1 w-2 h-2 rounded-full"
-                style={{ background: "#D4AF37" }}
-              />
-            </Button>
-            <div className="flex shrink-0 items-center gap-2 self-start sm:self-center">
-              <div
-                className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
-                style={{
-                  background: "linear-gradient(135deg, #4F2D9B, #D4AF37)",
-                }}
-              >
-                {session?.user?.name?.slice(0, 2).toUpperCase() ||
-                  brand.initials}
-              </div>
-              <div className="hidden sm:block">
-                <p
-                  className="text-xs font-semibold"
-                  style={{ color: colors.brown[800] }}
-                >
-                  {session?.user?.name || brand.name}
-                </p>
-                <p className="text-xs" style={{ color: colors.brown[500] }}>
-                  {session?.user?.group || "Administrador"}
-                </p>
-              </div>
             </div>
           </>
         }
