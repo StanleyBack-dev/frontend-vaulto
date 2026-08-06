@@ -22,7 +22,7 @@ export interface NavigationItem {
 export const primaryNavigationItems: NavigationItem[] = [
   { id: "dashboard", label: "Dashboard", icon: <LayoutDashboard size={20} /> },
   { id: "debts", label: "Dívidas", icon: <DebtsIcon size={20} /> },
-  { id: "debtsStatement", label: "Extrato", icon: <Receipt size={20} /> },
+  { id: "debtsStatement", label: "Extratos", icon: <Receipt size={20} /> },
   { id: "incomes", label: "Receitas", icon: <Banknote size={20} /> },
   { id: "payments", label: "Pagamentos", icon: <Wallet size={20} /> },
   {

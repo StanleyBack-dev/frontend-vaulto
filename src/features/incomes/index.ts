@@ -20,6 +20,10 @@ export {
   getReceivedInstallmentsCount,
 } from "./model/listing";
 export {
+  buildIncomeStatementLines,
+  type IncomeStatementLine,
+} from "./model/statement";
+export {
   fetchIncomeById,
   fetchIncomes,
   saveIncome,

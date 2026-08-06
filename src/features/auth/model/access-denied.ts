@@ -26,7 +26,7 @@ export function getDeniedViewLabel(deniedView?: ActiveView): string {
     case "debts":
       return "Dívidas";
     case "debtsStatement":
-      return "Extrato de Dívidas";
+      return "Extratos";
     case "incomes":
       return "Receitas";
     case "incomeReceipts":

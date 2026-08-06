@@ -7,8 +7,8 @@ export const viewTitles: Record<
   dashboard: { title: "Dashboard", subtitle: "Visão geral das dívidas" },
   debts: { title: "Dívidas", subtitle: "Contas a pagar e receber" },
   debtsStatement: {
-    title: "Extrato de Dívidas",
-    subtitle: "Extrato detalhado de parcelas e dívidas por período",
+    title: "Extratos",
+    subtitle: "Extrato detalhado de dívidas, receitas ou ambas por período",
   },
   incomes: {
     title: "Receitas",
