@@ -89,7 +89,7 @@ export const onboardingSteps: OnboardingStep[] = [
     id: "categories",
     title: "Organize com categorias",
     description:
-      "Use categorias como \"Moradia\" ou \"Salário\" para agrupar e filtrar suas dívidas e receitas.",
+      'Use categorias como "Moradia" ou "Salário" para agrupar e filtrar suas dívidas e receitas.',
     icon: <Tags size={20} />,
     route: categoryRoutePaths.list,
     navView: "categories",

@@ -9,7 +9,9 @@ interface TourTargetRectResult {
   isSearching: boolean;
 }
 
-export function useTourTargetRect(selector: string | null): TourTargetRectResult {
+export function useTourTargetRect(
+  selector: string | null,
+): TourTargetRectResult {
   const [rect, setRect] = useState<DOMRect | null>(null);
   const [isSearching, setIsSearching] = useState(Boolean(selector));
 

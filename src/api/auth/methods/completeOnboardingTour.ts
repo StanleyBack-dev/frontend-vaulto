@@ -9,10 +9,7 @@ export async function completeOnboardingTour(): Promise<AuthMessageResponse> {
     return response.data;
   } catch (error) {
     throw new Error(
-      getApiErrorMessage(
-        error,
-        "Não foi possível salvar a conclusão do tour.",
-      ),
+      getApiErrorMessage(error, "Não foi possível salvar a conclusão do tour."),
     );
   }
 }
