@@ -35,7 +35,7 @@ export default function AppLayout() {
         mobileOpen={mobileSidebarOpen}
         onClose={() => setMobileSidebarOpen(false)}
       />
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-w-0 flex-1 flex-col lg:ml-64">
         <Header
           activeView={activeView}
           onNavigate={handleNavigate}

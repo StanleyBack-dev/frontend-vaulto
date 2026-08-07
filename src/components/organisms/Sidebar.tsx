@@ -1,11 +1,17 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { brand, colors, typography } from "../../config";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, LogOut } from "lucide-react";
 import type { ActiveView } from "../../types/views";
-import { useAuthSession } from "../../features/auth";
+import { logoutCurrentSession, useAuthSession } from "../../features/auth";
+import { authRoutePaths } from "../../router";
 import {
   primaryNavigationItems,
   secondaryNavigationItems,
 } from "../../router/navigation";
+import ConfirmDialog from "@molecules/ConfirmDialog";
+import { useToast } from "../../shared/toast/useToast";
+import { AuthApiError } from "../../api/auth/methods/http-error";
 
 interface SidebarProps {
   active: ActiveView;
@@ -20,11 +26,37 @@ export default function Sidebar({
   mobileOpen = false,
   onClose,
 }: SidebarProps) {
-  const { hasPageAccess } = useAuthSession();
+  const navigate = useNavigate();
+  const { session, hasPageAccess, clearSession } = useAuthSession();
+  const { showSuccess, showError } = useToast();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
 
   const visiblePrimaryItems = primaryNavigationItems.filter((item) =>
     hasPageAccess(item.id),
   );
+
+  async function handleLogout() {
+    setIsLoggingOut(true);
+
+    try {
+      await logoutCurrentSession();
+      showSuccess("Sessão encerrada", "Logout realizado com sucesso.");
+    } catch (error) {
+      const message =
+        error instanceof AuthApiError || error instanceof Error
+          ? error.message
+          : "Não foi possível encerrar a sessão no servidor.";
+
+      showError("Logout parcial", message);
+    } finally {
+      clearSession();
+      setIsLoggingOut(false);
+      setIsLogoutDialogOpen(false);
+      onClose?.();
+      navigate(authRoutePaths.login, { replace: true });
+    }
+  }
 
   return (
     <>
@@ -38,7 +70,7 @@ export default function Sidebar({
         aria-hidden={!mobileOpen}
       />
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex min-h-screen w-72 max-w-[85vw] flex-col transition-transform duration-300 lg:sticky lg:top-0 lg:z-0 lg:w-64 lg:max-w-none ${
+        className={`fixed inset-y-0 left-0 z-50 flex h-screen w-72 max-w-[85vw] flex-col transition-transform duration-300 lg:w-64 lg:max-w-none ${
           mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
         style={{ background: colors.brown[800] }}
@@ -78,6 +110,25 @@ export default function Sidebar({
           >
             Fechar
           </button>
+        </div>
+
+        <div
+          className="flex items-center gap-3 border-b px-5 py-4 lg:px-6"
+          style={{ borderColor: colors.brown[100] }}
+        >
+          <div
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
+            style={{
+              background: `linear-gradient(135deg, ${colors.purple[700]}, ${colors.gold[500]})`,
+            }}
+          >
+            {session?.user?.name?.slice(0, 2).toUpperCase() || brand.initials}
+          </div>
+          <div className="min-w-0">
+            <p className="truncate text-sm font-semibold text-white">
+              {session?.user?.name || brand.name}
+            </p>
+          </div>
         </div>
 
         <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-5 lg:py-6">
@@ -187,8 +238,40 @@ export default function Sidebar({
               </button>
             );
           })}
+          <button
+            type="button"
+            onClick={() => setIsLogoutDialogOpen(true)}
+            className="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-all duration-200"
+            style={{ color: "#f4a8b8" }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.background =
+                colors.black[700];
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.background =
+                "transparent";
+            }}
+          >
+            <LogOut size={18} />
+            <span>Sair</span>
+          </button>
         </div>
       </aside>
+
+      <ConfirmDialog
+        open={isLogoutDialogOpen}
+        title="Encerrar sessão"
+        description="Você perderá a sessão atual e precisará fazer login novamente para continuar. Deseja mesmo sair?"
+        confirmLabel="Sair"
+        cancelLabel="Cancelar"
+        variant="danger"
+        icon={<LogOut size={20} />}
+        loading={isLoggingOut}
+        onConfirm={() => {
+          void handleLogout();
+        }}
+        onCancel={() => setIsLogoutDialogOpen(false)}
+      />
     </>
   );
 }
