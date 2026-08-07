@@ -1,5 +1,6 @@
 import { Router } from "express";
 import authRoutes from "./modules/auth/routes.js";
+import billingRoutes from "./modules/billing/routes.js";
 import categoriesRoutes from "./modules/categories/routes.js";
 import creditCardsRoutes from "./modules/credit-cards/routes.js";
 import usersRoutes from "./modules/users/routes.js";
@@ -12,6 +13,7 @@ import reportsRoutes from "./modules/reports/routes.js";
 const router = Router();
 
 router.use("/auth", authRoutes);
+router.use("/billing", billingRoutes);
 router.use("/categories", categoriesRoutes);
 router.use("/credit-cards", creditCardsRoutes);
 router.use("/users", usersRoutes);

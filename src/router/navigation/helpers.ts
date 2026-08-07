@@ -9,6 +9,7 @@ import {
   incomeReceiptRoutePaths,
   incomeRoutePaths,
   paymentRoutePaths,
+  planRoutePaths,
   routePaths,
   userRoutePaths,
 } from "./paths";
@@ -63,6 +64,10 @@ export function getActiveView(pathname: string): ActiveView {
     return "profile";
   }
 
+  if (pathname.startsWith(planRoutePaths.list)) {
+    return "plans";
+  }
+
   if (pathname.startsWith(faqRoutePaths.list)) {
     return "faq";
   }
@@ -82,6 +87,8 @@ export function getPathForView(view: ActiveView) {
       return userRoutePaths.list;
     case "profile":
       return routePaths.profile;
+    case "plans":
+      return planRoutePaths.list;
     case "faq":
       return faqRoutePaths.list;
     case "payments":

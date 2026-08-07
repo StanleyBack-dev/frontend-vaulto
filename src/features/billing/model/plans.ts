@@ -1,0 +1,37 @@
+export const PRO_PLAN_PRICES = {
+  MONTHLY: 14.9,
+  YEARLY: 149.9,
+} as const;
+
+export const PRO_PLAN_MONTHLY_EQUIVALENT_WHEN_YEARLY = 12.49;
+
+export interface PlanFeatureRow {
+  label: string;
+  free: string;
+  pro: string;
+}
+
+export const PLAN_FEATURE_ROWS: PlanFeatureRow[] = [
+  { label: "Dívidas", free: "até 5", pro: "ilimitado" },
+  { label: "Cartões de crédito", free: "1", pro: "ilimitado" },
+  { label: "Receitas", free: "até 10/mês", pro: "ilimitado" },
+  { label: "Categorias", free: "básicas", pro: "personalizadas + ilimitadas" },
+  {
+    label: "Extratos / histórico",
+    free: "últimos 3 meses",
+    pro: "histórico completo",
+  },
+  { label: "Filtros", free: "básicos", pro: "avançados" },
+  { label: "Relatórios", free: "básicos", pro: "avançados + comparativos" },
+  { label: "Exportação (PDF/Excel)", free: "—", pro: "✓" },
+  { label: "Lembretes", free: "—", pro: "✓" },
+  { label: "Calendário financeiro", free: "—", pro: "✓" },
+  { label: "Previsão financeira", free: "—", pro: "✓" },
+  { label: "Metas financeiras", free: "—", pro: "✓" },
+  { label: "Importação de extrato", free: "—", pro: "✓" },
+  { label: "Vaulto Insights (IA)", free: "—", pro: "✓" },
+  { label: "Backup", free: "básico", pro: "completo" },
+];
+
+export const PAYMENT_METHODS_DESCRIPTION =
+  "No checkout você escolhe entre Cartão de Crédito (renovação automática), Pix ou Boleto (pagamento manual a cada vencimento).";

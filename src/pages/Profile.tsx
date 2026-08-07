@@ -1,47 +1,73 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import SectionCard from "@/components/organisms/SectionCard";
+import ProfileSummaryCard from "@molecules/ProfileSummaryCard";
+import SubscriptionStatusCard from "@molecules/SubscriptionStatusCard";
+import Loading from "@atoms/Loading";
+import type { User } from "@/api/users/schema";
+import { fetchMyProfile } from "@/features/users";
+import { useBillingContext } from "@/features/billing";
+import { planRoutePaths } from "@/router/navigation";
+import { useToast } from "../shared/toast/useToast";
 
 export default function Profile() {
+  const navigate = useNavigate();
+  const { subscription, isLoading: isSubscriptionLoading } =
+    useBillingContext();
+  const { showError } = useToast();
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoadingUser, setIsLoadingUser] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetchMyProfile()
+      .then((result) => {
+        if (!cancelled) setUser(result);
+      })
+      .catch((error) => {
+        if (!cancelled) {
+          showError(
+            "Erro ao carregar perfil",
+            error instanceof Error
+              ? error.message
+              : "Não foi possível carregar seus dados.",
+          );
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoadingUser(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [showError]);
+
   return (
-    <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+    <div className="space-y-6">
       <SectionCard
-        title="Dados da empresa"
-        description="Informações institucionais organizadas em blocos simples para leitura rápida."
+        title="Seus dados"
+        description="Informações da sua conta no Vaulto."
       >
-        <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {[
-            ["Razão social", "Vaulto Gestão Financeira"],
-            ["CNPJ", "12.345.678/0001-90"],
-            ["Telefone", "(11) 4000-1234"],
-            ["E-mail", "contato@vaulto.com.br"],
-          ].map(([label, value]) => (
-            <div
-              key={label}
-              className="rounded-xl border border-[#e8d5c9] px-4 py-4"
-            >
-              <dt className="text-xs font-semibold uppercase tracking-wide text-[#7a4430]">
-                {label}
-              </dt>
-              <dd className="mt-2 text-sm text-[#2C1810]">{value}</dd>
-            </div>
-          ))}
-        </dl>
+        {isLoadingUser || !user ? (
+          <Loading label="Carregando seus dados..." />
+        ) : (
+          <ProfileSummaryCard user={user} subscription={subscription} />
+        )}
       </SectionCard>
 
-      <SectionCard
-        title="Observações operacionais"
-        description="Resumo de posicionamento e próximos passos internos."
-      >
-        <div className="space-y-3 text-sm leading-6 text-[#2C1810]">
-          <p>
-            Estrutura pronta para atendimento corporativo e social, com equipes
-            móveis e agenda centralizada.
-          </p>
-          <p>
-            Prioridade atual: consolidar indicadores, histórico de clientes e
-            rotinas financeiras em um fluxo único.
-          </p>
-        </div>
-      </SectionCard>
+      {!isSubscriptionLoading && subscription && (
+        <SectionCard
+          title="Assinatura"
+          description="Seu plano atual no Vaulto."
+        >
+          <SubscriptionStatusCard
+            subscription={subscription}
+            onViewPlans={() => navigate(planRoutePaths.list)}
+          />
+        </SectionCard>
+      )}
     </div>
   );
 }

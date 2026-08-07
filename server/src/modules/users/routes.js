@@ -4,6 +4,7 @@ import { buildErrorResponse } from "../../shared/http/error-response.js";
 import { buildListInput } from "../../shared/http/parse-pagination.js";
 import {
   createUser,
+  getMyProfile,
   getUserFilterOptions,
   getUserPagePermissions,
   listUsers,
@@ -17,6 +18,15 @@ function sendError(res, error) {
   const { statusCode, body } = buildErrorResponse(error);
   res.status(statusCode).json(body);
 }
+
+router.get("/me", async (req, res) => {
+  try {
+    const profile = await getMyProfile(getAuthContext(req), req.requestId);
+    res.json(profile);
+  } catch (error) {
+    sendError(res, error);
+  }
+});
 
 router.get("/", async (req, res) => {
   try {

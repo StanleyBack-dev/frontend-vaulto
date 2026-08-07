@@ -9,6 +9,7 @@ export {
   incomeReceiptRoutePaths,
   incomeRoutePaths,
   paymentRoutePaths,
+  planRoutePaths,
   routePaths,
   utilityRoutePaths,
   userRoutePaths,

@@ -26,6 +26,14 @@ const CREATE_USER_FIELDS = `
   createdAt
 `;
 
+export const ME_QUERY = `
+  query Me {
+    me {
+      ${USER_FIELDS}
+    }
+  }
+`;
+
 export const GET_USERS_QUERY = `
   query GetUsers($input: GetUsersInputDto) {
     getUsers(input: $input) {
