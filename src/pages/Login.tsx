@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   GoogleLogin,
@@ -12,6 +12,7 @@ import {
 } from "../features/auth";
 import Input from "../components/atoms/Input";
 import Button from "../components/atoms/Button";
+import Loading from "../components/atoms/Loading";
 import Toggle from "../components/atoms/Toggle";
 import EyeIcon from "../components/atoms/icons/EyeIcon";
 import EyeOffIcon from "../components/atoms/icons/EyeOffIcon";
@@ -34,6 +35,7 @@ export default function Login() {
     requiresPasswordChange,
     isInitializing,
   } = useAuthSession();
+  const [googleSubmitting, setGoogleSubmitting] = useState(false);
 
   useEffect(() => {
     if (isInitializing || !isAuthenticated) return;
@@ -108,6 +110,8 @@ export default function Login() {
       return;
     }
 
+    setGoogleSubmitting(true);
+
     try {
       const session = await loginWithGoogle(credentialResponse.credential);
 
@@ -135,8 +139,12 @@ export default function Login() {
           : "Não foi possível realizar o login com o Google. Tente novamente.";
 
       showError("Erro ao entrar", message);
+    } finally {
+      setGoogleSubmitting(false);
     }
   }
+
+  const isBusy = submitting || googleSubmitting;
 
   return (
     <div
@@ -173,15 +181,31 @@ export default function Login() {
 
         {/* Card */}
         <div
-          className="rounded-2xl shadow-md border px-8 py-8"
+          className="relative rounded-2xl shadow-md border px-8 py-8"
           style={{
             borderColor: colors.brown[100],
             background: colors.black[800],
           }}
         >
+          {googleSubmitting && (
+            <div
+              className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 rounded-2xl"
+              style={{ background: "rgba(10,8,20,0.85)" }}
+            >
+              <Loading size={32} />
+              <p
+                className="text-sm font-medium"
+                style={{ color: colors.brown[100] }}
+              >
+                Entrando com sua conta Google...
+              </p>
+            </div>
+          )}
+
           <form
             onSubmit={(e) => {
               e.preventDefault();
+              if (isBusy) return;
               void submit();
             }}
             noValidate
@@ -197,6 +221,7 @@ export default function Login() {
               error={errors.identifier}
               autoComplete="username"
               autoFocus
+              disabled={isBusy}
             />
 
             {/* Senha */}
@@ -208,13 +233,15 @@ export default function Login() {
               onChange={(e) => updateField("password", e.target.value)}
               error={errors.password}
               autoComplete="current-password"
+              disabled={isBusy}
               trailing={
                 <button
                   type="button"
                   onClick={toggleShowPassword}
+                  disabled={isBusy}
                   tabIndex={-1}
                   aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
-                  className="flex items-center justify-center text-[#c5bbeb] hover:opacity-70 transition-opacity focus:outline-none"
+                  className="flex items-center justify-center text-[#c5bbeb] hover:opacity-70 transition-opacity focus:outline-none disabled:opacity-40"
                 >
                   {showPassword ? (
                     <EyeOffIcon size={18} />
@@ -231,14 +258,19 @@ export default function Login() {
                 checked={form.rememberMe}
                 onChange={(v) => updateField("rememberMe", v)}
                 aria-label="Lembrar meu usuário"
+                disabled={isBusy}
               />
               <span
-                className="text-sm cursor-pointer select-none"
+                className="text-sm select-none"
                 style={{
                   color: colors.brown[300],
                   fontFamily: typography.fontFamily,
+                  cursor: isBusy ? "not-allowed" : "pointer",
+                  opacity: isBusy ? 0.6 : 1,
                 }}
-                onClick={() => updateField("rememberMe", !form.rememberMe)}
+                onClick={() =>
+                  !isBusy && updateField("rememberMe", !form.rememberMe)
+                }
               >
                 Lembrar meu usuário
               </span>
@@ -250,6 +282,7 @@ export default function Login() {
               variant="primary"
               size="lg"
               loading={submitting}
+              disabled={isBusy}
               className="w-full mt-1"
             >
               Entrar
@@ -257,7 +290,8 @@ export default function Login() {
 
             <button
               type="button"
-              className="text-sm font-medium text-[#c5bbeb] hover:opacity-80 transition-opacity"
+              disabled={isBusy}
+              className="text-sm font-medium text-[#c5bbeb] hover:opacity-80 transition-opacity disabled:opacity-40 disabled:hover:opacity-40"
               onClick={() => navigate(authRoutePaths.passwordRecovery)}
             >
               Esqueci minha senha
@@ -280,10 +314,15 @@ export default function Login() {
                 />
               </div>
 
-              <div className="flex justify-center">
+              <div
+                className={`flex justify-center transition-opacity ${
+                  isBusy ? "pointer-events-none opacity-50" : ""
+                }`}
+              >
                 <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
                   <GoogleLogin
                     onSuccess={(credentialResponse) => {
+                      if (isBusy) return;
                       void handleGoogleSuccess(credentialResponse);
                     }}
                     onError={() => {

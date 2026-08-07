@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { brand, colors, typography } from "../../config";
 import { ChevronRight, LogOut } from "lucide-react";
@@ -31,6 +31,11 @@ export default function Sidebar({
   const { showSuccess, showError } = useToast();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
+  const [avatarLoadFailed, setAvatarLoadFailed] = useState(false);
+
+  useEffect(() => {
+    setAvatarLoadFailed(false);
+  }, [session?.user?.urlAvatar]);
 
   const visiblePrimaryItems = primaryNavigationItems.filter((item) =>
     hasPageAccess(item.id),
@@ -116,14 +121,23 @@ export default function Sidebar({
           className="flex items-center gap-3 border-b px-5 py-4 lg:px-6"
           style={{ borderColor: colors.brown[100] }}
         >
-          <div
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
-            style={{
-              background: `linear-gradient(135deg, ${colors.purple[700]}, ${colors.gold[500]})`,
-            }}
-          >
-            {session?.user?.name?.slice(0, 2).toUpperCase() || brand.initials}
-          </div>
+          {session?.user?.urlAvatar && !avatarLoadFailed ? (
+            <img
+              src={session.user.urlAvatar}
+              alt={session.user.name || brand.name}
+              className="h-9 w-9 shrink-0 rounded-full object-cover"
+              onError={() => setAvatarLoadFailed(true)}
+            />
+          ) : (
+            <div
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
+              style={{
+                background: `linear-gradient(135deg, ${colors.purple[700]}, ${colors.gold[500]})`,
+              }}
+            >
+              {session?.user?.name?.slice(0, 2).toUpperCase() || brand.initials}
+            </div>
+          )}
           <div className="min-w-0">
             <p className="truncate text-sm font-semibold text-white">
               {session?.user?.name || brand.name}
