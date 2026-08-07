@@ -160,6 +160,7 @@ export default function Sidebar({
             return (
               <button
                 key={item.id}
+                data-tour-nav={item.id}
                 onClick={() => {
                   onNavigate(item.id);
                   onClose?.();

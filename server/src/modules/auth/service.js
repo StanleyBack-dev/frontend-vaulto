@@ -2,6 +2,7 @@ import { HttpError } from "../../shared/http/http-error.js";
 import { executeGraphql } from "../../shared/http/graphql-client.js";
 import {
   CHANGE_PASSWORD_MUTATION,
+  COMPLETE_ONBOARDING_TOUR_MUTATION,
   LOGIN_MUTATION,
   LOGIN_WITH_GOOGLE_MUTATION,
   LOGOUT_MUTATION,
@@ -116,6 +117,20 @@ export async function changeMyPassword(input, authContext, requestId) {
     ),
     setCookie: result.responseHeaders?.setCookie ?? [],
   };
+}
+
+export async function completeOnboardingTour(authContext, requestId) {
+  const result = await executeGraphql({
+    query: COMPLETE_ONBOARDING_TOUR_MUTATION,
+    variables: {},
+    requestId,
+    ...authContext,
+  });
+
+  return requireData(
+    result.completeOnboardingTour,
+    "Invalid onboarding tour response.",
+  );
 }
 
 export async function requestPasswordRecovery(input, authContext, requestId) {
