@@ -1,4 +1,5 @@
 import { login } from "../../../api/auth/methods/login";
+import { loginWithGoogle as loginWithGoogleRequest } from "../../../api/auth/methods/loginWithGoogle";
 import { getMyPagePermissions } from "../../../api/auth/methods/getMyPagePermissions";
 import { logout } from "../../../api/auth/methods/logout";
 import { refreshAuthSession } from "../../../api/auth/methods/refreshAuthSession";
@@ -20,6 +21,20 @@ export async function loginWithPassword(
     username: input.username,
     password: input.password,
   });
+
+  const parsed = AuthSessionResponseSchema.safeParse(response);
+
+  if (!parsed.success) {
+    throw new Error("Não foi possível validar a sessão de autenticação.");
+  }
+
+  return parsed.data;
+}
+
+export async function loginWithGoogle(
+  idToken: string,
+): Promise<AuthSessionResponse> {
+  const response = await loginWithGoogleRequest({ idToken });
 
   const parsed = AuthSessionResponseSchema.safeParse(response);
 
