@@ -1,6 +1,8 @@
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Sparkles } from "lucide-react";
 import SectionCard from "@/components/organisms/SectionCard";
+import Button from "@atoms/Button";
+import { useOnboardingContext } from "@/features/onboarding";
 import { colors, radii } from "@/config";
 
 interface ManualTopic {
@@ -269,6 +271,7 @@ function ManualTopicCard({ topic, isOpen, onToggle }: ManualTopicCardProps) {
 
 export default function Manual() {
   const [openTopics, setOpenTopics] = useState<Set<string>>(new Set());
+  const { restartTour } = useOnboardingContext();
 
   function toggleTopic(id: string) {
     setOpenTopics((current) => {
@@ -324,6 +327,18 @@ export default function Manual() {
             >
               Perguntas frequentes
             </a>
+          </div>
+          <div className="pt-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="!border-gray-400 !text-gray-700 hover:!bg-gray-100"
+              leftIcon={<Sparkles size={14} />}
+              onClick={restartTour}
+            >
+              Refazer tour guiado
+            </Button>
           </div>
         </div>
       </SectionCard>

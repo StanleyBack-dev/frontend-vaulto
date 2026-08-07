@@ -16,6 +16,7 @@ export default function PageHeader({
 }: PageHeaderProps) {
   return (
     <header
+      data-tour-header
       className={`flex flex-col gap-4 border-b bg-white px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between ${className}`}
       style={{ borderColor: colors.brown[100], background: colors.white }}
     >

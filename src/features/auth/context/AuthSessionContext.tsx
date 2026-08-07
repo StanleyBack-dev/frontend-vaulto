@@ -35,6 +35,7 @@ interface AuthSessionContextValue {
   setSession: (session: AuthSessionResponse) => void;
   clearSession: () => void;
   markPasswordChanged: () => void;
+  markOnboardingTourCompleted: () => void;
   hasPageAccess: (view: ActiveView) => boolean;
 }
 
@@ -177,6 +178,17 @@ export function AuthSessionProvider({ children }: AuthSessionProviderProps) {
     });
   }, []);
 
+  const markOnboardingTourCompleted = useCallback(() => {
+    setSessionState((current) => {
+      if (!current) return current;
+
+      return {
+        ...current,
+        onboardingTourCompleted: true,
+      };
+    });
+  }, []);
+
   const value = useMemo<AuthSessionContextValue>(
     () => ({
       session,
@@ -187,12 +199,14 @@ export function AuthSessionProvider({ children }: AuthSessionProviderProps) {
       setSession,
       clearSession,
       markPasswordChanged,
+      markOnboardingTourCompleted,
       hasPageAccess: (view) => hasPageAccess(view, pagePermissions),
     }),
     [
       clearSession,
       isInitializing,
       markPasswordChanged,
+      markOnboardingTourCompleted,
       pagePermissions,
       session,
       setSession,

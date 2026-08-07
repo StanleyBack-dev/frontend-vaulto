@@ -3,6 +3,7 @@ import { getAuthContext } from "../../shared/auth/get-user-id.js";
 import { buildErrorResponse } from "../../shared/http/error-response.js";
 import {
   changeMyPassword,
+  completeOnboardingTour,
   getMyPagePermissions,
   login,
   loginWithGoogle,
@@ -110,6 +111,18 @@ router.post("/change-password", async (req, res) => {
       req.requestId,
     );
     forwardSetCookie(res, setCookie);
+    res.json(result);
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
+router.post("/complete-onboarding-tour", async (req, res) => {
+  try {
+    const result = await completeOnboardingTour(
+      getAuthContext(req),
+      req.requestId,
+    );
     res.json(result);
   } catch (error) {
     sendError(res, error);

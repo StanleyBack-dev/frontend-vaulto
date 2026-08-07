@@ -13,6 +13,7 @@ export const LOGIN_MUTATION = `
     login(input: $input) {
       authenticated
       mustChangePassword
+      onboardingTourCompleted
       user {
         ${USER_FIELDS}
       }
@@ -25,6 +26,7 @@ export const LOGIN_WITH_GOOGLE_MUTATION = `
     loginWithGoogle(input: $input) {
       authenticated
       mustChangePassword
+      onboardingTourCompleted
       user {
         ${USER_FIELDS}
       }
@@ -37,6 +39,7 @@ export const REFRESH_SESSION_QUERY = `
     refreshAuthSession {
       authenticated
       mustChangePassword
+      onboardingTourCompleted
       user {
         ${USER_FIELDS}
       }
@@ -64,6 +67,15 @@ export const LOGOUT_MUTATION = `
 export const CHANGE_PASSWORD_MUTATION = `
   mutation ChangeMyPassword($input: ChangePasswordInputDto!) {
     changeMyPassword(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+export const COMPLETE_ONBOARDING_TOUR_MUTATION = `
+  mutation CompleteOnboardingTour {
+    completeOnboardingTour {
       success
       message
     }
