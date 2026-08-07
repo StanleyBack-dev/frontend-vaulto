@@ -33,7 +33,7 @@ export const LOGIN_WITH_GOOGLE_MUTATION = `
 `;
 
 export const REFRESH_SESSION_QUERY = `
-  query RefreshAuthSession {
+  mutation RefreshAuthSession {
     refreshAuthSession {
       authenticated
       mustChangePassword
