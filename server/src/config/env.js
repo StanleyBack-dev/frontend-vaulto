@@ -48,4 +48,36 @@ export const config = {
     process.env.BFF_OBSERVABILITY_RECENT_EVENTS_LIMIT,
     200,
   ),
+  upstashRedisRestUrl: process.env.UPSTASH_REDIS_REST_URL || undefined,
+  upstashRedisRestToken: process.env.UPSTASH_REDIS_REST_TOKEN || undefined,
+  rateLimit: {
+    auth: {
+      windowSeconds: toNumber(
+        process.env.BFF_RATE_LIMIT_AUTH_WINDOW_SECONDS,
+        60,
+      ),
+      max: toNumber(process.env.BFF_RATE_LIMIT_AUTH_MAX, 10),
+    },
+    passwordRecovery: {
+      windowSeconds: toNumber(
+        process.env.BFF_RATE_LIMIT_PASSWORD_RECOVERY_WINDOW_SECONDS,
+        900,
+      ),
+      max: toNumber(process.env.BFF_RATE_LIMIT_PASSWORD_RECOVERY_MAX, 5),
+    },
+    mutation: {
+      windowSeconds: toNumber(
+        process.env.BFF_RATE_LIMIT_MUTATION_WINDOW_SECONDS,
+        60,
+      ),
+      max: toNumber(process.env.BFF_RATE_LIMIT_MUTATION_MAX, 60),
+    },
+    query: {
+      windowSeconds: toNumber(
+        process.env.BFF_RATE_LIMIT_QUERY_WINDOW_SECONDS,
+        60,
+      ),
+      max: toNumber(process.env.BFF_RATE_LIMIT_QUERY_MAX, 120),
+    },
+  },
 };
