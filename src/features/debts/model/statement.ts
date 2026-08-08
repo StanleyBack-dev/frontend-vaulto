@@ -10,6 +10,7 @@ export interface DebtStatementLine {
   dueDate: string;
   amountDue: number;
   amountPaid: number;
+  paidAt?: string;
   status: DebtStatus;
 }
 
@@ -54,6 +55,7 @@ export function buildDebtStatementLines(
           dueDate,
           amountDue: installment.amountDue,
           amountPaid: installment.amountPaid,
+          paidAt: installment.paidAt ?? undefined,
           status: installment.status,
         });
       }
@@ -69,6 +71,11 @@ export function buildDebtStatementLines(
       (sum, payment) => sum + payment.amountPaid,
       0,
     );
+    const lastPaidAt = debt.payments.reduce<string | undefined>(
+      (latest, payment) =>
+        !latest || payment.paidAt > latest ? payment.paidAt : latest,
+      undefined,
+    );
 
     lines.push({
       idDebt: debt.idDebt,
@@ -79,6 +86,7 @@ export function buildDebtStatementLines(
       dueDate,
       amountDue: debt.totalAmount,
       amountPaid,
+      paidAt: lastPaidAt,
       status: debt.status,
     });
   }

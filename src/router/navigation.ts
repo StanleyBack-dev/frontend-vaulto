@@ -1,5 +1,6 @@
 export {
   authRoutePaths,
+  calendarRoutePaths,
   categoryRoutePaths,
   creditCardRoutePaths,
   dashboardRoutePaths,

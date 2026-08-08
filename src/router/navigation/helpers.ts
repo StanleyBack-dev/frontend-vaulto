@@ -1,5 +1,6 @@
 import type { ActiveView } from "../../types/views";
 import {
+  calendarRoutePaths,
   categoryRoutePaths,
   creditCardRoutePaths,
   dashboardRoutePaths,
@@ -73,6 +74,10 @@ export function getActiveView(pathname: string): ActiveView {
     return "forecast";
   }
 
+  if (pathname.startsWith(calendarRoutePaths.list)) {
+    return "calendar";
+  }
+
   if (pathname.startsWith(faqRoutePaths.list)) {
     return "faq";
   }
@@ -96,6 +101,8 @@ export function getPathForView(view: ActiveView) {
       return planRoutePaths.list;
     case "forecast":
       return forecastRoutePaths.list;
+    case "calendar":
+      return calendarRoutePaths.list;
     case "faq":
       return faqRoutePaths.list;
     case "payments":

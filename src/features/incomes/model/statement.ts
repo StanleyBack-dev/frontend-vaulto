@@ -9,6 +9,7 @@ export interface IncomeStatementLine {
   dueDate: string;
   amountDue: number;
   amountReceived: number;
+  receivedAt?: string;
   status: IncomeStatus;
 }
 
@@ -51,6 +52,7 @@ export function buildIncomeStatementLines(
         dueDate,
         amountDue: installment.amountDue,
         amountReceived: installment.amountReceived,
+        receivedAt: installment.receivedAt ?? undefined,
         status: installment.status,
       });
     }
