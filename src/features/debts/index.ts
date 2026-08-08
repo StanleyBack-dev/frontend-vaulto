@@ -16,8 +16,12 @@ export {
 export {
   filterDebtsBySearch,
   getDebtTableColumns,
+  getInstallmentAmount,
   getNearestDueDate,
+  getPaidAmount,
   getPaidInstallmentsCount,
+  getRemainingAmount,
+  getRemainingInstallmentsCount,
 } from "./model/listing";
 export {
   currentMonthValue,

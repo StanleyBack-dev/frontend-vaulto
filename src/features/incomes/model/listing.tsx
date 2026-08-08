@@ -16,18 +16,18 @@ function formatDate(value?: string | null): string {
   return formatDateDisplay(value ?? undefined) || "-";
 }
 
-function getReceivedAmount(income: Income): number {
+export function getReceivedAmount(income: Income): number {
   return income.installments.reduce(
     (sum, installment) => sum + installment.amountReceived,
     0,
   );
 }
 
-function getRemainingAmount(income: Income): number {
+export function getRemainingAmount(income: Income): number {
   return Math.max(income.totalAmount - getReceivedAmount(income), 0);
 }
 
-function getInstallmentAmount(income: Income): number {
+export function getInstallmentAmount(income: Income): number {
   if (income.installments[0]) {
     return income.installments[0].amountDue;
   }
@@ -40,6 +40,12 @@ function getInstallmentAmount(income: Income): number {
 export function getReceivedInstallmentsCount(income: Income): number {
   return income.installments.filter(
     (installment) => installment.status === "RECEIVED",
+  ).length;
+}
+
+export function getRemainingInstallmentsCount(income: Income): number {
+  return income.installments.filter(
+    (installment) => installment.status !== "RECEIVED",
   ).length;
 }
 

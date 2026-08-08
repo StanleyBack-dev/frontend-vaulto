@@ -12,6 +12,7 @@ export {
   incomeRoutePaths,
   paymentRoutePaths,
   planRoutePaths,
+  reminderRoutePaths,
   routePaths,
   utilityRoutePaths,
   userRoutePaths,

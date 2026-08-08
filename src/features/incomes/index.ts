@@ -16,8 +16,12 @@ export {
 export {
   filterIncomesBySearch,
   getIncomeTableColumns,
+  getInstallmentAmount,
   getNearestDueDate,
+  getReceivedAmount,
   getReceivedInstallmentsCount,
+  getRemainingAmount,
+  getRemainingInstallmentsCount,
 } from "./model/listing";
 export {
   buildIncomeStatementLines,
