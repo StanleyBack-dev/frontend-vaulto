@@ -192,8 +192,8 @@ export default function Reminders() {
             style={{ color: colors.brown[500] }}
           >
             Os lembretes são um recurso exclusivo do Vaulto Pro. Todo dia,
-            avisamos por e-mail o que vence amanhã, para você nunca ser pego
-            de surpresa.
+            avisamos por e-mail o que vence amanhã, para você nunca ser pego de
+            surpresa.
           </p>
           <Button
             type="button"
@@ -220,9 +220,7 @@ export default function Reminders() {
         className="flex items-start justify-between gap-4 rounded-xl border border-[#3a2f5e] bg-[#141225] px-4 py-3"
       >
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold text-[#f7f5ff]">
-            {entry.title}
-          </p>
+          <p className="text-sm font-semibold text-[#f7f5ff]">{entry.title}</p>
           <p className="text-xs text-[#b7afcf]">
             {entry.category} · {entry.statusLabel}
           </p>
@@ -286,8 +284,8 @@ export default function Reminders() {
             className="mt-0.5 shrink-0"
           />
           <p className="text-sm" style={{ color: colors.brown[500] }}>
-            Todo dia, se houver dívidas ou receitas vencendo amanhã, enviamos
-            um e-mail com o resumo para o seu endereço cadastrado. Aqui embaixo
+            Todo dia, se houver dívidas ou receitas vencendo amanhã, enviamos um
+            e-mail com o resumo para o seu endereço cadastrado. Aqui embaixo
             você vê a mesma prévia do que seria enviado.
           </p>
         </div>
@@ -305,8 +303,7 @@ export default function Reminders() {
           <div className="flex flex-col items-center gap-2 py-8 text-center">
             <Bell size={22} style={{ color: colors.brown[500] }} />
             <p className="text-sm" style={{ color: colors.brown[500] }}>
-              Nada vencendo amanhã. Você não receberá lembrete por e-mail
-              hoje.
+              Nada vencendo amanhã. Você não receberá lembrete por e-mail hoje.
             </p>
           </div>
         ) : (
