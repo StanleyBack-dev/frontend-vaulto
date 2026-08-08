@@ -3,6 +3,7 @@ import Input from "@/components/atoms/Input";
 import Select from "@/components/atoms/Select";
 import Textarea from "@/components/atoms/Textarea";
 import SectionCard from "@/components/organisms/SectionCard";
+import UpgradeModal from "@/components/organisms/UpgradeModal";
 import { colors } from "@/config";
 import {
   emptyIncomeFormValues,
@@ -52,8 +53,15 @@ export default function IncomeForm({ mode }: { mode: "create" | "edit" }) {
   const navigate = useNavigate();
   const { id } = useParams();
   const { showError } = useToast();
-  const { create, updateStatus, updateDetails, saving, incomeCategories } =
-    useIncomesContext();
+  const {
+    create,
+    updateStatus,
+    updateDetails,
+    saving,
+    incomeCategories,
+    planLimitMessage,
+    dismissPlanLimitMessage,
+  } = useIncomesContext();
 
   const [form, setForm] = useState<IncomeFormValues>(emptyIncomeFormValues);
   const [errors, setErrors] = useState<IncomeFormErrors>({});
@@ -594,6 +602,12 @@ export default function IncomeForm({ mode }: { mode: "create" | "edit" }) {
           {mode === "create" ? "Cadastrar receita" : "Salvar alterações"}
         </Button>
       </div>
+
+      <UpgradeModal
+        open={Boolean(planLimitMessage)}
+        message={planLimitMessage ?? ""}
+        onClose={dismissPlanLimitMessage}
+      />
     </form>
   );
 }

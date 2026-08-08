@@ -6,6 +6,7 @@ import type {
   UpdateCreditCardPayload,
 } from "@/api/credit-cards/schema";
 import type { PaginationMeta } from "@/api/shared/contracts";
+import { PlanLimitReachedError } from "@/api/shared/plan-limit-error";
 import {
   fetchCreditCards,
   saveCreditCard,
@@ -18,6 +19,8 @@ export interface UseCreditCardsResult {
   loading: boolean;
   saving: boolean;
   error: string | null;
+  planLimitMessage: string | null;
+  dismissPlanLimitMessage: () => void;
   pagination: PaginationMeta;
   load: () => Promise<void>;
   setPage: (page: number) => Promise<void>;
@@ -55,9 +58,14 @@ export function useCreditCards(): UseCreditCardsResult {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [planLimitMessage, setPlanLimitMessage] = useState<string | null>(null);
   const [pagination, setPagination] =
     useState<PaginationMeta>(EMPTY_PAGINATION);
   const { showError, showSuccess } = useToast();
+
+  const dismissPlanLimitMessage = useCallback(() => {
+    setPlanLimitMessage(null);
+  }, []);
 
   const currentPage = toPositiveInt(searchParams.get("page"), 1);
   const currentLimit = toPositiveInt(searchParams.get("limit"), DEFAULT_LIMIT);
@@ -140,6 +148,11 @@ export function useCreditCards(): UseCreditCardsResult {
         await load();
         return saved;
       } catch (err) {
+        if (err instanceof PlanLimitReachedError) {
+          setPlanLimitMessage(err.message);
+          return null;
+        }
+
         const message = toErrorMessage(
           err,
           creditCardUiCopy.errors.saveCreditCardFallback,
@@ -159,6 +172,8 @@ export function useCreditCards(): UseCreditCardsResult {
     loading,
     saving,
     error,
+    planLimitMessage,
+    dismissPlanLimitMessage,
     pagination,
     load,
     setPage,

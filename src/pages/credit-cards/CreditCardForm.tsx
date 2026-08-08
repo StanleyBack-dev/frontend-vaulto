@@ -2,6 +2,7 @@ import Button from "@/components/atoms/Button";
 import Input from "@/components/atoms/Input";
 import Select from "@/components/atoms/Select";
 import SectionCard from "@/components/organisms/SectionCard";
+import UpgradeModal from "@/components/organisms/UpgradeModal";
 import { colors } from "@/config";
 import {
   creditCardUiCopy,
@@ -32,7 +33,8 @@ export default function CreditCardForm({ mode }: { mode: "create" | "edit" }) {
   const navigate = useNavigate();
   const { id } = useParams();
   const { showError } = useToast();
-  const { save, saving } = useCreditCardsContext();
+  const { save, saving, planLimitMessage, dismissPlanLimitMessage } =
+    useCreditCardsContext();
   const [values, setValues] = useState<CreditCardFormValues>(
     emptyCreditCardFormValues,
   );
@@ -281,6 +283,12 @@ export default function CreditCardForm({ mode }: { mode: "create" | "edit" }) {
           {mode === "create" ? "Cadastrar cartão" : "Salvar cartão"}
         </Button>
       </div>
+
+      <UpgradeModal
+        open={Boolean(planLimitMessage)}
+        message={planLimitMessage ?? ""}
+        onClose={dismissPlanLimitMessage}
+      />
     </form>
   );
 }
