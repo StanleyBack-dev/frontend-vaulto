@@ -9,4 +9,5 @@ export type ActiveView =
   | "creditCards"
   | "users"
   | "profile"
+  | "plans"
   | "faq";

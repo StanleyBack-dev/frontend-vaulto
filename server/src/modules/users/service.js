@@ -6,6 +6,7 @@ import {
   GET_USERS_QUERY,
   GET_USER_FILTER_OPTIONS_QUERY,
   GET_USER_PAGE_PERMISSIONS_QUERY,
+  ME_QUERY,
   UNLOCK_USER_CREDENTIAL_MUTATION,
 } from "./queries.js";
 
@@ -15,6 +16,16 @@ function requireData(value, message) {
   }
 
   return value;
+}
+
+export async function getMyProfile(authContext, requestId) {
+  const data = await executeGraphql({
+    query: ME_QUERY,
+    requestId,
+    ...authContext,
+  });
+
+  return requireData(data.me, "Invalid profile response.");
 }
 
 export async function listUsers(input, authContext, requestId) {

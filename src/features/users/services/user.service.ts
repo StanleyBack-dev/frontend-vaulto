@@ -1,5 +1,6 @@
 import { createUser } from "../../../api/users/methods/create";
 import { getUsers } from "../../../api/users/methods/get";
+import { getMe } from "../../../api/users/methods/getMe";
 import { getUserFilterOptions } from "../../../api/users/methods/get-filter-options";
 import { getUserPagePermissions } from "../../../api/users/methods/get-page-permissions";
 import { updateUser } from "../../../api/users/methods/update";
@@ -31,6 +32,17 @@ interface SaveUserParams {
 export interface UsersCollectionResult {
   items: User[];
   pagination: PaginationMeta;
+}
+
+export async function fetchMyProfile(): Promise<User> {
+  const response = await getMe();
+  const parsed = UserSchema.safeParse(response);
+
+  if (!parsed.success) {
+    throw new Error(userUiCopy.errors.invalidUserData);
+  }
+
+  return parsed.data;
 }
 
 export async function fetchUsers(

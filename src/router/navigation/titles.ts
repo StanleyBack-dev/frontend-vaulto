@@ -31,7 +31,11 @@ export const viewTitles: Record<
     title: "Usuários",
     subtitle: "Gerenciar usuários de acesso",
   },
-  profile: { title: "Perfil", subtitle: "Informações da empresa" },
+  profile: { title: "Perfil", subtitle: "Seus dados e sua assinatura" },
+  plans: {
+    title: "Planos",
+    subtitle: "Compare o Free e o Vaulto Pro e escolha o seu",
+  },
   faq: {
     title: "Manual do Sistema",
     subtitle:
