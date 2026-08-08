@@ -9,6 +9,7 @@ import {
   debtRoutePaths,
   debtsStatementRoutePaths,
   faqRoutePaths,
+  forecastRoutePaths,
   incomeReceiptRoutePaths,
   incomeRoutePaths,
   paymentRoutePaths,
@@ -36,6 +37,7 @@ const Recebimentos = lazy(
 );
 const Profile = lazy(() => import("../../pages/Profile"));
 const Plans = lazy(() => import("../../pages/Plans"));
+const Forecast = lazy(() => import("../../pages/Forecast"));
 const Manual = lazy(() => import("../../pages/Manual"));
 
 function withPageSuspense(element: React.ReactNode) {
@@ -236,6 +238,11 @@ export function AppShellRoutes({ userId }: AppShellRoutesProps) {
       />
       {/* Planos - comparativo de planos e assinatura do Vaulto Pro */}
       <Route path={planRoutePaths.list} element={withPageSuspense(<Plans />)} />
+      {/* Previsão financeira - "quanto posso gastar" (recurso Pro) */}
+      <Route
+        path={forecastRoutePaths.list}
+        element={withPageSuspense(<Forecast />)}
+      />
       {/* Manual/Ajuda - documentação de uso, comum a todos os usuários */}
       <Route path={faqRoutePaths.list} element={withPageSuspense(<Manual />)} />
       <Route

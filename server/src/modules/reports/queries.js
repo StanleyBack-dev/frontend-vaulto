@@ -18,3 +18,16 @@ export const GET_DEBTS_REPORT_QUERY = `
     }
   }
 `;
+
+export const GET_FINANCIAL_FORECAST_QUERY = `
+  query GetFinancialForecast($input: GetFinancialForecastInputDto!) {
+    getFinancialForecast(input: $input) {
+      currentBalance
+      projectedIncome
+      projectedExpenses
+      safeToSpend
+      periodStart
+      periodEnd
+    }
+  }
+`;

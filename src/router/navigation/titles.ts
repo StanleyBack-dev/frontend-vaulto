@@ -36,6 +36,10 @@ export const viewTitles: Record<
     title: "Planos",
     subtitle: "Compare o Free e o Vaulto Pro e escolha o seu",
   },
+  forecast: {
+    title: "Previsão financeira",
+    subtitle: "Quanto você pode gastar com segurança no período",
+  },
   faq: {
     title: "Manual do Sistema",
     subtitle:
