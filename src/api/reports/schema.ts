@@ -26,3 +26,20 @@ export interface DebtsReportQueryParams {
   debtType?: string;
   idCategory?: string;
 }
+
+export const FinancialForecastSchema = z.object({
+  currentBalance: z.number(),
+  projectedIncome: z.number(),
+  projectedExpenses: z.number(),
+  safeToSpend: z.number(),
+  periodStart: z.string(),
+  periodEnd: z.string(),
+});
+
+export type FinancialForecast = z.infer<typeof FinancialForecastSchema>;
+
+export interface FinancialForecastPayload {
+  currentBalance: number;
+  periodStart?: string;
+  periodEnd?: string;
+}

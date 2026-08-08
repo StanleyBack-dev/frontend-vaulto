@@ -2,7 +2,7 @@ import { Router } from "express";
 import { getAuthContext } from "../../shared/auth/get-user-id.js";
 import { buildErrorResponse } from "../../shared/http/error-response.js";
 import { buildListInput } from "../../shared/http/parse-pagination.js";
-import { getDebtsReport } from "./service.js";
+import { getDebtsReport, getFinancialForecast } from "./service.js";
 
 const router = Router();
 
@@ -22,6 +22,20 @@ router.get("/debts", async (req, res) => {
     ]);
     const report = await getDebtsReport(input, authContext, req.requestId);
     res.json(report);
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
+router.post("/forecast", async (req, res) => {
+  try {
+    const authContext = getAuthContext(req);
+    const forecast = await getFinancialForecast(
+      req.body,
+      authContext,
+      req.requestId,
+    );
+    res.json(forecast);
   } catch (error) {
     sendError(res, error);
   }

@@ -6,6 +6,7 @@ export {
   debtRoutePaths,
   debtsStatementRoutePaths,
   faqRoutePaths,
+  forecastRoutePaths,
   incomeReceiptRoutePaths,
   incomeRoutePaths,
   paymentRoutePaths,

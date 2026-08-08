@@ -12,6 +12,7 @@ export const routePaths: Record<ActiveView, string> = {
   creditCards: "/cartoes-de-credito",
   profile: "/perfil",
   plans: "/planos",
+  forecast: "/previsao",
   faq: "/manual",
 };
 
@@ -87,6 +88,10 @@ export const faqRoutePaths = {
 
 export const planRoutePaths = {
   list: "/planos",
+};
+
+export const forecastRoutePaths = {
+  list: "/previsao",
 };
 
 export const utilityRoutePaths = {

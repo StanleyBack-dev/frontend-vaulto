@@ -10,6 +10,7 @@ import {
   LayoutDashboard,
   Receipt,
   Tags,
+  TrendingUp,
   User,
   Shield,
   Wallet,
@@ -26,6 +27,11 @@ export const primaryNavigationItems: NavigationItem[] = [
   { id: "debts", label: "Dívidas", icon: <DebtsIcon size={20} /> },
   { id: "debtsStatement", label: "Extratos", icon: <Receipt size={20} /> },
   { id: "incomes", label: "Receitas", icon: <Banknote size={20} /> },
+  {
+    id: "forecast",
+    label: "Previsão financeira",
+    icon: <TrendingUp size={20} />,
+  },
   { id: "payments", label: "Pagamentos", icon: <Wallet size={20} /> },
   {
     id: "incomeReceipts",
