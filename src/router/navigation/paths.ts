@@ -14,6 +14,7 @@ export const routePaths: Record<ActiveView, string> = {
   plans: "/planos",
   forecast: "/previsao",
   calendar: "/calendario",
+  reminders: "/lembretes",
   faq: "/manual",
 };
 
@@ -97,6 +98,10 @@ export const forecastRoutePaths = {
 
 export const calendarRoutePaths = {
   list: "/calendario",
+};
+
+export const reminderRoutePaths = {
+  list: "/lembretes",
 };
 
 export const utilityRoutePaths = {

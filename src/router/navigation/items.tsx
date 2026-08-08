@@ -3,6 +3,7 @@ import type { ActiveView } from "../../types/views";
 import DebtsIcon from "../../components/atoms/icons/DebtsIcon";
 import {
   Banknote,
+  Bell,
   CalendarDays,
   CreditCard,
   Crown,
@@ -56,5 +57,6 @@ export const primaryNavigationItems: NavigationItem[] = [
 export const secondaryNavigationItems: NavigationItem[] = [
   { id: "profile", label: "Perfil", icon: <User size={20} /> },
   { id: "plans", label: "Planos", icon: <Crown size={20} /> },
+  { id: "reminders", label: "Lembretes", icon: <Bell size={20} /> },
   { id: "faq", label: "Ajuda", icon: <HelpCircle size={20} /> },
 ];

@@ -44,6 +44,10 @@ export const viewTitles: Record<
     title: "Calendário financeiro",
     subtitle: "Dívidas e receitas organizadas por dia de vencimento",
   },
+  reminders: {
+    title: "Lembretes",
+    subtitle: "O que vence amanhã, e como avisamos você por e-mail",
+  },
   faq: {
     title: "Manual do Sistema",
     subtitle:

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { brand, colors, typography } from "../../config";
-import { ChevronRight, LogOut } from "lucide-react";
+import { ChevronDown, ChevronRight, LogOut } from "lucide-react";
 import type { ActiveView } from "../../types/views";
 import { logoutCurrentSession, useAuthSession } from "../../features/auth";
 import { authRoutePaths } from "../../router";
@@ -32,6 +32,7 @@ export default function Sidebar({
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
   const [avatarLoadFailed, setAvatarLoadFailed] = useState(false);
+  const [isAccountSectionOpen, setIsAccountSectionOpen] = useState(true);
 
   useEffect(() => {
     setAvatarLoadFailed(false);
@@ -145,7 +146,7 @@ export default function Sidebar({
           </div>
         </div>
 
-        <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-5 lg:py-6">
+        <nav className="min-h-0 flex-1 space-y-1 overflow-y-auto px-3 py-5 lg:py-6">
           <p
             className="mb-4 px-3 text-xs font-semibold uppercase tracking-widest"
             style={{
@@ -205,54 +206,65 @@ export default function Sidebar({
         </nav>
 
         <div
-          className="space-y-1 border-t px-3 pb-6 pt-4"
+          className="shrink-0 space-y-1 border-t px-3 pb-6 pt-4"
           style={{ borderColor: colors.brown[100] }}
         >
-          <p
-            className="mb-3 px-3 text-xs font-semibold uppercase tracking-widest"
+          <button
+            type="button"
+            onClick={() => setIsAccountSectionOpen((open) => !open)}
+            className="mb-1 flex w-full items-center justify-between px-3 py-1 text-xs font-semibold uppercase tracking-widest"
             style={{ color: colors.brown[500] }}
+            aria-expanded={isAccountSectionOpen}
           >
-            Conta
-          </p>
-          {secondaryNavigationItems.map((item) => {
-            const isActive = active === item.id;
-            return (
-              <button
-                key={item.id}
-                onClick={() => {
-                  onNavigate(item.id);
-                  onClose?.();
-                }}
-                className="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-all duration-200"
-                style={
-                  isActive
-                    ? {
-                        background: `linear-gradient(135deg, ${colors.purple[700]}, ${colors.gold[500]})`,
-                        color: "#fff",
-                      }
-                    : { color: colors.brown[300] }
-                }
-                onMouseEnter={(e) => {
-                  if (!isActive) {
-                    (e.currentTarget as HTMLButtonElement).style.background =
-                      colors.black[700];
-                    (e.currentTarget as HTMLButtonElement).style.color = "#fff";
+            <span>Conta</span>
+            <ChevronDown
+              size={14}
+              className={`transition-transform duration-200 ${
+                isAccountSectionOpen ? "" : "-rotate-90"
+              }`}
+            />
+          </button>
+          {isAccountSectionOpen &&
+            secondaryNavigationItems.map((item) => {
+              const isActive = active === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    onNavigate(item.id);
+                    onClose?.();
+                  }}
+                  className="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-all duration-200"
+                  style={
+                    isActive
+                      ? {
+                          background: `linear-gradient(135deg, ${colors.purple[700]}, ${colors.gold[500]})`,
+                          color: "#fff",
+                        }
+                      : { color: colors.brown[300] }
                   }
-                }}
-                onMouseLeave={(e) => {
-                  if (!isActive) {
-                    (e.currentTarget as HTMLButtonElement).style.background =
-                      "transparent";
-                    (e.currentTarget as HTMLButtonElement).style.color =
-                      colors.brown[300];
-                  }
-                }}
-              >
-                {item.icon}
-                <span>{item.label}</span>
-              </button>
-            );
-          })}
+                  onMouseEnter={(e) => {
+                    if (!isActive) {
+                      (e.currentTarget as HTMLButtonElement).style.background =
+                        colors.black[700];
+                      (e.currentTarget as HTMLButtonElement).style.color =
+                        "#fff";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) {
+                      (e.currentTarget as HTMLButtonElement).style.background =
+                        "transparent";
+                      (e.currentTarget as HTMLButtonElement).style.color =
+                        colors.brown[300];
+                    }
+                  }}
+                >
+                  {item.icon}
+                  <span>{item.label}</span>
+                </button>
+              );
+            })}
           <button
             type="button"
             onClick={() => setIsLogoutDialogOpen(true)}

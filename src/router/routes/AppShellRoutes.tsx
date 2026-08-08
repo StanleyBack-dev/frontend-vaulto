@@ -15,6 +15,7 @@ import {
   incomeRoutePaths,
   paymentRoutePaths,
   planRoutePaths,
+  reminderRoutePaths,
   routePaths,
   utilityRoutePaths,
 } from "../navigation";
@@ -40,6 +41,7 @@ const Profile = lazy(() => import("../../pages/Profile"));
 const Plans = lazy(() => import("../../pages/Plans"));
 const Forecast = lazy(() => import("../../pages/Forecast"));
 const CalendarPage = lazy(() => import("../../pages/Calendar"));
+const Reminders = lazy(() => import("../../pages/Reminders"));
 const Manual = lazy(() => import("../../pages/Manual"));
 
 function withPageSuspense(element: React.ReactNode) {
@@ -249,6 +251,11 @@ export function AppShellRoutes({ userId }: AppShellRoutesProps) {
       <Route
         path={calendarRoutePaths.list}
         element={withPageSuspense(<CalendarPage />)}
+      />
+      {/* Lembretes - vencimentos de amanhã e aviso por e-mail (recurso Pro) */}
+      <Route
+        path={reminderRoutePaths.list}
+        element={withPageSuspense(<Reminders />)}
       />
       {/* Manual/Ajuda - documentação de uso, comum a todos os usuários */}
       <Route path={faqRoutePaths.list} element={withPageSuspense(<Manual />)} />
