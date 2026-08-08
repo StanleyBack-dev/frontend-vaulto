@@ -3,6 +3,7 @@ const SUBSCRIPTION_FIELDS = `
   status
   trialEndsAt
   currentPeriodEnd
+  billingCycle
   cancelAtPeriodEnd
 `;
 
@@ -21,6 +22,33 @@ export const SUBSCRIBE_TO_PRO_MUTATION = `
         ${SUBSCRIPTION_FIELDS}
       }
       checkoutUrl
+    }
+  }
+`;
+
+export const CANCEL_SUBSCRIPTION_MUTATION = `
+  mutation CancelSubscription {
+    cancelSubscription {
+      ${SUBSCRIPTION_FIELDS}
+    }
+  }
+`;
+
+export const MY_BILLING_PAYMENTS_QUERY = `
+  query MyBillingPayments($input: ListBillingPaymentsInputDto) {
+    myBillingPayments(input: $input) {
+      items {
+        amount
+        status
+        dueDate
+        paidAt
+        createdAt
+      }
+      total
+      currentPage
+      limit
+      totalPages
+      hasNextPage
     }
   }
 `;

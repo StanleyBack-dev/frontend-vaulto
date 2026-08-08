@@ -7,6 +7,17 @@ import { formatDateDisplay } from "../../utils/format";
 interface SubscriptionStatusCardProps {
   subscription: Subscription;
   onViewPlans: () => void;
+  onCancelSubscription?: () => void;
+}
+
+function canCancel(subscription: Subscription): boolean {
+  return (
+    subscription.plan === "PRO" &&
+    !subscription.cancelAtPeriodEnd &&
+    (subscription.status === "ACTIVE" ||
+      subscription.status === "TRIALING" ||
+      subscription.status === "PAST_DUE")
+  );
 }
 
 function describeStatus(subscription: Subscription): string {
@@ -34,6 +45,7 @@ function describeStatus(subscription: Subscription): string {
 export default function SubscriptionStatusCard({
   subscription,
   onViewPlans,
+  onCancelSubscription,
 }: SubscriptionStatusCardProps) {
   const isPro = subscription.plan === "PRO";
 
@@ -63,17 +75,30 @@ export default function SubscriptionStatusCard({
         </p>
       </div>
 
-      <Button
-        type="button"
-        variant={isPro ? "outline" : "primary"}
-        className={
-          isPro ? "!border-gray-400 !text-gray-700 hover:!bg-gray-100" : ""
-        }
-        onClick={onViewPlans}
-        style={{ borderRadius: radii.md }}
-      >
-        {isPro ? "Ver planos" : "Assinar Vaulto Pro"}
-      </Button>
+      <div className="flex shrink-0 flex-col items-stretch gap-2 sm:items-end">
+        <Button
+          type="button"
+          variant={isPro ? "outline" : "primary"}
+          className={
+            isPro ? "!border-gray-400 !text-gray-700 hover:!bg-gray-100" : ""
+          }
+          onClick={onViewPlans}
+          style={{ borderRadius: radii.md }}
+        >
+          {isPro ? "Ver planos" : "Assinar Vaulto Pro"}
+        </Button>
+
+        {onCancelSubscription && canCancel(subscription) && (
+          <button
+            type="button"
+            onClick={onCancelSubscription}
+            className="text-xs font-semibold underline-offset-2 hover:underline"
+            style={{ color: colors.brown[500] }}
+          >
+            Cancelar assinatura
+          </button>
+        )}
+      </div>
     </div>
   );
 }
