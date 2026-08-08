@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { ListQueryParams } from "../shared/contracts";
 
 export const SubscriptionPlanSchema = z.enum(["FREE", "PRO"]);
 export const SubscriptionStatusSchema = z.enum([
@@ -15,6 +16,7 @@ export const SubscriptionSchema = z.object({
   status: SubscriptionStatusSchema,
   trialEndsAt: z.string().nullable().optional(),
   currentPeriodEnd: z.string().nullable().optional(),
+  billingCycle: SubscriptionBillingCycleSchema.nullable().optional(),
   cancelAtPeriodEnd: z.boolean(),
 });
 
@@ -28,6 +30,32 @@ export const SubscribeToProResponseSchema = z.object({
   checkoutUrl: z.string().nullable().optional(),
 });
 
+export const BillingPaymentStatusSchema = z.enum([
+  "PENDING",
+  "CONFIRMED",
+  "RECEIVED",
+  "OVERDUE",
+  "REFUNDED",
+  "DELETED",
+]);
+
+export const BillingPaymentSchema = z.object({
+  amount: z.number(),
+  status: BillingPaymentStatusSchema,
+  dueDate: z.string().nullable().optional(),
+  paidAt: z.string().nullable().optional(),
+  createdAt: z.string(),
+});
+
+export const BillingPaymentsResponseSchema = z.object({
+  items: z.array(BillingPaymentSchema),
+  total: z.number(),
+  currentPage: z.number(),
+  limit: z.number(),
+  totalPages: z.number(),
+  hasNextPage: z.boolean(),
+});
+
 export type SubscriptionPlan = z.infer<typeof SubscriptionPlanSchema>;
 export type SubscriptionStatus = z.infer<typeof SubscriptionStatusSchema>;
 export type SubscriptionBillingCycle = z.infer<
@@ -38,3 +66,10 @@ export type SubscribeToProPayload = z.infer<typeof SubscribeToProPayloadSchema>;
 export type SubscribeToProResponse = z.infer<
   typeof SubscribeToProResponseSchema
 >;
+export type BillingPaymentStatus = z.infer<typeof BillingPaymentStatusSchema>;
+export type BillingPayment = z.infer<typeof BillingPaymentSchema>;
+export type BillingPaymentsResponse = z.infer<
+  typeof BillingPaymentsResponseSchema
+>;
+
+export type BillingPaymentListQueryParams = ListQueryParams;
