@@ -11,4 +11,5 @@ export type ActiveView =
   | "profile"
   | "plans"
   | "forecast"
+  | "calendar"
   | "faq";

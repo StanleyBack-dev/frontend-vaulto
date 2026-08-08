@@ -40,6 +40,10 @@ export const viewTitles: Record<
     title: "Previsão financeira",
     subtitle: "Quanto você pode gastar com segurança no período",
   },
+  calendar: {
+    title: "Calendário financeiro",
+    subtitle: "Dívidas e receitas organizadas por dia de vencimento",
+  },
   faq: {
     title: "Manual do Sistema",
     subtitle:

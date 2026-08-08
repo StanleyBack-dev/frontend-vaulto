@@ -5,6 +5,7 @@ import { Navigate, Route } from "react-router-dom";
 import AppLayout from "../AppLayout";
 import {
   authRoutePaths,
+  calendarRoutePaths,
   dashboardRoutePaths,
   debtRoutePaths,
   debtsStatementRoutePaths,
@@ -38,6 +39,7 @@ const Recebimentos = lazy(
 const Profile = lazy(() => import("../../pages/Profile"));
 const Plans = lazy(() => import("../../pages/Plans"));
 const Forecast = lazy(() => import("../../pages/Forecast"));
+const CalendarPage = lazy(() => import("../../pages/Calendar"));
 const Manual = lazy(() => import("../../pages/Manual"));
 
 function withPageSuspense(element: React.ReactNode) {
@@ -242,6 +244,11 @@ export function AppShellRoutes({ userId }: AppShellRoutesProps) {
       <Route
         path={forecastRoutePaths.list}
         element={withPageSuspense(<Forecast />)}
+      />
+      {/* Calendário financeiro - vencimentos por dia (recurso Pro) */}
+      <Route
+        path={calendarRoutePaths.list}
+        element={withPageSuspense(<CalendarPage />)}
       />
       {/* Manual/Ajuda - documentação de uso, comum a todos os usuários */}
       <Route path={faqRoutePaths.list} element={withPageSuspense(<Manual />)} />
