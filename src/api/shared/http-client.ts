@@ -3,6 +3,7 @@ import axios, { type InternalAxiosRequestConfig } from "axios";
 interface ApiErrorPayload {
   message?: string;
   error?: string;
+  code?: string;
 }
 
 interface AxiosLikeError {
@@ -97,4 +98,9 @@ export function getApiErrorMessage(error: unknown, fallback: string): string {
   }
 
   return fallback;
+}
+
+export function getApiErrorCode(error: unknown): string | undefined {
+  const axiosError = error as AxiosLikeError;
+  return axiosError?.isAxiosError ? axiosError.response?.data?.code : undefined;
 }

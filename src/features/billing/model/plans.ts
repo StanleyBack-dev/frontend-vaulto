@@ -3,6 +3,19 @@ export const PRO_PLAN_PRICES = {
   YEARLY: 149.9,
 } as const;
 
+export const FREE_PLAN_LIMITS = {
+  DEBTS: 5,
+  CREDIT_CARDS: 1,
+  INCOMES: 10,
+} as const;
+
+export function buildPlanLimitMessage(
+  resourceLabel: string,
+  limit: number,
+): string {
+  return `Limite do plano Free atingido (${limit}) para ${resourceLabel}. Assine o Vaulto Pro para continuar sem limites.`;
+}
+
 export const PRO_PLAN_MONTHLY_EQUIVALENT_WHEN_YEARLY = 12.49;
 
 export interface PlanFeatureRow {

@@ -1,6 +1,8 @@
 import DataTable from "@/components/organisms/DataTable";
 import ConfirmDialog from "@molecules/ConfirmDialog";
 import FilterBar from "@/components/molecules/FilterBar";
+import UpgradeBanner from "@molecules/UpgradeBanner";
+import UpgradeModal from "@/components/organisms/UpgradeModal";
 import SearchIcon from "@/components/atoms/icons/SearchIcon";
 import Select from "@/components/atoms/Select";
 import { colors } from "@/config";
@@ -16,6 +18,11 @@ import {
   incomeTypeOptions,
   useIncomesContext,
 } from "@/features/incomes";
+import {
+  buildPlanLimitMessage,
+  FREE_PLAN_LIMITS,
+  useBillingContext,
+} from "@/features/billing";
 
 export default function Incomes() {
   const navigate = useNavigate();
@@ -34,6 +41,7 @@ export default function Incomes() {
     load,
     remove,
   } = useIncomesContext();
+  const { subscription } = useBillingContext();
 
   useEffect(() => {
     void load();
@@ -45,6 +53,11 @@ export default function Incomes() {
     null,
   );
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
+
+  const isAtIncomeLimit =
+    subscription?.plan === "FREE" &&
+    pagination.total >= FREE_PLAN_LIMITS.INCOMES;
 
   const filteredIncomes = useMemo(
     () => filterIncomesBySearch(incomes, search),
@@ -74,6 +87,14 @@ export default function Incomes() {
 
   return (
     <div className="space-y-4">
+      {subscription?.plan === "FREE" && (
+        <UpgradeBanner
+          used={pagination.total}
+          limit={FREE_PLAN_LIMITS.INCOMES}
+          resourceLabel="receitas"
+        />
+      )}
+
       <FilterBar
         searchValue={search}
         onSearchChange={setSearch}
@@ -83,7 +104,13 @@ export default function Incomes() {
         }
         action={{
           label: "Nova receita",
-          onClick: () => navigate(incomeRoutePaths.create),
+          onClick: () => {
+            if (isAtIncomeLimit) {
+              setIsUpgradeModalOpen(true);
+              return;
+            }
+            navigate(incomeRoutePaths.create);
+          },
           leftIcon: <Plus size={16} />,
         }}
       />
@@ -244,6 +271,12 @@ export default function Incomes() {
           void handleConfirmDelete();
         }}
         onCancel={() => setIncomePendingDelete(null)}
+      />
+
+      <UpgradeModal
+        open={isUpgradeModalOpen}
+        message={buildPlanLimitMessage("receitas", FREE_PLAN_LIMITS.INCOMES)}
+        onClose={() => setIsUpgradeModalOpen(false)}
       />
     </div>
   );

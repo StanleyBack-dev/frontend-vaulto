@@ -3,6 +3,7 @@ import Input from "@/components/atoms/Input";
 import Select from "@/components/atoms/Select";
 import Textarea from "@/components/atoms/Textarea";
 import SectionCard from "@/components/organisms/SectionCard";
+import UpgradeModal from "@/components/organisms/UpgradeModal";
 import { colors } from "@/config";
 import {
   debtStatusOptions,
@@ -67,6 +68,8 @@ export default function DebtForm({ mode }: { mode: "create" | "edit" }) {
     saving,
     debtCategories,
     debtCreditCards,
+    planLimitMessage,
+    dismissPlanLimitMessage,
   } = useDebtsContext();
 
   const [form, setForm] = useState<DebtFormValues>(emptyDebtFormValues);
@@ -723,6 +726,12 @@ export default function DebtForm({ mode }: { mode: "create" | "edit" }) {
           {mode === "create" ? "Cadastrar dívida" : "Salvar alterações"}
         </Button>
       </div>
+
+      <UpgradeModal
+        open={Boolean(planLimitMessage)}
+        message={planLimitMessage ?? ""}
+        onClose={dismissPlanLimitMessage}
+      />
     </form>
   );
 }

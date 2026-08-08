@@ -1,4 +1,12 @@
-import { apiHttp, getApiErrorMessage } from "../../shared/http-client";
+import {
+  apiHttp,
+  getApiErrorCode,
+  getApiErrorMessage,
+} from "../../shared/http-client";
+import {
+  PLAN_LIMIT_REACHED_CODE,
+  PlanLimitReachedError,
+} from "../../shared/plan-limit-error";
 import type { CreateIncomePayload, Income } from "../schema";
 
 export async function createIncome(
@@ -8,8 +16,15 @@ export async function createIncome(
     const response = await apiHttp.post<Income>("/incomes", payload);
     return response.data;
   } catch (error) {
-    throw new Error(
-      getApiErrorMessage(error, "Não foi possível criar a receita."),
+    const message = getApiErrorMessage(
+      error,
+      "Não foi possível criar a receita.",
     );
+
+    if (getApiErrorCode(error) === PLAN_LIMIT_REACHED_CODE) {
+      throw new PlanLimitReachedError(message);
+    }
+
+    throw new Error(message);
   }
 }
