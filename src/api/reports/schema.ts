@@ -78,7 +78,14 @@ export type CategoryComparisonGroup = z.infer<
 >;
 export type CategoryComparison = z.infer<typeof CategoryComparisonSchema>;
 
+export type CategoryComparisonPeriodType =
+  | "MONTH"
+  | "QUARTER"
+  | "SEMESTER"
+  | "YEAR";
+
 export interface CategoryComparisonQueryParams {
+  periodType?: CategoryComparisonPeriodType;
   referenceDate?: string;
   comparisonDate?: string;
 }

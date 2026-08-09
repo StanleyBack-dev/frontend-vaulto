@@ -49,6 +49,7 @@ router.get("/category-comparison", async (req, res) => {
   try {
     const authContext = getAuthContext(req);
     const input = buildListInput(req.query, [
+      "periodType",
       "referenceDate",
       "comparisonDate",
     ]);
