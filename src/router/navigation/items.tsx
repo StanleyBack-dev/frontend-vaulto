@@ -10,8 +10,10 @@ import {
   HandCoins,
   HelpCircle,
   LayoutDashboard,
+  PiggyBank,
   Receipt,
   Tags,
+  Target,
   TrendingUp,
   User,
   Shield,
@@ -38,6 +40,12 @@ export const primaryNavigationItems: NavigationItem[] = [
     id: "calendar",
     label: "Calendário financeiro",
     icon: <CalendarDays size={20} />,
+  },
+  { id: "goals", label: "Metas financeiras", icon: <Target size={20} /> },
+  {
+    id: "goalContributions",
+    label: "Contribuições de metas",
+    icon: <PiggyBank size={20} />,
   },
   { id: "payments", label: "Pagamentos", icon: <Wallet size={20} /> },
   {

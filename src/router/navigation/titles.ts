@@ -48,6 +48,14 @@ export const viewTitles: Record<
     title: "Lembretes",
     subtitle: "O que vence amanhã, e como avisamos você por e-mail",
   },
+  goals: {
+    title: "Metas financeiras",
+    subtitle: "Defina objetivos e acompanhe seu progresso",
+  },
+  goalContributions: {
+    title: "Contribuições de metas",
+    subtitle: "Registro de contribuições para suas metas financeiras",
+  },
   faq: {
     title: "Manual do Sistema",
     subtitle:
