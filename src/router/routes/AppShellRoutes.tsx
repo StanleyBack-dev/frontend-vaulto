@@ -11,6 +11,8 @@ import {
   debtsStatementRoutePaths,
   faqRoutePaths,
   forecastRoutePaths,
+  goalContributionRoutePaths,
+  goalRoutePaths,
   incomeReceiptRoutePaths,
   incomeRoutePaths,
   paymentRoutePaths,
@@ -21,6 +23,7 @@ import {
 } from "../navigation";
 import RequirePageAccessRoute from "../../features/auth/guards/RequirePageAccessRoute";
 import { DebtsProviderOutlet } from "../../features/debts";
+import { GoalsProviderOutlet } from "../../features/goals";
 import { IncomesProviderOutlet } from "../../features/incomes";
 import { ManagementRoutes } from "./ManagementRoutes";
 
@@ -36,6 +39,11 @@ const IncomeForm = lazy(() => import("../../pages/incomes/IncomeForm"));
 const Payments = lazy(() => import("../../pages/payments/Payments"));
 const Recebimentos = lazy(
   () => import("../../pages/income-receipts/Recebimentos"),
+);
+const Goals = lazy(() => import("../../pages/goals/Goals"));
+const GoalForm = lazy(() => import("../../pages/goals/GoalForm"));
+const GoalContributions = lazy(
+  () => import("../../pages/goals/GoalContributions"),
 );
 const Profile = lazy(() => import("../../pages/Profile"));
 const Plans = lazy(() => import("../../pages/Plans"));
@@ -205,6 +213,34 @@ export function AppShellRoutes({ userId }: AppShellRoutesProps) {
             element={withPageSuspense(<Recebimentos />)}
           />
         </Route>
+      </Route>
+
+      {/* Metas financeiras - recurso exclusivo do Vaulto Pro (gate feito na pagina) */}
+      <Route
+        element={
+          <UserScopedProviderRoute
+            userId={userId}
+            loginPath={authRoutePaths.login}
+            ProviderOutlet={GoalsProviderOutlet}
+          />
+        }
+      >
+        <Route
+          path={goalRoutePaths.list}
+          element={withPageSuspense(<Goals />)}
+        />
+        <Route
+          path={goalRoutePaths.create}
+          element={withPageSuspense(<GoalForm mode="create" />)}
+        />
+        <Route
+          path={goalRoutePaths.edit()}
+          element={withPageSuspense(<GoalForm mode="edit" />)}
+        />
+        <Route
+          path={goalContributionRoutePaths.list}
+          element={withPageSuspense(<GoalContributions />)}
+        />
       </Route>
 
       {/* Redirects legados */}

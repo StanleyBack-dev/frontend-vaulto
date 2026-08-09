@@ -4,6 +4,7 @@ import Button from "@/components/atoms/Button";
 import EditIcon from "@/components/atoms/icons/EditIcon";
 import Input from "@/components/atoms/Input";
 import Select from "@/components/atoms/Select";
+import ConfirmDialog from "@molecules/ConfirmDialog";
 import SectionCard from "@/components/organisms/SectionCard";
 import { colors } from "@/config";
 import {
@@ -116,6 +117,8 @@ export default function Payments() {
   const [editingPaymentId, setEditingPaymentId] = useState<string | null>(null);
   const [editAmount, setEditAmount] = useState("");
   const [editDate, setEditDate] = useState("");
+  const [paymentPendingDelete, setPaymentPendingDelete] =
+    useState<DebtPayment | null>(null);
 
   async function loadDetail(idDebt: string) {
     setLoadingDetail(true);
@@ -249,14 +252,15 @@ export default function Payments() {
     }
   }
 
-  async function handleDeletePayment(payment: DebtPayment) {
-    if (!payment.idDebtPayment) return;
-    if (!window.confirm(paymentUiCopy.history.deleteConfirm)) return;
+  async function handleConfirmDeletePayment() {
+    if (!paymentPendingDelete?.idDebtPayment) return;
 
+    const payment = paymentPendingDelete;
     setSubmitting(true);
     try {
-      await deleteDebtPayment(payment.idDebtPayment);
+      await deleteDebtPayment(payment.idDebtPayment!);
       showSuccess(paymentUiCopy.success.deletePayment);
+      setPaymentPendingDelete(null);
       if (payment.idDebt) {
         await loadDetail(payment.idDebt);
       }
@@ -602,7 +606,9 @@ export default function Payments() {
                                     type="button"
                                     title="Excluir"
                                     className="text-rose-700 transition hover:text-rose-900"
-                                    onClick={() => handleDeletePayment(payment)}
+                                    onClick={() =>
+                                      setPaymentPendingDelete(payment)
+                                    }
                                   >
                                     <Trash2 size={18} />
                                   </button>
@@ -620,6 +626,21 @@ export default function Payments() {
           )}
         </SectionCard>
       )}
+
+      <ConfirmDialog
+        open={Boolean(paymentPendingDelete)}
+        title="Excluir pagamento"
+        description={paymentUiCopy.history.deleteConfirm}
+        confirmLabel="Excluir"
+        cancelLabel="Cancelar"
+        variant="danger"
+        icon={<Trash2 size={20} />}
+        loading={submitting}
+        onConfirm={() => {
+          void handleConfirmDeletePayment();
+        }}
+        onCancel={() => setPaymentPendingDelete(null)}
+      />
     </div>
   );
 }

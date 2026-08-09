@@ -13,4 +13,6 @@ export type ActiveView =
   | "forecast"
   | "calendar"
   | "reminders"
+  | "goals"
+  | "goalContributions"
   | "faq";

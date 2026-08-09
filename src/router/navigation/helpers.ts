@@ -8,6 +8,8 @@ import {
   debtsStatementRoutePaths,
   faqRoutePaths,
   forecastRoutePaths,
+  goalContributionRoutePaths,
+  goalRoutePaths,
   incomeReceiptRoutePaths,
   incomeRoutePaths,
   paymentRoutePaths,
@@ -83,6 +85,14 @@ export function getActiveView(pathname: string): ActiveView {
     return "reminders";
   }
 
+  if (pathname.startsWith(goalContributionRoutePaths.list)) {
+    return "goalContributions";
+  }
+
+  if (pathname.startsWith(goalRoutePaths.list)) {
+    return "goals";
+  }
+
   if (pathname.startsWith(faqRoutePaths.list)) {
     return "faq";
   }
@@ -110,6 +120,10 @@ export function getPathForView(view: ActiveView) {
       return calendarRoutePaths.list;
     case "reminders":
       return reminderRoutePaths.list;
+    case "goals":
+      return goalRoutePaths.list;
+    case "goalContributions":
+      return goalContributionRoutePaths.list;
     case "faq":
       return faqRoutePaths.list;
     case "payments":
