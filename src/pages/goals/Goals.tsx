@@ -162,8 +162,8 @@ export default function Goals() {
               className="max-w-md text-sm leading-relaxed"
               style={{ color: colors.brown[500] }}
             >
-              Cadastre sua primeira meta financeira para começar a
-              acompanhar seu progresso.
+              Cadastre sua primeira meta financeira para começar a acompanhar
+              seu progresso.
             </p>
             <Button
               type="button"

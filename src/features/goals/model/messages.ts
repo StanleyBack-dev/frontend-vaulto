@@ -25,8 +25,7 @@ export const goalUiCopy = {
     loadGoalsFallback: "Não foi possível carregar as metas.",
     saveGoalFallback: "Não foi possível salvar a meta.",
     deleteGoalFallback: "Não foi possível excluir a meta.",
-    registerContributionFallback:
-      "Não foi possível registrar a contribuição.",
+    registerContributionFallback: "Não foi possível registrar a contribuição.",
     updateContributionFallback: "Não foi possível atualizar a contribuição.",
     deleteContributionFallback: "Não foi possível excluir a contribuição.",
     invalidCollectionData: "Dados inválidos retornados ao listar metas.",

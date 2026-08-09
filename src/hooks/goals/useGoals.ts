@@ -149,10 +149,7 @@ export function useGoals(): UseGoalsResult {
         await load();
         return created;
       } catch (err) {
-        const message = toErrorMessage(
-          err,
-          goalUiCopy.errors.saveGoalFallback,
-        );
+        const message = toErrorMessage(err, goalUiCopy.errors.saveGoalFallback);
         setError(message);
         showError(goalUiCopy.errors.saveGoalFallback, message);
         return null;
@@ -174,10 +171,7 @@ export function useGoals(): UseGoalsResult {
         await load();
         return updated;
       } catch (err) {
-        const message = toErrorMessage(
-          err,
-          goalUiCopy.errors.saveGoalFallback,
-        );
+        const message = toErrorMessage(err, goalUiCopy.errors.saveGoalFallback);
         setError(message);
         showError(goalUiCopy.errors.saveGoalFallback, message);
         return null;

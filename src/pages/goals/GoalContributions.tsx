@@ -80,9 +80,7 @@ export default function GoalContributions() {
   const [editAmount, setEditAmount] = useState("");
   const [editDate, setEditDate] = useState("");
   const [editNote, setEditNote] = useState("");
-  const [editAmountError, setEditAmountError] = useState<
-    string | undefined
-  >();
+  const [editAmountError, setEditAmountError] = useState<string | undefined>();
   const [editSubmitting, setEditSubmitting] = useState(false);
 
   async function loadDetail(idFinancialGoal: string) {
@@ -185,9 +183,7 @@ export default function GoalContributions() {
         idFinancialGoal: contribution.idFinancialGoal,
         idGoalContribution: contribution.idGoalContribution,
         amount: parsedAmount,
-        contributedAt: editDate
-          ? new Date(editDate).toISOString()
-          : undefined,
+        contributedAt: editDate ? new Date(editDate).toISOString() : undefined,
         note: editNote.trim() || undefined,
       });
 
@@ -302,10 +298,7 @@ export default function GoalContributions() {
             Alvo: {formatCurrency(goalDetail.targetAmount)} • Atual:{" "}
             {formatCurrency(goalDetail.currentAmount)} • Restante:{" "}
             {formatCurrency(
-              Math.max(
-                goalDetail.targetAmount - goalDetail.currentAmount,
-                0,
-              ),
+              Math.max(goalDetail.targetAmount - goalDetail.currentAmount, 0),
             )}{" "}
             • Progresso: {goalDetail.progressPercent}% •{" "}
             {goalStatusLabel(goalDetail.status)}

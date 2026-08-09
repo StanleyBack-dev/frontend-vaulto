@@ -94,11 +94,7 @@ export async function deleteFinancialGoal(
   );
 }
 
-export async function registerGoalContribution(
-  input,
-  authContext,
-  requestId,
-) {
+export async function registerGoalContribution(input, authContext, requestId) {
   const data = await executeGraphql({
     query: REGISTER_GOAL_CONTRIBUTION_MUTATION,
     variables: { input },

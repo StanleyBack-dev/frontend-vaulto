@@ -108,9 +108,7 @@ export function getGoalTableColumns(actions: {
       label: "Valor restante",
       render: (goal) => (
         <span className="text-sm text-[#5a4e7a]">
-          {formatCurrency(
-            Math.max(goal.targetAmount - goal.currentAmount, 0),
-          )}
+          {formatCurrency(Math.max(goal.targetAmount - goal.currentAmount, 0))}
         </span>
       ),
     },
@@ -118,9 +116,7 @@ export function getGoalTableColumns(actions: {
       key: "progressPercent",
       label: "Progresso",
       render: (goal) => (
-        <span className="text-sm text-[#5a4e7a]">
-          {goal.progressPercent}%
-        </span>
+        <span className="text-sm text-[#5a4e7a]">{goal.progressPercent}%</span>
       ),
     },
     {

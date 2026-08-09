@@ -11,10 +11,7 @@ export {
   goalStatusOptions,
   type GoalFormValues,
 } from "./model/form";
-export {
-  filterGoalsBySearch,
-  getGoalTableColumns,
-} from "./model/listing";
+export { filterGoalsBySearch, getGoalTableColumns } from "./model/listing";
 export {
   fetchGoalById,
   fetchGoals,
