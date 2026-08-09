@@ -15,4 +15,5 @@ export type ActiveView =
   | "reminders"
   | "goals"
   | "goalContributions"
+  | "comparisons"
   | "faq";

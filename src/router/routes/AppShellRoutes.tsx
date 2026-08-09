@@ -6,6 +6,7 @@ import AppLayout from "../AppLayout";
 import {
   authRoutePaths,
   calendarRoutePaths,
+  comparisonRoutePaths,
   dashboardRoutePaths,
   debtRoutePaths,
   debtsStatementRoutePaths,
@@ -50,6 +51,7 @@ const Plans = lazy(() => import("../../pages/Plans"));
 const Forecast = lazy(() => import("../../pages/Forecast"));
 const CalendarPage = lazy(() => import("../../pages/Calendar"));
 const Reminders = lazy(() => import("../../pages/Reminders"));
+const Comparisons = lazy(() => import("../../pages/Comparisons"));
 const Manual = lazy(() => import("../../pages/Manual"));
 
 function withPageSuspense(element: React.ReactNode) {
@@ -292,6 +294,11 @@ export function AppShellRoutes({ userId }: AppShellRoutesProps) {
       <Route
         path={reminderRoutePaths.list}
         element={withPageSuspense(<Reminders />)}
+      />
+      {/* Comparativos - gastos e receitas por categoria, mês a mês (recurso Pro) */}
+      <Route
+        path={comparisonRoutePaths.list}
+        element={withPageSuspense(<Comparisons />)}
       />
       {/* Manual/Ajuda - documentação de uso, comum a todos os usuários */}
       <Route path={faqRoutePaths.list} element={withPageSuspense(<Manual />)} />

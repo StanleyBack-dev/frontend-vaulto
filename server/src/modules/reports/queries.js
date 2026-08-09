@@ -31,3 +31,35 @@ export const GET_FINANCIAL_FORECAST_QUERY = `
     }
   }
 `;
+
+const CATEGORY_COMPARISON_GROUP_FIELDS = `
+  currentTotal
+  previousTotal
+  changeAmount
+  changePercent
+  categories {
+    idCategory
+    categoryName
+    currentAmount
+    previousAmount
+    changeAmount
+    changePercent
+  }
+`;
+
+export const GET_CATEGORY_COMPARISON_QUERY = `
+  query GetCategoryComparison($input: GetCategoryComparisonInputDto) {
+    getCategoryComparison(input: $input) {
+      currentPeriodStart
+      currentPeriodEnd
+      previousPeriodStart
+      previousPeriodEnd
+      expenses {
+        ${CATEGORY_COMPARISON_GROUP_FIELDS}
+      }
+      income {
+        ${CATEGORY_COMPARISON_GROUP_FIELDS}
+      }
+    }
+  }
+`;

@@ -1,6 +1,7 @@
 import { HttpError } from "../../shared/http/http-error.js";
 import { executeGraphql } from "../../shared/http/graphql-client.js";
 import {
+  GET_CATEGORY_COMPARISON_QUERY,
   GET_DEBTS_REPORT_QUERY,
   GET_FINANCIAL_FORECAST_QUERY,
 } from "./queries.js";
@@ -35,5 +36,19 @@ export async function getFinancialForecast(input, authContext, requestId) {
   return requireData(
     data.getFinancialForecast,
     "Invalid financial forecast response.",
+  );
+}
+
+export async function getCategoryComparison(input, authContext, requestId) {
+  const data = await executeGraphql({
+    query: GET_CATEGORY_COMPARISON_QUERY,
+    variables: { input },
+    requestId,
+    ...authContext,
+  });
+
+  return requireData(
+    data.getCategoryComparison,
+    "Invalid category comparison response.",
   );
 }

@@ -56,6 +56,10 @@ export const viewTitles: Record<
     title: "Contribuições de metas",
     subtitle: "Registro de contribuições para suas metas financeiras",
   },
+  comparisons: {
+    title: "Comparativos",
+    subtitle: "Gastos e receitas por categoria, mês a mês",
+  },
   faq: {
     title: "Manual do Sistema",
     subtitle:
