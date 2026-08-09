@@ -2,6 +2,7 @@ import type { ActiveView } from "../../types/views";
 import {
   calendarRoutePaths,
   categoryRoutePaths,
+  comparisonRoutePaths,
   creditCardRoutePaths,
   dashboardRoutePaths,
   debtRoutePaths,
@@ -93,6 +94,10 @@ export function getActiveView(pathname: string): ActiveView {
     return "goals";
   }
 
+  if (pathname.startsWith(comparisonRoutePaths.list)) {
+    return "comparisons";
+  }
+
   if (pathname.startsWith(faqRoutePaths.list)) {
     return "faq";
   }
@@ -124,6 +129,8 @@ export function getPathForView(view: ActiveView) {
       return goalRoutePaths.list;
     case "goalContributions":
       return goalContributionRoutePaths.list;
+    case "comparisons":
+      return comparisonRoutePaths.list;
     case "faq":
       return faqRoutePaths.list;
     case "payments":

@@ -2,7 +2,11 @@ import { Router } from "express";
 import { getAuthContext } from "../../shared/auth/get-user-id.js";
 import { buildErrorResponse } from "../../shared/http/error-response.js";
 import { buildListInput } from "../../shared/http/parse-pagination.js";
-import { getDebtsReport, getFinancialForecast } from "./service.js";
+import {
+  getCategoryComparison,
+  getDebtsReport,
+  getFinancialForecast,
+} from "./service.js";
 
 const router = Router();
 
@@ -36,6 +40,25 @@ router.post("/forecast", async (req, res) => {
       req.requestId,
     );
     res.json(forecast);
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
+router.get("/category-comparison", async (req, res) => {
+  try {
+    const authContext = getAuthContext(req);
+    const input = buildListInput(req.query, [
+      "periodType",
+      "referenceDate",
+      "comparisonDate",
+    ]);
+    const comparison = await getCategoryComparison(
+      input,
+      authContext,
+      req.requestId,
+    );
+    res.json(comparison);
   } catch (error) {
     sendError(res, error);
   }

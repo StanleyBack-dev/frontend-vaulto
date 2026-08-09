@@ -43,3 +43,49 @@ export interface FinancialForecastPayload {
   periodStart?: string;
   periodEnd?: string;
 }
+
+export const CategoryComparisonEntrySchema = z.object({
+  idCategory: z.string(),
+  categoryName: z.string(),
+  currentAmount: z.number(),
+  previousAmount: z.number(),
+  changeAmount: z.number(),
+  changePercent: z.number().nullable(),
+});
+
+export const CategoryComparisonGroupSchema = z.object({
+  currentTotal: z.number(),
+  previousTotal: z.number(),
+  changeAmount: z.number(),
+  changePercent: z.number().nullable(),
+  categories: z.array(CategoryComparisonEntrySchema),
+});
+
+export const CategoryComparisonSchema = z.object({
+  currentPeriodStart: z.string(),
+  currentPeriodEnd: z.string(),
+  previousPeriodStart: z.string(),
+  previousPeriodEnd: z.string(),
+  expenses: CategoryComparisonGroupSchema,
+  income: CategoryComparisonGroupSchema,
+});
+
+export type CategoryComparisonEntry = z.infer<
+  typeof CategoryComparisonEntrySchema
+>;
+export type CategoryComparisonGroup = z.infer<
+  typeof CategoryComparisonGroupSchema
+>;
+export type CategoryComparison = z.infer<typeof CategoryComparisonSchema>;
+
+export type CategoryComparisonPeriodType =
+  | "MONTH"
+  | "QUARTER"
+  | "SEMESTER"
+  | "YEAR";
+
+export interface CategoryComparisonQueryParams {
+  periodType?: CategoryComparisonPeriodType;
+  referenceDate?: string;
+  comparisonDate?: string;
+}

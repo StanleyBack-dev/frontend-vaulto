@@ -1,8 +1,12 @@
+import { getCategoryComparison } from "@/api/reports/methods/get-category-comparison";
 import { getDebtsReport } from "@/api/reports/methods/get-debts-report";
 import { getFinancialForecast } from "@/api/reports/methods/get-financial-forecast";
 import {
+  CategoryComparisonSchema,
   DebtsReportSchema,
   FinancialForecastSchema,
+  type CategoryComparison,
+  type CategoryComparisonQueryParams,
   type DebtsReport,
   type DebtsReportQueryParams,
   type FinancialForecast,
@@ -28,6 +32,19 @@ export async function fetchFinancialForecast(
 ): Promise<FinancialForecast> {
   const response = await getFinancialForecast(payload);
   const parsed = FinancialForecastSchema.safeParse(response);
+
+  if (!parsed.success) {
+    throw new Error(reportUiCopy.errors.invalidResponseData);
+  }
+
+  return parsed.data;
+}
+
+export async function fetchCategoryComparison(
+  params: CategoryComparisonQueryParams = {},
+): Promise<CategoryComparison> {
+  const response = await getCategoryComparison(params);
+  const parsed = CategoryComparisonSchema.safeParse(response);
 
   if (!parsed.success) {
     throw new Error(reportUiCopy.errors.invalidResponseData);

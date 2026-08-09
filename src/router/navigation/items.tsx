@@ -3,6 +3,7 @@ import type { ActiveView } from "../../types/views";
 import DebtsIcon from "../../components/atoms/icons/DebtsIcon";
 import {
   Banknote,
+  BarChart3,
   Bell,
   CalendarDays,
   CreditCard,
@@ -46,6 +47,11 @@ export const primaryNavigationItems: NavigationItem[] = [
     id: "goalContributions",
     label: "Contribuições de metas",
     icon: <PiggyBank size={20} />,
+  },
+  {
+    id: "comparisons",
+    label: "Comparativos",
+    icon: <BarChart3 size={20} />,
   },
   { id: "payments", label: "Pagamentos", icon: <Wallet size={20} /> },
   {
