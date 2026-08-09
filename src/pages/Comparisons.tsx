@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 import { Crown, TrendingDown, TrendingUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Button from "@/components/atoms/Button";
 import Input from "@/components/atoms/Input";
 import Loading from "@/components/atoms/Loading";
+import Select from "@/components/atoms/Select";
 import SectionCard from "@/components/organisms/SectionCard";
 import { useBillingContext } from "@/features/billing";
 import { currentMonthValue, formatMonthLabel } from "@/features/debts";
@@ -17,6 +18,7 @@ import { colors } from "@/config";
 import { useToast } from "../shared/toast/useToast";
 
 type ChangeDirection = "up" | "down";
+type ComparisonMode = "predefined" | "custom";
 
 function formatCurrency(value: number): string {
   return new Intl.NumberFormat("pt-BR", {
@@ -58,22 +60,38 @@ export default function Comparisons() {
     useBillingContext();
   const { showError } = useToast();
 
+  const [mode, setMode] = useState<ComparisonMode>("predefined");
   const [month, setMonth] = useState(currentMonthValue);
+  const [compareMonth, setCompareMonth] = useState(() =>
+    previousMonthValue(currentMonthValue()),
+  );
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<CategoryComparison | null>(null);
 
   const isPro = subscription?.plan === "PRO";
   const monthLabel = useMemo(() => formatMonthLabel(month), [month]);
   const compareLabel = useMemo(
-    () => formatMonthLabel(previousMonthValue(month)),
-    [month],
+    () =>
+      formatMonthLabel(
+        mode === "custom" ? compareMonth : previousMonthValue(month),
+      ),
+    [mode, month, compareMonth],
   );
 
-  async function loadComparison() {
+  function monthToIsoDate(monthValue: string): string {
+    return new Date(`${monthValue}-01T00:00:00.000Z`).toISOString();
+  }
+
+  async function handleCompare(event: FormEvent) {
+    event.preventDefault();
+
     setLoading(true);
     try {
-      const referenceDate = new Date(`${month}-01T00:00:00.000Z`).toISOString();
-      const comparison = await fetchCategoryComparison({ referenceDate });
+      const comparison = await fetchCategoryComparison({
+        referenceDate: monthToIsoDate(month),
+        comparisonDate:
+          mode === "custom" ? monthToIsoDate(compareMonth) : undefined,
+      });
       setResult(comparison);
     } catch (error) {
       showError(
@@ -85,13 +103,6 @@ export default function Comparisons() {
       setLoading(false);
     }
   }
-
-  useEffect(() => {
-    if (isPro) {
-      void loadComparison();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [month, isPro]);
 
   if (isSubscriptionLoading) {
     return (
@@ -226,29 +237,66 @@ export default function Comparisons() {
     <div className="space-y-6">
       <SectionCard
         title="Comparativos"
-        description="Compare seus gastos e receitas por categoria em relação ao mês anterior."
+        description="Compare seus gastos e receitas por categoria entre dois meses."
       >
-        <div className="max-w-xs">
-          <Input
-            label="Mês de referência"
-            type="month"
-            value={month}
-            onChange={(event) =>
-              setMonth(event.target.value || currentMonthValue())
-            }
-          />
-        </div>
+        <form onSubmit={handleCompare} className="space-y-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:items-end">
+            <Select
+              label="Como comparar?"
+              value={mode}
+              onChange={(event) =>
+                setMode(event.target.value as ComparisonMode)
+              }
+            >
+              <option value="predefined">Mês atual vs. mês anterior</option>
+              <option value="custom">Escolher os dois meses</option>
+            </Select>
+
+            <Input
+              label={
+                mode === "custom" ? "Mês para analisar" : "Mês de referência"
+              }
+              type="month"
+              value={month}
+              onChange={(event) =>
+                setMonth(event.target.value || currentMonthValue())
+              }
+            />
+
+            {mode === "custom" && (
+              <Input
+                label="Mês para comparar"
+                type="month"
+                value={compareMonth}
+                onChange={(event) =>
+                  setCompareMonth(
+                    event.target.value ||
+                      previousMonthValue(currentMonthValue()),
+                  )
+                }
+              />
+            )}
+          </div>
+
+          <Button type="submit" variant="primary" loading={loading}>
+            Comparar
+          </Button>
+        </form>
       </SectionCard>
 
       {loading ? (
         <div className="flex h-56 items-center justify-center">
           <Loading label="Carregando..." />
         </div>
-      ) : (
+      ) : result ? (
         <>
-          {renderGroup("Despesas por categoria", result?.expenses, "down")}
-          {renderGroup("Receitas por categoria", result?.income, "up")}
+          {renderGroup("Despesas por categoria", result.expenses, "down")}
+          {renderGroup("Receitas por categoria", result.income, "up")}
         </>
+      ) : (
+        <p className="text-sm" style={{ color: colors.brown[500] }}>
+          Selecione o período e clique em "Comparar" para ver o resultado.
+        </p>
       )}
     </div>
   );

@@ -80,4 +80,5 @@ export type CategoryComparison = z.infer<typeof CategoryComparisonSchema>;
 
 export interface CategoryComparisonQueryParams {
   referenceDate?: string;
+  comparisonDate?: string;
 }

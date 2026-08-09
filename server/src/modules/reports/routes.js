@@ -48,7 +48,10 @@ router.post("/forecast", async (req, res) => {
 router.get("/category-comparison", async (req, res) => {
   try {
     const authContext = getAuthContext(req);
-    const input = buildListInput(req.query, ["referenceDate"]);
+    const input = buildListInput(req.query, [
+      "referenceDate",
+      "comparisonDate",
+    ]);
     const comparison = await getCategoryComparison(
       input,
       authContext,
