@@ -43,7 +43,11 @@ router.post("/subscribe", async (req, res) => {
 
 router.post("/cancel", async (req, res) => {
   try {
-    const result = await cancelSubscription(getAuthContext(req), req.requestId);
+    const result = await cancelSubscription(
+      req.body,
+      getAuthContext(req),
+      req.requestId,
+    );
     res.json(result);
   } catch (error) {
     sendError(res, error);

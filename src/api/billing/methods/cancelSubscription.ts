@@ -1,9 +1,14 @@
 import { apiHttp, getApiErrorMessage } from "../../shared/http-client";
-import type { Subscription } from "../schema";
+import type { CancelSubscriptionPayload, Subscription } from "../schema";
 
-export async function cancelSubscription(): Promise<Subscription> {
+export async function cancelSubscription(
+  payload: CancelSubscriptionPayload,
+): Promise<Subscription> {
   try {
-    const response = await apiHttp.post<Subscription>("/billing/cancel");
+    const response = await apiHttp.post<Subscription>(
+      "/billing/cancel",
+      payload,
+    );
     return response.data;
   } catch (error) {
     throw new Error(

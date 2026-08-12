@@ -6,7 +6,9 @@ import BillingPaymentHistoryTable from "@/components/organisms/BillingPaymentHis
 import ProfileSummaryCard from "@molecules/ProfileSummaryCard";
 import SubscriptionStatusCard from "@molecules/SubscriptionStatusCard";
 import ConfirmDialog from "@molecules/ConfirmDialog";
+import CancellationSurveyFields from "@molecules/CancellationSurveyFields";
 import Loading from "@atoms/Loading";
+import type { CancellationReason } from "@/api/billing/schema";
 import type { User } from "@/api/users/schema";
 import { fetchMyProfile } from "@/features/users";
 import {
@@ -28,6 +30,10 @@ export default function Profile() {
   const [isLoadingUser, setIsLoadingUser] = useState(true);
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
+  const [cancellationReasons, setCancellationReasons] = useState<
+    CancellationReason[]
+  >([]);
+  const [otherCancellationReason, setOtherCancellationReason] = useState("");
 
   useEffect(() => {
     let cancelled = false;
@@ -55,17 +61,42 @@ export default function Profile() {
     };
   }, [showError]);
 
+  function toggleCancellationReason(reason: CancellationReason) {
+    setCancellationReasons((current) =>
+      current.includes(reason)
+        ? current.filter((value) => value !== reason)
+        : [...current, reason],
+    );
+  }
+
+  function closeCancelDialog() {
+    setIsCancelDialogOpen(false);
+    setCancellationReasons([]);
+    setOtherCancellationReason("");
+  }
+
   async function handleConfirmCancel() {
+    if (cancellationReasons.length === 0) {
+      showError(
+        "Selecione um motivo",
+        "Escolha ao menos um motivo para cancelar a assinatura.",
+      );
+      return;
+    }
+
     setIsCancelling(true);
 
     try {
-      await requestCancelSubscription();
+      await requestCancelSubscription({
+        reasons: cancellationReasons,
+        otherReason: otherCancellationReason.trim() || undefined,
+      });
       await refresh();
       showSuccess(
         "Assinatura cancelada",
         "Sua assinatura foi cancelada e não será renovada.",
       );
-      setIsCancelDialogOpen(false);
+      closeCancelDialog();
     } catch (error) {
       showError(
         "Não foi possível cancelar",
@@ -114,8 +145,15 @@ export default function Profile() {
       <ConfirmDialog
         open={isCancelDialogOpen}
         title="Cancelar assinatura"
-        description="Você continuará com acesso ao Vaulto Pro até o fim do período já pago, mas a assinatura não será renovada. Deseja continuar?"
-        confirmLabel="Cancelar assinatura"
+        description={
+          <CancellationSurveyFields
+            reasons={cancellationReasons}
+            onToggleReason={toggleCancellationReason}
+            otherReason={otherCancellationReason}
+            onOtherReasonChange={setOtherCancellationReason}
+          />
+        }
+        confirmLabel="Enviar e cancelar"
         cancelLabel="Manter assinatura"
         variant="danger"
         icon={<CircleOff size={20} />}
@@ -123,7 +161,7 @@ export default function Profile() {
         onConfirm={() => {
           void handleConfirmCancel();
         }}
-        onCancel={() => setIsCancelDialogOpen(false)}
+        onCancel={closeCancelDialog}
       />
     </div>
   );
