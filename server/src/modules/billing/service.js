@@ -36,9 +36,10 @@ export async function subscribeToPro(input, authContext, requestId) {
   return requireData(data.subscribeToPro, "Invalid subscribe response.");
 }
 
-export async function cancelSubscription(authContext, requestId) {
+export async function cancelSubscription(input, authContext, requestId) {
   const data = await executeGraphql({
     query: CANCEL_SUBSCRIPTION_MUTATION,
+    variables: { input },
     requestId,
     ...authContext,
   });

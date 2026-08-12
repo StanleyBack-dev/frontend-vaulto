@@ -30,6 +30,22 @@ export const SubscribeToProResponseSchema = z.object({
   checkoutUrl: z.string().nullable().optional(),
 });
 
+export const CancellationReasonSchema = z.enum([
+  "DOES_NOT_MEET_NEEDS",
+  "TOO_EXPENSIVE",
+  "FOUND_ALTERNATIVE",
+  "HARD_TO_USE",
+  "MISSING_FEATURES",
+  "TEMPORARY_USE",
+  "TECHNICAL_ISSUES",
+  "OTHER",
+]);
+
+export const CancelSubscriptionPayloadSchema = z.object({
+  reasons: z.array(CancellationReasonSchema).min(1),
+  otherReason: z.string().optional(),
+});
+
 export const BillingPaymentStatusSchema = z.enum([
   "PENDING",
   "CONFIRMED",
@@ -65,6 +81,10 @@ export type Subscription = z.infer<typeof SubscriptionSchema>;
 export type SubscribeToProPayload = z.infer<typeof SubscribeToProPayloadSchema>;
 export type SubscribeToProResponse = z.infer<
   typeof SubscribeToProResponseSchema
+>;
+export type CancellationReason = z.infer<typeof CancellationReasonSchema>;
+export type CancelSubscriptionPayload = z.infer<
+  typeof CancelSubscriptionPayloadSchema
 >;
 export type BillingPaymentStatus = z.infer<typeof BillingPaymentStatusSchema>;
 export type BillingPayment = z.infer<typeof BillingPaymentSchema>;

@@ -27,8 +27,8 @@ export const SUBSCRIBE_TO_PRO_MUTATION = `
 `;
 
 export const CANCEL_SUBSCRIPTION_MUTATION = `
-  mutation CancelSubscription {
-    cancelSubscription {
+  mutation CancelSubscription($input: CancelSubscriptionInputDto!) {
+    cancelSubscription(input: $input) {
       ${SUBSCRIPTION_FIELDS}
     }
   }

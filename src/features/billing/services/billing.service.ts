@@ -8,6 +8,7 @@ import {
   SubscriptionSchema,
   type BillingPaymentListQueryParams,
   type BillingPaymentsResponse,
+  type CancelSubscriptionPayload,
   type SubscribeToProPayload,
   type SubscribeToProResponse,
   type Subscription,
@@ -37,8 +38,10 @@ export async function requestSubscribeToPro(
   return parsed.data;
 }
 
-export async function requestCancelSubscription(): Promise<Subscription> {
-  const response = await cancelSubscription();
+export async function requestCancelSubscription(
+  payload: CancelSubscriptionPayload,
+): Promise<Subscription> {
+  const response = await cancelSubscription(payload);
   const parsed = SubscriptionSchema.safeParse(response);
 
   if (!parsed.success) {
