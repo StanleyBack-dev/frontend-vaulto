@@ -334,7 +334,10 @@ export default function Payments() {
 
       {selectedDebtId && !loadingDetail && debtDetail && (
         <div className="flex justify-end">
-          <ExportButtons resource="payments" filters={{ idDebt: selectedDebtId }} />
+          <ExportButtons
+            resource="payments"
+            filters={{ idDebt: selectedDebtId }}
+          />
         </div>
       )}
 

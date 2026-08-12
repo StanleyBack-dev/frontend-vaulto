@@ -30,9 +30,7 @@ export default function ExportButtons({
   const { showError, showSuccess } = useToast();
   const { subscription, isLoading: isSubscriptionLoading } =
     useBillingContext();
-  const [loadingFormat, setLoadingFormat] = useState<ExportFormat | null>(
-    null,
-  );
+  const [loadingFormat, setLoadingFormat] = useState<ExportFormat | null>(null);
 
   const isPro = subscription?.plan === "PRO";
 

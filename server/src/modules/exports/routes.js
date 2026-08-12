@@ -12,7 +12,8 @@ const FORMAT_BY_QUERY_VALUE = {
 };
 
 function resolveFormat(query) {
-  const format = FORMAT_BY_QUERY_VALUE[String(query.format || "").toLowerCase()];
+  const format =
+    FORMAT_BY_QUERY_VALUE[String(query.format || "").toLowerCase()];
   if (!format) {
     throw new HttpError(400, "Informe format=pdf ou format=xlsx.");
   }
@@ -119,7 +120,10 @@ router.get(
   })),
 );
 
-router.get("/goals", handleExport("GOALS", () => ({})));
+router.get(
+  "/goals",
+  handleExport("GOALS", () => ({})),
+);
 
 router.get(
   "/goal-contributions",
