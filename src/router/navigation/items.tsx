@@ -9,6 +9,7 @@ import {
   CreditCard,
   Crown,
   HandCoins,
+  HeartPulse,
   HelpCircle,
   LayoutDashboard,
   PiggyBank,
@@ -52,6 +53,11 @@ export const primaryNavigationItems: NavigationItem[] = [
     id: "comparisons",
     label: "Comparativos",
     icon: <BarChart3 size={20} />,
+  },
+  {
+    id: "financialHealth",
+    label: "Saúde Financeira",
+    icon: <HeartPulse size={20} />,
   },
   { id: "payments", label: "Pagamentos", icon: <Wallet size={20} /> },
   {

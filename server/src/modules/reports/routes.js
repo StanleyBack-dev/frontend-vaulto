@@ -6,6 +6,7 @@ import {
   getCategoryComparison,
   getDebtsReport,
   getFinancialForecast,
+  getFinancialHealthScore,
 } from "./service.js";
 
 const router = Router();
@@ -59,6 +60,21 @@ router.get("/category-comparison", async (req, res) => {
       req.requestId,
     );
     res.json(comparison);
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
+router.get("/health-score", async (req, res) => {
+  try {
+    const authContext = getAuthContext(req);
+    const input = buildListInput(req.query, ["periodEnd"]);
+    const score = await getFinancialHealthScore(
+      input,
+      authContext,
+      req.requestId,
+    );
+    res.json(score);
   } catch (error) {
     sendError(res, error);
   }

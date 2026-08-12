@@ -4,6 +4,7 @@ import {
   GET_CATEGORY_COMPARISON_QUERY,
   GET_DEBTS_REPORT_QUERY,
   GET_FINANCIAL_FORECAST_QUERY,
+  GET_FINANCIAL_HEALTH_SCORE_QUERY,
 } from "./queries.js";
 
 function requireData(value, message) {
@@ -50,5 +51,19 @@ export async function getCategoryComparison(input, authContext, requestId) {
   return requireData(
     data.getCategoryComparison,
     "Invalid category comparison response.",
+  );
+}
+
+export async function getFinancialHealthScore(input, authContext, requestId) {
+  const data = await executeGraphql({
+    query: GET_FINANCIAL_HEALTH_SCORE_QUERY,
+    variables: { input },
+    requestId,
+    ...authContext,
+  });
+
+  return requireData(
+    data.getFinancialHealthScore,
+    "Invalid financial health score response.",
   );
 }

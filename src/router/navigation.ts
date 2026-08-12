@@ -8,6 +8,7 @@ export {
   debtRoutePaths,
   debtsStatementRoutePaths,
   faqRoutePaths,
+  financialHealthRoutePaths,
   forecastRoutePaths,
   goalContributionRoutePaths,
   goalRoutePaths,

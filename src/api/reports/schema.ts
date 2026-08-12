@@ -89,3 +89,28 @@ export interface CategoryComparisonQueryParams {
   referenceDate?: string;
   comparisonDate?: string;
 }
+
+export const FinancialHealthPillarScoreSchema = z.object({
+  score: z.number(),
+  weight: z.number(),
+});
+
+export const FinancialHealthScoreSchema = z.object({
+  score: z.number(),
+  status: z.enum(["HEALTHY", "ATTENTION", "CRITICAL"]),
+  debtCommitment: FinancialHealthPillarScoreSchema,
+  punctuality: FinancialHealthPillarScoreSchema,
+  reserves: FinancialHealthPillarScoreSchema.nullable(),
+  periodStart: z.string(),
+  periodEnd: z.string(),
+});
+
+export type FinancialHealthPillarScore = z.infer<
+  typeof FinancialHealthPillarScoreSchema
+>;
+export type FinancialHealthScore = z.infer<typeof FinancialHealthScoreSchema>;
+export type FinancialHealthStatus = FinancialHealthScore["status"];
+
+export interface FinancialHealthScoreQueryParams {
+  periodEnd?: string;
+}

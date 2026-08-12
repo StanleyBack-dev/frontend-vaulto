@@ -11,6 +11,7 @@ import {
   debtRoutePaths,
   debtsStatementRoutePaths,
   faqRoutePaths,
+  financialHealthRoutePaths,
   forecastRoutePaths,
   goalContributionRoutePaths,
   goalRoutePaths,
@@ -52,6 +53,7 @@ const Forecast = lazy(() => import("../../pages/Forecast"));
 const CalendarPage = lazy(() => import("../../pages/Calendar"));
 const Reminders = lazy(() => import("../../pages/Reminders"));
 const Comparisons = lazy(() => import("../../pages/Comparisons"));
+const FinancialHealth = lazy(() => import("../../pages/FinancialHealth"));
 const Manual = lazy(() => import("../../pages/Manual"));
 
 function withPageSuspense(element: React.ReactNode) {
@@ -299,6 +301,11 @@ export function AppShellRoutes({ userId }: AppShellRoutesProps) {
       <Route
         path={comparisonRoutePaths.list}
         element={withPageSuspense(<Comparisons />)}
+      />
+      {/* Saúde Financeira - score 0-100 combinando dívidas, pontualidade e reservas (recurso Pro) */}
+      <Route
+        path={financialHealthRoutePaths.list}
+        element={withPageSuspense(<FinancialHealth />)}
       />
       {/* Manual/Ajuda - documentação de uso, comum a todos os usuários */}
       <Route path={faqRoutePaths.list} element={withPageSuspense(<Manual />)} />
