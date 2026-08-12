@@ -5,6 +5,7 @@ import EditIcon from "@/components/atoms/icons/EditIcon";
 import Input from "@/components/atoms/Input";
 import Select from "@/components/atoms/Select";
 import ConfirmDialog from "@molecules/ConfirmDialog";
+import ExportButtons from "@/components/molecules/ExportButtons";
 import SectionCard from "@/components/organisms/SectionCard";
 import { colors } from "@/config";
 import {
@@ -328,6 +329,12 @@ export default function Payments() {
               borderTopColor: "transparent",
             }}
           />
+        </div>
+      )}
+
+      {selectedDebtId && !loadingDetail && debtDetail && (
+        <div className="flex justify-end">
+          <ExportButtons resource="payments" filters={{ idDebt: selectedDebtId }} />
         </div>
       )}
 

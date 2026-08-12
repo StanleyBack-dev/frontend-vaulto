@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import SearchIcon from "@/components/atoms/icons/SearchIcon";
 import Select from "@/components/atoms/Select";
 import DataTable from "@/components/organisms/DataTable";
+import ExportButtons from "@/components/molecules/ExportButtons";
 import FilterBar from "@/components/molecules/FilterBar";
 import UpgradeBanner from "@molecules/UpgradeBanner";
 import UpgradeModal from "@/components/organisms/UpgradeModal";
@@ -134,6 +135,12 @@ export default function CreditCards() {
         </div>
       ) : (
         <>
+          <div className="mb-3 flex justify-end">
+            <ExportButtons
+              resource="credit-cards"
+              filters={{ activeOnly: statusFilter || undefined }}
+            />
+          </div>
           <DataTable
             data={filteredCreditCards}
             columns={columns}

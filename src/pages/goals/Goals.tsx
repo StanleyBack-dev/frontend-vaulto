@@ -1,5 +1,6 @@
 import DataTable from "@/components/organisms/DataTable";
 import ConfirmDialog from "@molecules/ConfirmDialog";
+import ExportButtons from "@/components/molecules/ExportButtons";
 import FilterBar from "@/components/molecules/FilterBar";
 import SearchIcon from "@/components/atoms/icons/SearchIcon";
 import Button from "@/components/atoms/Button";
@@ -177,6 +178,9 @@ export default function Goals() {
         </SectionCard>
       ) : (
         <>
+          <div className="mb-3 flex justify-end">
+            <ExportButtons resource="goals" />
+          </div>
           <DataTable
             data={filteredGoals}
             columns={columns}
