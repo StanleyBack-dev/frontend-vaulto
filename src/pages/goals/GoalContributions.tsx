@@ -7,6 +7,7 @@ import Input from "@/components/atoms/Input";
 import Loading from "@/components/atoms/Loading";
 import Select from "@/components/atoms/Select";
 import ConfirmDialog from "@molecules/ConfirmDialog";
+import ExportButtons from "@/components/molecules/ExportButtons";
 import SectionCard from "@/components/organisms/SectionCard";
 import { colors } from "@/config";
 import {
@@ -345,6 +346,12 @@ export default function GoalContributions() {
             ) : undefined
           }
         >
+          <div className="mb-3 flex justify-end">
+            <ExportButtons
+              resource="goal-contributions"
+              filters={{ idFinancialGoal: selectedGoalId }}
+            />
+          </div>
           <div
             className="overflow-hidden rounded-xl border bg-white shadow-sm"
             style={{ borderColor: "#e8d5c9" }}

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import SearchIcon from "@/components/atoms/icons/SearchIcon";
 import Select from "@/components/atoms/Select";
 import DataTable from "@/components/organisms/DataTable";
+import ExportButtons from "@/components/molecules/ExportButtons";
 import FilterBar from "@/components/molecules/FilterBar";
 import { colors } from "@/config";
 import {
@@ -129,6 +130,15 @@ export default function Categories() {
         </div>
       ) : (
         <>
+          <div className="mb-3 flex justify-end">
+            <ExportButtons
+              resource="categories"
+              filters={{
+                activeOnly: statusFilter || undefined,
+                categoryType: typeFilter || undefined,
+              }}
+            />
+          </div>
           <DataTable
             data={filteredCategories}
             columns={columns}

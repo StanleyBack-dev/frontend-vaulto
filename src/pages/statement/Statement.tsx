@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import Button from "@/components/atoms/Button";
 import Input from "@/components/atoms/Input";
 import Select from "@/components/atoms/Select";
+import ExportButtons from "@/components/molecules/ExportButtons";
 import SectionCard from "@/components/organisms/SectionCard";
 import DataTable, {
   type DataTableColumn,
@@ -71,6 +72,21 @@ export default function Statement() {
     () => formatMonthLabel(generatedMonth),
     [generatedMonth],
   );
+
+  const exportFilters = useMemo(() => {
+    const { dueDateFrom, dueDateTo } = monthToDueDateRange(generatedMonth);
+    const statementScope: Record<StatementType, string> = {
+      debts: "DEBTS",
+      incomes: "INCOMES",
+      both: "BOTH",
+    };
+
+    return {
+      dueDateFrom,
+      dueDateTo,
+      statementScope: statementScope[generatedType],
+    };
+  }, [generatedMonth, generatedType]);
 
   async function handleGenerate() {
     const { dueDateFrom, dueDateTo } = monthToDueDateRange(month);
@@ -426,6 +442,9 @@ export default function Statement() {
           <SectionCard
             title="Movimentações do período"
             description={`Detalhamento de ${monthLabel}, ordenado por vencimento.`}
+            action={
+              <ExportButtons resource="statement" filters={exportFilters} />
+            }
           >
             <DataTable
               data={lines}

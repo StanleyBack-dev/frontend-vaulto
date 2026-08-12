@@ -5,6 +5,7 @@ import EditIcon from "@/components/atoms/icons/EditIcon";
 import Input from "@/components/atoms/Input";
 import Select from "@/components/atoms/Select";
 import ConfirmDialog from "@molecules/ConfirmDialog";
+import ExportButtons from "@/components/molecules/ExportButtons";
 import SectionCard from "@/components/organisms/SectionCard";
 import { colors } from "@/config";
 import {
@@ -345,6 +346,15 @@ export default function Recebimentos() {
               borderColor: colors.gold[500],
               borderTopColor: "transparent",
             }}
+          />
+        </div>
+      )}
+
+      {selectedIncomeId && !loadingDetail && incomeDetail && (
+        <div className="flex justify-end">
+          <ExportButtons
+            resource="income-receipts"
+            filters={{ idIncome: selectedIncomeId }}
           />
         </div>
       )}

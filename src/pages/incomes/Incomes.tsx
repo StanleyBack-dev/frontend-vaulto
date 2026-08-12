@@ -1,5 +1,6 @@
 import DataTable from "@/components/organisms/DataTable";
 import ConfirmDialog from "@molecules/ConfirmDialog";
+import ExportButtons from "@/components/molecules/ExportButtons";
 import FilterBar from "@/components/molecules/FilterBar";
 import UpgradeBanner from "@molecules/UpgradeBanner";
 import UpgradeModal from "@/components/organisms/UpgradeModal";
@@ -191,6 +192,16 @@ export default function Incomes() {
         </div>
       ) : (
         <>
+          <div className="mb-3 flex justify-end">
+            <ExportButtons
+              resource="incomes"
+              filters={{
+                incomeStatus: filters.status || undefined,
+                incomeType: filters.incomeType || undefined,
+                idCategory: filters.idCategory || undefined,
+              }}
+            />
+          </div>
           <DataTable
             data={filteredIncomes}
             columns={columns}
