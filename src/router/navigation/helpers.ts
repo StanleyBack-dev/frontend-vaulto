@@ -8,6 +8,7 @@ import {
   debtRoutePaths,
   debtsStatementRoutePaths,
   faqRoutePaths,
+  financialHealthRoutePaths,
   forecastRoutePaths,
   goalContributionRoutePaths,
   goalRoutePaths,
@@ -98,6 +99,10 @@ export function getActiveView(pathname: string): ActiveView {
     return "comparisons";
   }
 
+  if (pathname.startsWith(financialHealthRoutePaths.list)) {
+    return "financialHealth";
+  }
+
   if (pathname.startsWith(faqRoutePaths.list)) {
     return "faq";
   }
@@ -131,6 +136,8 @@ export function getPathForView(view: ActiveView) {
       return goalContributionRoutePaths.list;
     case "comparisons":
       return comparisonRoutePaths.list;
+    case "financialHealth":
+      return financialHealthRoutePaths.list;
     case "faq":
       return faqRoutePaths.list;
     case "payments":

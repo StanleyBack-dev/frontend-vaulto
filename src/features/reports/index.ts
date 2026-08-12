@@ -3,6 +3,7 @@ export {
   fetchCategoryComparison,
   fetchDebtsReport,
   fetchFinancialForecast,
+  fetchFinancialHealthScore,
 } from "./services/report.service";
 export type {
   CategoryComparison,
@@ -13,4 +14,8 @@ export type {
   DebtsReportStatusCounts,
   FinancialForecast,
   FinancialForecastPayload,
+  FinancialHealthPillarScore,
+  FinancialHealthScore,
+  FinancialHealthScoreQueryParams,
+  FinancialHealthStatus,
 } from "@/api/reports/schema";

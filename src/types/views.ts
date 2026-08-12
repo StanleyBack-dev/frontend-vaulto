@@ -16,4 +16,5 @@ export type ActiveView =
   | "goals"
   | "goalContributions"
   | "comparisons"
+  | "financialHealth"
   | "faq";

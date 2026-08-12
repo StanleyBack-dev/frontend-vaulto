@@ -18,6 +18,7 @@ export const routePaths: Record<ActiveView, string> = {
   goals: "/metas",
   goalContributions: "/metas/contribuicoes",
   comparisons: "/comparativos",
+  financialHealth: "/saude-financeira",
   faq: "/manual",
 };
 
@@ -109,6 +110,10 @@ export const reminderRoutePaths = {
 
 export const comparisonRoutePaths = {
   list: "/comparativos",
+};
+
+export const financialHealthRoutePaths = {
+  list: "/saude-financeira",
 };
 
 export const goalRoutePaths = {

@@ -63,3 +63,28 @@ export const GET_CATEGORY_COMPARISON_QUERY = `
     }
   }
 `;
+
+const FINANCIAL_HEALTH_PILLAR_FIELDS = `
+  score
+  weight
+`;
+
+export const GET_FINANCIAL_HEALTH_SCORE_QUERY = `
+  query GetFinancialHealthScore($input: GetFinancialHealthScoreInputDto) {
+    getFinancialHealthScore(input: $input) {
+      score
+      status
+      debtCommitment {
+        ${FINANCIAL_HEALTH_PILLAR_FIELDS}
+      }
+      punctuality {
+        ${FINANCIAL_HEALTH_PILLAR_FIELDS}
+      }
+      reserves {
+        ${FINANCIAL_HEALTH_PILLAR_FIELDS}
+      }
+      periodStart
+      periodEnd
+    }
+  }
+`;

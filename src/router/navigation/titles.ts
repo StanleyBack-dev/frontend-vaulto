@@ -60,6 +60,11 @@ export const viewTitles: Record<
     title: "Comparativos",
     subtitle: "Gastos e receitas por categoria, mês a mês",
   },
+  financialHealth: {
+    title: "Saúde Financeira",
+    subtitle:
+      "Um indicador de 0 a 100 combinando comprometimento com dívidas, pontualidade e reservas",
+  },
   faq: {
     title: "Manual do Sistema",
     subtitle:
