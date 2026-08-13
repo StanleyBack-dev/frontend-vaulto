@@ -11,6 +11,7 @@ import incomesRoutes from "./modules/incomes/routes.js";
 import incomeReceiptsRoutes from "./modules/income-receipts/routes.js";
 import paymentsRoutes from "./modules/payments/routes.js";
 import reportsRoutes from "./modules/reports/routes.js";
+import supportRoutes from "./modules/support/routes.js";
 
 const router = Router();
 
@@ -26,5 +27,6 @@ router.use("/incomes", incomesRoutes);
 router.use("/income-receipts", incomeReceiptsRoutes);
 router.use("/payments", paymentsRoutes);
 router.use("/reports", reportsRoutes);
+router.use("/support", supportRoutes);
 
 export default router;

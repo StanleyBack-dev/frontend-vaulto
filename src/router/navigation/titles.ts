@@ -70,4 +70,8 @@ export const viewTitles: Record<
     subtitle:
       "Guia de uso, dúvidas frequentes e regras de cada área do sistema",
   },
+  support: {
+    title: "Suporte",
+    subtitle: "Fale com a nossa equipe por e-mail",
+  },
 };

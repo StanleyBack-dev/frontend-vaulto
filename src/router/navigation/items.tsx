@@ -12,6 +12,7 @@ import {
   HeartPulse,
   HelpCircle,
   LayoutDashboard,
+  LifeBuoy,
   PiggyBank,
   Receipt,
   Tags,
@@ -79,4 +80,5 @@ export const secondaryNavigationItems: NavigationItem[] = [
   { id: "plans", label: "Planos", icon: <Crown size={20} /> },
   { id: "reminders", label: "Lembretes", icon: <Bell size={20} /> },
   { id: "faq", label: "Ajuda", icon: <HelpCircle size={20} /> },
+  { id: "support", label: "Suporte", icon: <LifeBuoy size={20} /> },
 ];
