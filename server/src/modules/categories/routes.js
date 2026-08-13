@@ -6,6 +6,7 @@ import {
   createCategory,
   getCategoryById,
   listCategories,
+  listCategoryOptions,
   updateCategory,
 } from "./service.js";
 
@@ -30,6 +31,30 @@ router.get("/", async (req, res) => {
     }
 
     const categories = await listCategories(
+      input,
+      getAuthContext(req),
+      req.requestId,
+    );
+    res.json(categories);
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
+router.get("/options", async (req, res) => {
+  try {
+    const input = buildListInput(req.query, ["status", "type"]);
+    if (typeof input.status === "string") {
+      if (input.status === "true") {
+        input.status = true;
+      } else if (input.status === "false") {
+        input.status = false;
+      } else {
+        delete input.status;
+      }
+    }
+
+    const categories = await listCategoryOptions(
       input,
       getAuthContext(req),
       req.requestId,

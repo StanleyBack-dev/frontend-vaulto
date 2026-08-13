@@ -28,6 +28,21 @@ export const GET_MY_CREDIT_CARDS_QUERY = `
   }
 `;
 
+export const GET_MY_CREDIT_CARD_OPTIONS_QUERY = `
+  query GetMyCreditCardOptions($input: ListCreditCardsInputDto) {
+    getMyCreditCardOptions(input: $input) {
+      items {
+        ${CREDIT_CARD_FIELDS}
+      }
+      total
+      currentPage
+      limit
+      totalPages
+      hasNextPage
+    }
+  }
+`;
+
 export const GET_CREDIT_CARD_BY_ID_QUERY = `
   query GetCreditCardById($input: GetCreditCardByIdInputDto!) {
     getCreditCardById(input: $input) {

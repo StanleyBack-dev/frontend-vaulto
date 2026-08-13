@@ -24,6 +24,21 @@ export const GET_MY_CATEGORIES_QUERY = `
   }
 `;
 
+export const GET_MY_CATEGORY_OPTIONS_QUERY = `
+  query GetMyCategoryOptions($input: ListCategoriesInputDto) {
+    getMyCategoryOptions(input: $input) {
+      items {
+        ${CATEGORY_FIELDS}
+      }
+      total
+      currentPage
+      limit
+      totalPages
+      hasNextPage
+    }
+  }
+`;
+
 export const GET_CATEGORY_BY_ID_QUERY = `
   query GetCategoryById($input: GetCategoryByIdInputDto!) {
     getCategoryById(input: $input) {

@@ -1,6 +1,7 @@
 import { createCreditCard } from "@/api/credit-cards/methods/create";
 import { getCreditCardById } from "@/api/credit-cards/methods/get-by-id";
 import { getMyCreditCards } from "@/api/credit-cards/methods/get";
+import { getMyCreditCardOptions } from "@/api/credit-cards/methods/get-options";
 import { updateCreditCard } from "@/api/credit-cards/methods/update";
 import type {
   CreditCard,
@@ -25,6 +26,28 @@ export async function fetchCreditCards(
   params: CreditCardListQueryParams = {},
 ): Promise<CreditCardsCollectionResult> {
   const response = await getMyCreditCards(params);
+  const parsed = CreditCardSchema.array().safeParse(response.items);
+
+  if (!parsed.success) {
+    throw new Error(creditCardUiCopy.errors.invalidCollectionData);
+  }
+
+  return {
+    items: parsed.data,
+    pagination: {
+      total: response.total,
+      currentPage: response.currentPage,
+      limit: response.limit,
+      totalPages: response.totalPages,
+      hasNextPage: response.hasNextPage,
+    },
+  };
+}
+
+export async function fetchCreditCardOptions(
+  params: CreditCardListQueryParams = {},
+): Promise<CreditCardsCollectionResult> {
+  const response = await getMyCreditCardOptions(params);
   const parsed = CreditCardSchema.array().safeParse(response.items);
 
   if (!parsed.success) {

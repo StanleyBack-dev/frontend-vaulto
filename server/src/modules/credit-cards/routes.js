@@ -6,6 +6,7 @@ import {
   createCreditCard,
   getCreditCardById,
   listCreditCards,
+  listCreditCardOptions,
   updateCreditCard,
 } from "./service.js";
 
@@ -30,6 +31,30 @@ router.get("/", async (req, res) => {
     }
 
     const creditCards = await listCreditCards(
+      input,
+      getAuthContext(req),
+      req.requestId,
+    );
+    res.json(creditCards);
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
+router.get("/options", async (req, res) => {
+  try {
+    const input = buildListInput(req.query, ["status"]);
+    if (typeof input.status === "string") {
+      if (input.status === "true") {
+        input.status = true;
+      } else if (input.status === "false") {
+        input.status = false;
+      } else {
+        delete input.status;
+      }
+    }
+
+    const creditCards = await listCreditCardOptions(
       input,
       getAuthContext(req),
       req.requestId,

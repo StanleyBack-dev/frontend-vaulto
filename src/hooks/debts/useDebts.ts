@@ -12,8 +12,8 @@ import type {
 } from "@/api/debts/schema";
 import type { PaginationMeta } from "@/api/shared/contracts";
 import { PlanLimitReachedError } from "@/api/shared/plan-limit-error";
-import { fetchCategories } from "@/features/categories/services/category.service";
-import { fetchCreditCards } from "@/features/credit-cards/services/credit-card.service";
+import { fetchCategoryOptions } from "@/features/categories/services/category.service";
+import { fetchCreditCardOptions } from "@/features/credit-cards/services/credit-card.service";
 import {
   fetchDebts,
   removeDebt,
@@ -170,7 +170,7 @@ export function useDebts(): UseDebtsResult {
   useEffect(() => {
     void (async () => {
       try {
-        const activeCategories = await fetchCategories({
+        const activeCategories = await fetchCategoryOptions({
           page: 1,
           limit: 100,
           status: true,
@@ -185,7 +185,7 @@ export function useDebts(): UseDebtsResult {
   useEffect(() => {
     void (async () => {
       try {
-        const activeCreditCards = await fetchCreditCards({
+        const activeCreditCards = await fetchCreditCardOptions({
           page: 1,
           limit: 100,
           status: true,
