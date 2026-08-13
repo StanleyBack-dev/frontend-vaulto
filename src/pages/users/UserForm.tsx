@@ -18,9 +18,10 @@ import type { PageAccessKey } from "@/api/users/schema";
 import { useAuthSession } from "@/features/auth";
 import { useUsersContext } from "@/features/users/context/useUsersContext";
 import { useToast } from "@/shared/toast/useToast";
-import { userRoutePaths } from "@/router";
+import { adminRoutePaths } from "@/router";
 import { getHttpErrorMessage } from "@/api/shared/http-error";
 import { formatDateTimeDisplay } from "@/utils/format";
+import { ArrowLeft } from "lucide-react";
 
 export default function UserForm({ mode }: { mode: "create" | "edit" }) {
   const { id } = useParams();
@@ -172,7 +173,7 @@ export default function UserForm({ mode }: { mode: "create" | "edit" }) {
       }
     }
 
-    navigate(userRoutePaths.list);
+    navigate(adminRoutePaths.list, { state: { tab: "users" } });
   }
 
   async function handleUnlock() {
@@ -187,180 +188,187 @@ export default function UserForm({ mode }: { mode: "create" | "edit" }) {
     mode === "edit" ? userUiCopy.form.editTitle : userUiCopy.form.createTitle;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <SectionCard title={title}>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {mode === "edit" && (
-            <Input
-              label={userUiCopy.form.labels.createdAt}
-              value={form.createdAt}
-              disabled
-              wrapperClassName="md:col-span-2"
-            />
-          )}
+    <div className="space-y-4">
+      <Button
+        type="button"
+        variant="outline"
+        className="!border-gray-400 !text-gray-700 hover:!bg-gray-100"
+        leftIcon={<ArrowLeft size={16} />}
+        onClick={() =>
+          navigate(adminRoutePaths.list, { state: { tab: "users" } })
+        }
+      >
+        Voltar
+      </Button>
 
-          <Input
-            label={userUiCopy.form.labels.name}
-            value={form.name}
-            onChange={(event) => setForm({ ...form, name: event.target.value })}
-            placeholder={userUiCopy.form.placeholders.name}
-            maxLength={120}
-            required={mode === "create"}
-            disabled={mode === "edit"}
-            error={errors.name}
-            wrapperClassName={mode === "create" ? "md:col-span-2" : ""}
-          />
-
-          <Input
-            label={userUiCopy.form.labels.email}
-            type="email"
-            value={form.email}
-            onChange={(event) =>
-              setForm({ ...form, email: event.target.value })
-            }
-            placeholder={userUiCopy.form.placeholders.email}
-            maxLength={120}
-            required={mode === "create"}
-            disabled={mode === "edit"}
-            error={errors.email}
-          />
-
-          <Input
-            label={userUiCopy.form.labels.username}
-            value={form.username}
-            onChange={(event) =>
-              setForm({ ...form, username: event.target.value })
-            }
-            placeholder={userUiCopy.form.placeholders.username}
-            maxLength={40}
-            required={mode === "create"}
-            disabled={mode === "edit"}
-            error={errors.username}
-          />
-
-          <Select
-            label={userUiCopy.form.labels.group}
-            value={form.group}
-            onChange={(event) =>
-              handleGroupChange(event.target.value as UserFormValues["group"])
-            }
-          >
-            {userGroupSelectOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </Select>
-
-          {mode === "create" ? (
-            <Input
-              label={userUiCopy.form.labels.urlAvatar}
-              type="url"
-              value={form.urlAvatar}
-              onChange={(event) =>
-                setForm({ ...form, urlAvatar: event.target.value })
-              }
-              placeholder={userUiCopy.form.placeholders.urlAvatar}
-              maxLength={255}
-              error={errors.urlAvatar}
-              wrapperClassName="md:col-span-2"
-            />
-          ) : (
-            <Select
-              label={userUiCopy.form.labels.status}
-              value={form.status ? "true" : "false"}
-              onChange={(event) =>
-                setForm({ ...form, status: event.target.value === "true" })
-              }
-            >
-              <option value="true">Ativo</option>
-              <option value="false">Inativo</option>
-            </Select>
-          )}
-        </div>
-      </SectionCard>
-
-      {isAdminMaster && (
-        <SectionCard
-          title={userUiCopy.form.labels.pagePermissions}
-          action={
-            <label
-              className="flex items-center gap-2 text-xs sm:text-sm"
-              style={{ color: colors.brown[300] }}
-            >
-              <input
-                type="checkbox"
-                checked={!!form.useGroupDefaults}
-                onChange={(event) =>
-                  handleGroupDefaultsToggle(event.currentTarget.checked)
-                }
-                disabled={saving}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <SectionCard title={title}>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {mode === "edit" && (
+              <Input
+                label={userUiCopy.form.labels.createdAt}
+                value={form.createdAt}
+                disabled
+                wrapperClassName="md:col-span-2"
               />
-              {userUiCopy.form.labels.useGroupDefaults}
-            </label>
-          }
-        >
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
-            {pagePermissionOptions.map((option) => (
+            )}
+
+            <Input
+              label={userUiCopy.form.labels.name}
+              value={form.name}
+              onChange={(event) =>
+                setForm({ ...form, name: event.target.value })
+              }
+              placeholder={userUiCopy.form.placeholders.name}
+              maxLength={120}
+              required={mode === "create"}
+              disabled={mode === "edit"}
+              error={errors.name}
+              wrapperClassName={mode === "create" ? "md:col-span-2" : ""}
+            />
+
+            <Input
+              label={userUiCopy.form.labels.email}
+              type="email"
+              value={form.email}
+              onChange={(event) =>
+                setForm({ ...form, email: event.target.value })
+              }
+              placeholder={userUiCopy.form.placeholders.email}
+              maxLength={120}
+              required={mode === "create"}
+              disabled={mode === "edit"}
+              error={errors.email}
+            />
+
+            <Input
+              label={userUiCopy.form.labels.username}
+              value={form.username}
+              onChange={(event) =>
+                setForm({ ...form, username: event.target.value })
+              }
+              placeholder={userUiCopy.form.placeholders.username}
+              maxLength={40}
+              required={mode === "create"}
+              disabled={mode === "edit"}
+              error={errors.username}
+            />
+
+            <Select
+              label={userUiCopy.form.labels.group}
+              value={form.group}
+              onChange={(event) =>
+                handleGroupChange(event.target.value as UserFormValues["group"])
+              }
+            >
+              {userGroupSelectOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </Select>
+
+            {mode === "create" ? (
+              <Input
+                label={userUiCopy.form.labels.urlAvatar}
+                type="url"
+                value={form.urlAvatar}
+                onChange={(event) =>
+                  setForm({ ...form, urlAvatar: event.target.value })
+                }
+                placeholder={userUiCopy.form.placeholders.urlAvatar}
+                maxLength={255}
+                error={errors.urlAvatar}
+                wrapperClassName="md:col-span-2"
+              />
+            ) : (
+              <Select
+                label={userUiCopy.form.labels.status}
+                value={form.status ? "true" : "false"}
+                onChange={(event) =>
+                  setForm({ ...form, status: event.target.value === "true" })
+                }
+              >
+                <option value="true">Ativo</option>
+                <option value="false">Inativo</option>
+              </Select>
+            )}
+          </div>
+        </SectionCard>
+
+        {isAdminMaster && (
+          <SectionCard
+            title={userUiCopy.form.labels.pagePermissions}
+            action={
               <label
-                key={option.key}
-                className="flex items-center gap-2 rounded-lg border px-3 py-2 text-sm"
-                style={{
-                  borderColor: colors.brown[100],
-                  color: colors.brown[300],
-                }}
+                className="flex items-center gap-2 text-xs sm:text-sm"
+                style={{ color: colors.brown[300] }}
               >
                 <input
                   type="checkbox"
-                  checked={effectivePermissions.has(option.key)}
-                  onChange={() => handlePermissionToggle(option.key)}
-                  disabled={saving || !!form.useGroupDefaults}
+                  checked={!!form.useGroupDefaults}
+                  onChange={(event) =>
+                    handleGroupDefaultsToggle(event.currentTarget.checked)
+                  }
+                  disabled={saving}
                 />
-                <span>{option.label}</span>
+                {userUiCopy.form.labels.useGroupDefaults}
               </label>
-            ))}
-          </div>
-        </SectionCard>
-      )}
+            }
+          >
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
+              {pagePermissionOptions.map((option) => (
+                <label
+                  key={option.key}
+                  className="flex items-center gap-2 rounded-lg border px-3 py-2 text-sm"
+                  style={{
+                    borderColor: colors.brown[100],
+                    color: colors.brown[300],
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={effectivePermissions.has(option.key)}
+                    onChange={() => handlePermissionToggle(option.key)}
+                    disabled={saving || !!form.useGroupDefaults}
+                  />
+                  <span>{option.label}</span>
+                </label>
+              ))}
+            </div>
+          </SectionCard>
+        )}
 
-      {mode === "edit" && (
-        <SectionCard title={userUiCopy.form.labels.unlockUser}>
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <span className="text-sm" style={{ color: colors.brown[300] }}>
-              {editing?.lockedUntil
-                ? isLocked
-                  ? `Bloqueado até ${formatDateTimeDisplay(editing.lockedUntil)}`
-                  : "Não está bloqueado"
-                : "Não está bloqueado"}
-            </span>
-            <Button
-              type="button"
-              variant="outline"
-              className="!border-gray-400 !text-gray-700 hover:!bg-gray-100"
-              disabled={saving || !isLocked}
-              onClick={handleUnlock}
-              loading={saving}
-            >
-              Desbloquear
-            </Button>
-          </div>
-        </SectionCard>
-      )}
+        {mode === "edit" && (
+          <SectionCard title={userUiCopy.form.labels.unlockUser}>
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <span className="text-sm" style={{ color: colors.brown[300] }}>
+                {editing?.lockedUntil
+                  ? isLocked
+                    ? `Bloqueado até ${formatDateTimeDisplay(editing.lockedUntil)}`
+                    : "Não está bloqueado"
+                  : "Não está bloqueado"}
+              </span>
+              <Button
+                type="button"
+                variant="outline"
+                className="!border-gray-400 !text-gray-700 hover:!bg-gray-100"
+                disabled={saving || !isLocked}
+                onClick={handleUnlock}
+                loading={saving}
+              >
+                Desbloquear
+              </Button>
+            </div>
+          </SectionCard>
+        )}
 
-      <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-        <Button
-          type="button"
-          variant="outline"
-          className="!border-gray-400 !text-gray-700 hover:!bg-gray-100"
-          onClick={() => navigate(userRoutePaths.list)}
-          disabled={saving}
-        >
-          Cancelar
-        </Button>
-        <Button type="submit" variant="primary" loading={saving}>
-          {mode === "create" ? "Cadastrar usuário" : "Salvar usuário"}
-        </Button>
-      </div>
-    </form>
+        <div className="flex justify-end">
+          <Button type="submit" variant="primary" loading={saving}>
+            {mode === "create" ? "Cadastrar usuário" : "Salvar usuário"}
+          </Button>
+        </div>
+      </form>
+    </div>
   );
 }

@@ -16,6 +16,7 @@ import {
 import { creditCardRoutePaths } from "@/router";
 import { useToast } from "@/shared/toast/useToast";
 import { maskCurrencyInput } from "@/utils/format";
+import { ArrowLeft } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -176,119 +177,125 @@ export default function CreditCardForm({ mode }: { mode: "create" | "edit" }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <SectionCard title={title}>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <Input
-            label="Nome do cartão"
-            value={values.name}
-            onChange={(event) =>
-              setValues((current) => ({ ...current, name: event.target.value }))
-            }
-            placeholder="Ex: Nubank"
-            required
-            error={errors.name}
-          />
+    <div className="space-y-4">
+      <Button
+        type="button"
+        variant="outline"
+        className="!border-gray-400 !text-gray-700 hover:!bg-gray-100"
+        leftIcon={<ArrowLeft size={16} />}
+        onClick={() => navigate(creditCardRoutePaths.list)}
+      >
+        Voltar
+      </Button>
 
-          <Select
-            label="Status"
-            value={values.status ? "true" : "false"}
-            onChange={(event) =>
-              setValues((current) => ({
-                ...current,
-                status: event.target.value === "true",
-              }))
-            }
-          >
-            <option value="true">Ativo</option>
-            <option value="false">Inativo</option>
-          </Select>
-
-          <Input
-            label="Limite total"
-            value={values.creditLimit}
-            onChange={(event) =>
-              setValues((current) => ({
-                ...current,
-                creditLimit: maskCurrencyInput(event.target.value),
-              }))
-            }
-            placeholder="0,00"
-            inputMode="numeric"
-            required
-            error={errors.creditLimit}
-          />
-
-          <div>
-            <Select
-              label="Dia de fechamento da fatura"
-              value={values.closingDay}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <SectionCard title={title}>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <Input
+              label="Nome do cartão"
+              value={values.name}
               onChange={(event) =>
                 setValues((current) => ({
                   ...current,
-                  closingDay: event.target.value,
+                  name: event.target.value,
                 }))
               }
+              placeholder="Ex: Nubank"
               required
-              error={errors.closingDay}
-            >
-              <option value="">Selecione</option>
-              {DAY_OPTIONS.map((day) => (
-                <option key={day} value={day}>
-                  Dia {day}
-                </option>
-              ))}
-            </Select>
-          </div>
+              error={errors.name}
+            />
 
-          <div>
             <Select
-              label="Dia de vencimento"
-              value={values.dueDay}
+              label="Status"
+              value={values.status ? "true" : "false"}
               onChange={(event) =>
                 setValues((current) => ({
                   ...current,
-                  dueDay: event.target.value,
+                  status: event.target.value === "true",
                 }))
               }
-              required
-              error={errors.dueDay}
             >
-              <option value="">Selecione</option>
-              {DAY_OPTIONS.map((day) => (
-                <option key={day} value={day}>
-                  Dia {day}
-                </option>
-              ))}
+              <option value="true">Ativo</option>
+              <option value="false">Inativo</option>
             </Select>
-            <p className="mt-1 text-xs" style={{ color: colors.brown[500] }}>
-              Compras feitas após o fechamento entram na fatura do ciclo
-              seguinte, com vencimento no mês seguinte ao fechamento.
-            </p>
+
+            <Input
+              label="Limite total"
+              value={values.creditLimit}
+              onChange={(event) =>
+                setValues((current) => ({
+                  ...current,
+                  creditLimit: maskCurrencyInput(event.target.value),
+                }))
+              }
+              placeholder="0,00"
+              inputMode="numeric"
+              required
+              error={errors.creditLimit}
+            />
+
+            <div>
+              <Select
+                label="Dia de fechamento da fatura"
+                value={values.closingDay}
+                onChange={(event) =>
+                  setValues((current) => ({
+                    ...current,
+                    closingDay: event.target.value,
+                  }))
+                }
+                required
+                error={errors.closingDay}
+              >
+                <option value="">Selecione</option>
+                {DAY_OPTIONS.map((day) => (
+                  <option key={day} value={day}>
+                    Dia {day}
+                  </option>
+                ))}
+              </Select>
+            </div>
+
+            <div>
+              <Select
+                label="Dia de vencimento"
+                value={values.dueDay}
+                onChange={(event) =>
+                  setValues((current) => ({
+                    ...current,
+                    dueDay: event.target.value,
+                  }))
+                }
+                required
+                error={errors.dueDay}
+              >
+                <option value="">Selecione</option>
+                {DAY_OPTIONS.map((day) => (
+                  <option key={day} value={day}>
+                    Dia {day}
+                  </option>
+                ))}
+              </Select>
+              <p className="mt-1 text-xs" style={{ color: colors.brown[500] }}>
+                Compras feitas após o fechamento entram na fatura do ciclo
+                seguinte, com vencimento no mês seguinte ao fechamento.
+              </p>
+            </div>
           </div>
+        </SectionCard>
+
+        <div className="flex justify-end">
+          <Button type="submit" variant="primary" loading={saving}>
+            {mode === "create" ? "Cadastrar cartão" : "Salvar cartão"}
+          </Button>
         </div>
-      </SectionCard>
 
-      <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-        <Button
-          type="button"
-          variant="outline"
-          className="!border-gray-400 !text-gray-700 hover:!bg-gray-100"
-          onClick={() => navigate(creditCardRoutePaths.list)}
-          disabled={saving}
-        >
-          Cancelar
-        </Button>
-        <Button type="submit" variant="primary" loading={saving}>
-          {mode === "create" ? "Cadastrar cartão" : "Salvar cartão"}
-        </Button>
-      </div>
-
-      <UpgradeModal
-        open={Boolean(planLimitMessage)}
-        message={planLimitMessage ?? ""}
-        onClose={dismissPlanLimitMessage}
-      />
-    </form>
+        <UpgradeModal
+          open={Boolean(planLimitMessage)}
+          message={planLimitMessage ?? ""}
+          onClose={dismissPlanLimitMessage}
+        />
+      </form>
+    </div>
   );
 }

@@ -1,4 +1,5 @@
 export {
+  adminRoutePaths,
   authRoutePaths,
   calendarRoutePaths,
   categoryRoutePaths,
@@ -19,6 +20,7 @@ export {
   reminderRoutePaths,
   routePaths,
   supportRoutePaths,
+  supportTicketRoutePaths,
   termsOfUseRoutePaths,
   utilityRoutePaths,
   userRoutePaths,

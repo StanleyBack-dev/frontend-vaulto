@@ -4,6 +4,7 @@ import { useAuthSession } from "@/features/auth";
 import { Navigate, Route } from "react-router-dom";
 import AppLayout from "../AppLayout";
 import {
+  adminRoutePaths,
   authRoutePaths,
   calendarRoutePaths,
   comparisonRoutePaths,
@@ -22,6 +23,7 @@ import {
   reminderRoutePaths,
   routePaths,
   supportRoutePaths,
+  supportTicketRoutePaths,
   termsOfUseRoutePaths,
   utilityRoutePaths,
 } from "../navigation";
@@ -32,6 +34,10 @@ import { IncomesProviderOutlet } from "../../features/incomes";
 import { ManagementRoutes } from "./ManagementRoutes";
 
 const AccessDenied = lazy(() => import("../../pages/AccessDenied"));
+const AdminDashboard = lazy(() => import("../../pages/admin/AdminDashboard"));
+const SupportTicketDetail = lazy(
+  () => import("../../pages/admin/SupportTicketDetail"),
+);
 const DebtsDashboardKanban = lazy(
   () => import("../../pages/debts/DebtsDashboardKanban"),
 );
@@ -323,6 +329,17 @@ export function AppShellRoutes({ userId }: AppShellRoutesProps) {
         path={termsOfUseRoutePaths.list}
         element={withPageSuspense(<TermsOfUse />)}
       />
+      {/* Admin - dashboard, usuários e chamados de suporte (ADMIN_MASTER) */}
+      <Route element={<RequirePageAccessRoute view="admin" />}>
+        <Route
+          path={adminRoutePaths.list}
+          element={withPageSuspense(<AdminDashboard />)}
+        />
+        <Route
+          path={supportTicketRoutePaths.detail()}
+          element={withPageSuspense(<SupportTicketDetail />)}
+        />
+      </Route>
       <Route
         path={utilityRoutePaths.accessDenied}
         element={withPageSuspense(<AccessDenied />)}

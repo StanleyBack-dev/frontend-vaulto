@@ -73,7 +73,7 @@ export const primaryNavigationItems: NavigationItem[] = [
     label: "Cartões de Crédito",
     icon: <CreditCard size={20} />,
   },
-  { id: "users", label: "Usuários", icon: <Shield size={20} /> },
+  { id: "admin", label: "Admin", icon: <Shield size={20} /> },
 ];
 
 export const secondaryNavigationItems: NavigationItem[] = [

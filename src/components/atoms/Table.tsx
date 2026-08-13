@@ -60,7 +60,11 @@ export default function Table<T>({
               data.map((row) => (
                 <tr
                   key={rowKey(row)}
-                  className="cursor-pointer transition-colors hover:bg-amber-50"
+                  className={
+                    onRowClick
+                      ? "cursor-pointer transition-colors hover:bg-amber-50"
+                      : "transition-colors"
+                  }
                   onClick={onRowClick ? () => onRowClick(row) : undefined}
                 >
                   {columns.map((col) => (

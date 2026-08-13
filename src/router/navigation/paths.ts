@@ -2,7 +2,7 @@ import type { ActiveView } from "../../types/views";
 
 export const routePaths: Record<ActiveView, string> = {
   dashboard: "/dashboard",
-  users: "/usuarios",
+  admin: "/admin",
   debts: "/dividas",
   debtsStatement: "/extrato",
   incomes: "/receitas",
@@ -35,6 +35,14 @@ export const userRoutePaths = {
   legacyList: "/users",
   legacyCreate: "/users/new",
   legacyEdit: (id = ":id") => `/users/${id}/edit`,
+};
+
+export const adminRoutePaths = {
+  list: "/admin",
+};
+
+export const supportTicketRoutePaths = {
+  detail: (id = ":id") => `/admin/chamados/${id}`,
 };
 
 export const debtRoutePaths = {

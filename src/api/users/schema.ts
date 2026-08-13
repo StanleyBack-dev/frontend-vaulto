@@ -10,7 +10,7 @@ export const PageAccessKeySchema = z.enum([
   "PAYMENTS",
   "INCOME_RECEIPTS",
   "CREDIT_CARDS",
-  "USERS",
+  "ADMIN",
 ]);
 export const UserGroupSchema = z.enum(["USER", "ADMIN", "ADMIN_MASTER"]);
 
