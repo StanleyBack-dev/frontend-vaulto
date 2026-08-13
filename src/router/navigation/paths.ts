@@ -20,6 +20,7 @@ export const routePaths: Record<ActiveView, string> = {
   comparisons: "/comparativos",
   financialHealth: "/saude-financeira",
   faq: "/manual",
+  support: "/suporte",
 };
 
 export const dashboardRoutePaths = {
@@ -90,6 +91,10 @@ export const authRoutePaths = {
 
 export const faqRoutePaths = {
   list: "/manual",
+};
+
+export const supportRoutePaths = {
+  list: "/suporte",
 };
 
 export const planRoutePaths = {

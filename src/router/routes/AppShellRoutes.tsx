@@ -21,6 +21,7 @@ import {
   planRoutePaths,
   reminderRoutePaths,
   routePaths,
+  supportRoutePaths,
   utilityRoutePaths,
 } from "../navigation";
 import RequirePageAccessRoute from "../../features/auth/guards/RequirePageAccessRoute";
@@ -55,6 +56,7 @@ const Reminders = lazy(() => import("../../pages/Reminders"));
 const Comparisons = lazy(() => import("../../pages/Comparisons"));
 const FinancialHealth = lazy(() => import("../../pages/FinancialHealth"));
 const Manual = lazy(() => import("../../pages/Manual"));
+const Support = lazy(() => import("../../pages/Support"));
 
 function withPageSuspense(element: React.ReactNode) {
   return (
@@ -309,6 +311,11 @@ export function AppShellRoutes({ userId }: AppShellRoutesProps) {
       />
       {/* Manual/Ajuda - documentação de uso, comum a todos os usuários */}
       <Route path={faqRoutePaths.list} element={withPageSuspense(<Manual />)} />
+      {/* Suporte - contato com a equipe por e-mail, comum a todos os usuários */}
+      <Route
+        path={supportRoutePaths.list}
+        element={withPageSuspense(<Support />)}
+      />
       <Route
         path={utilityRoutePaths.accessDenied}
         element={withPageSuspense(<AccessDenied />)}

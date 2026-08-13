@@ -18,6 +18,7 @@ export {
   planRoutePaths,
   reminderRoutePaths,
   routePaths,
+  supportRoutePaths,
   utilityRoutePaths,
   userRoutePaths,
 } from "./navigation/paths";
