@@ -4,6 +4,7 @@ import {
   CREATE_CATEGORY_MUTATION,
   GET_CATEGORY_BY_ID_QUERY,
   GET_MY_CATEGORIES_QUERY,
+  GET_MY_CATEGORY_OPTIONS_QUERY,
   UPDATE_CATEGORY_MUTATION,
 } from "./queries.js";
 
@@ -24,6 +25,20 @@ export async function listCategories(input, authContext, requestId) {
   });
 
   return requireData(data.getMyCategories, "Invalid categories list response.");
+}
+
+export async function listCategoryOptions(input, authContext, requestId) {
+  const data = await executeGraphql({
+    query: GET_MY_CATEGORY_OPTIONS_QUERY,
+    variables: { input },
+    requestId,
+    ...authContext,
+  });
+
+  return requireData(
+    data.getMyCategoryOptions,
+    "Invalid category options response.",
+  );
 }
 
 export async function getCategoryById(idCategory, authContext, requestId) {

@@ -11,7 +11,7 @@ import type {
 } from "@/api/incomes/schema";
 import type { PaginationMeta } from "@/api/shared/contracts";
 import { PlanLimitReachedError } from "@/api/shared/plan-limit-error";
-import { fetchCategories } from "@/features/categories/services/category.service";
+import { fetchCategoryOptions } from "@/features/categories/services/category.service";
 import {
   fetchIncomes,
   removeIncome,
@@ -163,7 +163,7 @@ export function useIncomes(): UseIncomesResult {
   useEffect(() => {
     void (async () => {
       try {
-        const activeIncomeCategories = await fetchCategories({
+        const activeIncomeCategories = await fetchCategoryOptions({
           page: 1,
           limit: 100,
           status: true,

@@ -1,6 +1,7 @@
 import { createCategory } from "@/api/categories/methods/create";
 import { getCategoryById } from "@/api/categories/methods/get-by-id";
 import { getMyCategories } from "@/api/categories/methods/get";
+import { getMyCategoryOptions } from "@/api/categories/methods/get-options";
 import { updateCategory } from "@/api/categories/methods/update";
 import type {
   Category,
@@ -25,6 +26,28 @@ export async function fetchCategories(
   params: CategoryListQueryParams = {},
 ): Promise<CategoriesCollectionResult> {
   const response = await getMyCategories(params);
+  const parsed = CategorySchema.array().safeParse(response.items);
+
+  if (!parsed.success) {
+    throw new Error(categoryUiCopy.errors.invalidCollectionData);
+  }
+
+  return {
+    items: parsed.data,
+    pagination: {
+      total: response.total,
+      currentPage: response.currentPage,
+      limit: response.limit,
+      totalPages: response.totalPages,
+      hasNextPage: response.hasNextPage,
+    },
+  };
+}
+
+export async function fetchCategoryOptions(
+  params: CategoryListQueryParams = {},
+): Promise<CategoriesCollectionResult> {
+  const response = await getMyCategoryOptions(params);
   const parsed = CategorySchema.array().safeParse(response.items);
 
   if (!parsed.success) {

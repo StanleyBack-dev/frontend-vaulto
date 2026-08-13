@@ -4,6 +4,7 @@ import {
   CREATE_CREDIT_CARD_MUTATION,
   GET_CREDIT_CARD_BY_ID_QUERY,
   GET_MY_CREDIT_CARDS_QUERY,
+  GET_MY_CREDIT_CARD_OPTIONS_QUERY,
   UPDATE_CREDIT_CARD_MUTATION,
 } from "./queries.js";
 
@@ -26,6 +27,20 @@ export async function listCreditCards(input, authContext, requestId) {
   return requireData(
     data.getMyCreditCards,
     "Invalid credit cards list response.",
+  );
+}
+
+export async function listCreditCardOptions(input, authContext, requestId) {
+  const data = await executeGraphql({
+    query: GET_MY_CREDIT_CARD_OPTIONS_QUERY,
+    variables: { input },
+    requestId,
+    ...authContext,
+  });
+
+  return requireData(
+    data.getMyCreditCardOptions,
+    "Invalid credit card options response.",
   );
 }
 
