@@ -14,6 +14,7 @@ export const LOGIN_MUTATION = `
       authenticated
       mustChangePassword
       onboardingTourCompleted
+      termsAccepted
       user {
         ${USER_FIELDS}
       }
@@ -27,6 +28,7 @@ export const LOGIN_WITH_GOOGLE_MUTATION = `
       authenticated
       mustChangePassword
       onboardingTourCompleted
+      termsAccepted
       user {
         ${USER_FIELDS}
       }
@@ -40,6 +42,7 @@ export const REFRESH_SESSION_QUERY = `
       authenticated
       mustChangePassword
       onboardingTourCompleted
+      termsAccepted
       user {
         ${USER_FIELDS}
       }

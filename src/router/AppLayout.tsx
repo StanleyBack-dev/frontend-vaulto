@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import Sidebar from "../components/organisms/Sidebar";
 import Header from "../components/organisms/Header";
 import OnboardingTour from "../components/organisms/OnboardingTour";
+import TermsAcceptanceGate from "../components/organisms/TermsAcceptanceGate";
 import { OnboardingProvider } from "../features/onboarding";
 import { BillingProvider } from "../features/billing";
 import type { ActiveView } from "../types/views";
@@ -55,6 +56,7 @@ export default function AppLayout() {
           <OnboardingTour />
         </div>
       </OnboardingProvider>
+      <TermsAcceptanceGate />
     </BillingProvider>
   );
 }

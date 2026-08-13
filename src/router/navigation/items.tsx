@@ -15,6 +15,7 @@ import {
   LifeBuoy,
   PiggyBank,
   Receipt,
+  ScrollText,
   Tags,
   Target,
   TrendingUp,
@@ -81,4 +82,9 @@ export const secondaryNavigationItems: NavigationItem[] = [
   { id: "reminders", label: "Lembretes", icon: <Bell size={20} /> },
   { id: "faq", label: "Ajuda", icon: <HelpCircle size={20} /> },
   { id: "support", label: "Suporte", icon: <LifeBuoy size={20} /> },
+  {
+    id: "termsOfUse",
+    label: "Termos e Privacidade",
+    icon: <ScrollText size={20} />,
+  },
 ];

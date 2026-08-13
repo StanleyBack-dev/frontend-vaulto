@@ -21,6 +21,7 @@ export const routePaths: Record<ActiveView, string> = {
   financialHealth: "/saude-financeira",
   faq: "/manual",
   support: "/suporte",
+  termsOfUse: "/termos-e-privacidade",
 };
 
 export const dashboardRoutePaths = {
@@ -95,6 +96,10 @@ export const faqRoutePaths = {
 
 export const supportRoutePaths = {
   list: "/suporte",
+};
+
+export const termsOfUseRoutePaths = {
+  list: "/termos-e-privacidade",
 };
 
 export const planRoutePaths = {

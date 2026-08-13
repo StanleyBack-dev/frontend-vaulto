@@ -18,4 +18,5 @@ export type ActiveView =
   | "comparisons"
   | "financialHealth"
   | "faq"
-  | "support";
+  | "support"
+  | "termsOfUse";

@@ -19,6 +19,7 @@ export {
   reminderRoutePaths,
   routePaths,
   supportRoutePaths,
+  termsOfUseRoutePaths,
   utilityRoutePaths,
   userRoutePaths,
 } from "./navigation/paths";

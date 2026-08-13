@@ -22,6 +22,7 @@ import {
   reminderRoutePaths,
   routePaths,
   supportRoutePaths,
+  termsOfUseRoutePaths,
   utilityRoutePaths,
 } from "../navigation";
 import RequirePageAccessRoute from "../../features/auth/guards/RequirePageAccessRoute";
@@ -57,6 +58,7 @@ const Comparisons = lazy(() => import("../../pages/Comparisons"));
 const FinancialHealth = lazy(() => import("../../pages/FinancialHealth"));
 const Manual = lazy(() => import("../../pages/Manual"));
 const Support = lazy(() => import("../../pages/Support"));
+const TermsOfUse = lazy(() => import("../../pages/TermsOfUse"));
 
 function withPageSuspense(element: React.ReactNode) {
   return (
@@ -315,6 +317,11 @@ export function AppShellRoutes({ userId }: AppShellRoutesProps) {
       <Route
         path={supportRoutePaths.list}
         element={withPageSuspense(<Support />)}
+      />
+      {/* Termos e Privacidade - consulta a qualquer momento, comum a todos os usuários */}
+      <Route
+        path={termsOfUseRoutePaths.list}
+        element={withPageSuspense(<TermsOfUse />)}
       />
       <Route
         path={utilityRoutePaths.accessDenied}

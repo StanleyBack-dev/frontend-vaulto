@@ -19,6 +19,7 @@ import {
   reminderRoutePaths,
   routePaths,
   supportRoutePaths,
+  termsOfUseRoutePaths,
   userRoutePaths,
 } from "./paths";
 
@@ -112,6 +113,10 @@ export function getActiveView(pathname: string): ActiveView {
     return "support";
   }
 
+  if (pathname.startsWith(termsOfUseRoutePaths.list)) {
+    return "termsOfUse";
+  }
+
   return "dashboard";
 }
 
@@ -147,6 +152,8 @@ export function getPathForView(view: ActiveView) {
       return faqRoutePaths.list;
     case "support":
       return supportRoutePaths.list;
+    case "termsOfUse":
+      return termsOfUseRoutePaths.list;
     case "payments":
       return paymentRoutePaths.list;
     case "incomeReceipts":

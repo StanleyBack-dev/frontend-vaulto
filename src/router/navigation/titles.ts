@@ -74,4 +74,8 @@ export const viewTitles: Record<
     title: "Suporte",
     subtitle: "Fale com a nossa equipe por e-mail",
   },
+  termsOfUse: {
+    title: "Termos e Privacidade",
+    subtitle: "Termos de Uso e Política de Privacidade da plataforma",
+  },
 };
