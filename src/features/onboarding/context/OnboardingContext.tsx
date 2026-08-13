@@ -49,8 +49,14 @@ export function OnboardingProvider({ children }: OnboardingProviderProps) {
   const [manualOpen, setManualOpen] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
 
+  // The onboarding tour only makes sense once the terms gate has been
+  // cleared — otherwise both full-screen overlays would race to open at
+  // once right after login.
   const isOpen =
-    manualOpen || (Boolean(session) && !session?.onboardingTourCompleted);
+    manualOpen ||
+    (Boolean(session) &&
+      Boolean(session?.termsAccepted) &&
+      !session?.onboardingTourCompleted);
 
   useEffect(() => {
     setStepIndex(0);
