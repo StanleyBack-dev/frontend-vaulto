@@ -27,9 +27,9 @@ export const viewTitles: Record<
     title: "Cartões de Crédito",
     subtitle: "Cadastro de cartões e limites",
   },
-  users: {
-    title: "Usuários",
-    subtitle: "Gerenciar usuários de acesso",
+  admin: {
+    title: "Admin",
+    subtitle: "Usuários, assinaturas e chamados de suporte",
   },
   profile: { title: "Perfil", subtitle: "Seus dados e sua assinatura" },
   plans: {

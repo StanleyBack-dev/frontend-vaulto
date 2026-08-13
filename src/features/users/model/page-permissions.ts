@@ -15,7 +15,7 @@ export const pagePermissionOptions: PagePermissionOption[] = [
   { key: "PAYMENTS", label: "Pagamentos" },
   { key: "INCOME_RECEIPTS", label: "Recebimentos" },
   { key: "CREDIT_CARDS", label: "Cartões de Crédito" },
-  { key: "USERS", label: "Usuários" },
+  { key: "ADMIN", label: "Admin" },
 ];
 
 export { getDefaultPagePermissionsByGroup };

@@ -1,7 +1,11 @@
 import { HttpError } from "../../shared/http/http-error.js";
 import { executeGraphql } from "../../shared/http/graphql-client.js";
 import {
+  FINALIZE_SUPPORT_TICKET_MUTATION,
+  GET_SUPPORT_TICKET_QUERY,
+  LIST_SUPPORT_TICKETS_QUERY,
   MY_SUPPORT_MESSAGE_STATUS_QUERY,
+  REPLY_TO_SUPPORT_TICKET_MUTATION,
   SEND_SUPPORT_MESSAGE_MUTATION,
 } from "./queries.js";
 
@@ -37,5 +41,69 @@ export async function getMySupportMessageStatus(authContext, requestId) {
   return requireData(
     data.mySupportMessageStatus,
     "Invalid support message status response.",
+  );
+}
+
+export async function listSupportTickets(input, authContext, requestId) {
+  const data = await executeGraphql({
+    query: LIST_SUPPORT_TICKETS_QUERY,
+    variables: { input },
+    requestId,
+    ...authContext,
+  });
+
+  return requireData(
+    data.listSupportTickets,
+    "Invalid list support tickets response.",
+  );
+}
+
+export async function getSupportTicket(
+  idSupportMessage,
+  authContext,
+  requestId,
+) {
+  const data = await executeGraphql({
+    query: GET_SUPPORT_TICKET_QUERY,
+    variables: { idSupportMessage },
+    requestId,
+    ...authContext,
+  });
+
+  return requireData(
+    data.getSupportTicket,
+    "Invalid get support ticket response.",
+  );
+}
+
+export async function replyToSupportTicket(input, authContext, requestId) {
+  const data = await executeGraphql({
+    query: REPLY_TO_SUPPORT_TICKET_MUTATION,
+    variables: { input },
+    requestId,
+    ...authContext,
+  });
+
+  return requireData(
+    data.replyToSupportTicket,
+    "Invalid reply to support ticket response.",
+  );
+}
+
+export async function finalizeSupportTicket(
+  idSupportMessage,
+  authContext,
+  requestId,
+) {
+  const data = await executeGraphql({
+    query: FINALIZE_SUPPORT_TICKET_MUTATION,
+    variables: { idSupportMessage },
+    requestId,
+    ...authContext,
+  });
+
+  return requireData(
+    data.finalizeSupportTicket,
+    "Invalid finalize support ticket response.",
   );
 }

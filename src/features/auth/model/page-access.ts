@@ -11,7 +11,7 @@ const pageAccessByView: Partial<Record<ActiveView, PageAccessKey>> = {
   payments: "PAYMENTS",
   incomeReceipts: "INCOME_RECEIPTS",
   creditCards: "CREDIT_CARDS",
-  users: "USERS",
+  admin: "ADMIN",
 };
 
 export function getGroupDefaultPagePermissions(

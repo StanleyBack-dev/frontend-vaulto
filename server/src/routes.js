@@ -1,4 +1,5 @@
 import { Router } from "express";
+import adminRoutes from "./modules/admin/routes.js";
 import authRoutes from "./modules/auth/routes.js";
 import billingRoutes from "./modules/billing/routes.js";
 import categoriesRoutes from "./modules/categories/routes.js";
@@ -17,6 +18,7 @@ import supportRoutes from "./modules/support/routes.js";
 const router = Router();
 
 router.use("/auth", authRoutes);
+router.use("/admin", adminRoutes);
 router.use("/billing", billingRoutes);
 router.use("/categories", categoriesRoutes);
 router.use("/credit-cards", creditCardsRoutes);

@@ -6,6 +6,7 @@ import { CreditCardsProviderOutlet } from "../../features/credit-cards";
 import { UsersProviderOutlet } from "../../features/users";
 import RequirePageAccessRoute from "../../features/auth/guards/RequirePageAccessRoute";
 import {
+  adminRoutePaths,
   categoryRoutePaths,
   creditCardRoutePaths,
   userRoutePaths,
@@ -18,7 +19,6 @@ const CreditCardForm = lazy(
 );
 const CreditCards = lazy(() => import("../../pages/credit-cards/CreditCards"));
 const UserForm = lazy(() => import("../../pages/users/UserForm"));
-const Users = lazy(() => import("../../pages/users/Users"));
 
 function withPageSuspense(element: React.ReactNode) {
   return (
@@ -102,7 +102,7 @@ export function ManagementRoutes({ userId, loginPath }: ManagementRoutesProps) {
           />
         </Route>
       </Route>
-      <Route element={<RequirePageAccessRoute view="users" />}>
+      <Route element={<RequirePageAccessRoute view="admin" />}>
         <Route
           element={
             <UserScopedProviderRoute
@@ -113,10 +113,6 @@ export function ManagementRoutes({ userId, loginPath }: ManagementRoutesProps) {
           }
         >
           <Route
-            path={userRoutePaths.list}
-            element={withPageSuspense(<Users />)}
-          />
-          <Route
             path={userRoutePaths.create}
             element={withPageSuspense(<UserForm mode="create" />)}
           />
@@ -126,9 +122,14 @@ export function ManagementRoutes({ userId, loginPath }: ManagementRoutesProps) {
           />
         </Route>
       </Route>
+      {/* Usuários agora vive dentro da aba "Usuários" do painel Admin */}
+      <Route
+        path={userRoutePaths.list}
+        element={<Navigate to={adminRoutePaths.list} replace />}
+      />
       <Route
         path={userRoutePaths.legacyList}
-        element={<Navigate to={userRoutePaths.list} replace />}
+        element={<Navigate to={adminRoutePaths.list} replace />}
       />
       <Route
         path={categoryRoutePaths.legacyList}

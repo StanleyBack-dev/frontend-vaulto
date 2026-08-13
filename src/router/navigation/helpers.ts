@@ -1,5 +1,6 @@
 import type { ActiveView } from "../../types/views";
 import {
+  adminRoutePaths,
   calendarRoutePaths,
   categoryRoutePaths,
   comparisonRoutePaths,
@@ -29,10 +30,11 @@ export function getActiveView(pathname: string): ActiveView {
   }
 
   if (
+    pathname.startsWith(adminRoutePaths.list) ||
     pathname.startsWith(userRoutePaths.list) ||
     pathname.startsWith(userRoutePaths.legacyList)
   ) {
-    return "users";
+    return "admin";
   }
 
   if (
@@ -128,8 +130,8 @@ export function getPathForView(view: ActiveView) {
       return categoryRoutePaths.list;
     case "creditCards":
       return creditCardRoutePaths.list;
-    case "users":
-      return userRoutePaths.list;
+    case "admin":
+      return adminRoutePaths.list;
     case "profile":
       return routePaths.profile;
     case "plans":

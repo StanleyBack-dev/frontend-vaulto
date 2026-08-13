@@ -15,6 +15,7 @@ import {
 import type { CategoryType } from "@/api/categories/schema";
 import { categoryRoutePaths } from "@/router";
 import { useToast } from "@/shared/toast/useToast";
+import { ArrowLeft } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -145,67 +146,73 @@ export default function CategoryForm({ mode }: { mode: "create" | "edit" }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <SectionCard title={title}>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <Input
-            label="Nome"
-            value={values.name}
-            onChange={(event) =>
-              setValues((current) => ({ ...current, name: event.target.value }))
-            }
-            placeholder="Ex: Moradia"
-            required
-            error={errors.name}
-          />
+    <div className="space-y-4">
+      <Button
+        type="button"
+        variant="outline"
+        className="!border-gray-400 !text-gray-700 hover:!bg-gray-100"
+        leftIcon={<ArrowLeft size={16} />}
+        onClick={() => navigate(categoryRoutePaths.list)}
+      >
+        Voltar
+      </Button>
 
-          <Select
-            label="Tipo"
-            value={values.type}
-            onChange={(event) =>
-              setValues((current) => ({
-                ...current,
-                type: event.target.value as CategoryType,
-              }))
-            }
-          >
-            {categoryTypeOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </Select>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <SectionCard title={title}>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <Input
+              label="Nome"
+              value={values.name}
+              onChange={(event) =>
+                setValues((current) => ({
+                  ...current,
+                  name: event.target.value,
+                }))
+              }
+              placeholder="Ex: Moradia"
+              required
+              error={errors.name}
+            />
 
-          <Select
-            label="Status"
-            value={values.status ? "true" : "false"}
-            onChange={(event) =>
-              setValues((current) => ({
-                ...current,
-                status: event.target.value === "true",
-              }))
-            }
-          >
-            <option value="true">Ativa</option>
-            <option value="false">Inativa</option>
-          </Select>
+            <Select
+              label="Tipo"
+              value={values.type}
+              onChange={(event) =>
+                setValues((current) => ({
+                  ...current,
+                  type: event.target.value as CategoryType,
+                }))
+              }
+            >
+              {categoryTypeOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </Select>
+
+            <Select
+              label="Status"
+              value={values.status ? "true" : "false"}
+              onChange={(event) =>
+                setValues((current) => ({
+                  ...current,
+                  status: event.target.value === "true",
+                }))
+              }
+            >
+              <option value="true">Ativa</option>
+              <option value="false">Inativa</option>
+            </Select>
+          </div>
+        </SectionCard>
+
+        <div className="flex justify-end">
+          <Button type="submit" variant="primary" loading={saving}>
+            {mode === "create" ? "Cadastrar categoria" : "Salvar categoria"}
+          </Button>
         </div>
-      </SectionCard>
-
-      <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-        <Button
-          type="button"
-          variant="outline"
-          className="!border-gray-400 !text-gray-700 hover:!bg-gray-100"
-          onClick={() => navigate(categoryRoutePaths.list)}
-          disabled={saving}
-        >
-          Cancelar
-        </Button>
-        <Button type="submit" variant="primary" loading={saving}>
-          {mode === "create" ? "Cadastrar categoria" : "Salvar categoria"}
-        </Button>
-      </div>
-    </form>
+      </form>
+    </div>
   );
 }

@@ -7,7 +7,7 @@ export type ActiveView =
   | "incomeReceipts"
   | "categories"
   | "creditCards"
-  | "users"
+  | "admin"
   | "profile"
   | "plans"
   | "forecast"

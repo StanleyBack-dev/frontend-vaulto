@@ -14,6 +14,7 @@ import type { FinancialGoalStatus } from "@/api/goals/schema";
 import { goalRoutePaths } from "@/router";
 import { useToast } from "@/shared/toast/useToast";
 import { formatCurrencyForInput, maskCurrencyInput } from "@/utils/format";
+import { ArrowLeft } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -168,92 +169,95 @@ export default function GoalForm({ mode }: { mode: "create" | "edit" }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <SectionCard
-        title={title}
-        description="Defina o objetivo e o valor que você quer alcançar."
+    <div className="space-y-4">
+      <Button
+        type="button"
+        variant="outline"
+        className="!border-gray-400 !text-gray-700 hover:!bg-gray-100"
+        leftIcon={<ArrowLeft size={16} />}
+        onClick={() => navigate(goalRoutePaths.list)}
       >
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <Input
-            label="Título"
-            value={form.title}
-            onChange={(event) =>
-              setForm((current) => ({
-                ...current,
-                title: event.target.value,
-              }))
-            }
-            placeholder="Ex: Reserva de emergência"
-            required
-            error={errors.title}
-          />
+        Voltar
+      </Button>
 
-          <Input
-            label="Valor alvo"
-            inputMode="decimal"
-            value={form.targetAmount}
-            onChange={(event) =>
-              setForm((current) => ({
-                ...current,
-                targetAmount: maskCurrencyInput(event.target.value),
-              }))
-            }
-            placeholder="0,00"
-            required
-            error={errors.targetAmount}
-          />
-
-          <Input
-            label="Data alvo (opcional)"
-            type="date"
-            value={form.targetDate}
-            onChange={(event) =>
-              setForm((current) => ({
-                ...current,
-                targetDate: event.target.value,
-              }))
-            }
-          />
-
-          {mode === "edit" && goalStatus && (
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <SectionCard
+          title={title}
+          description="Defina o objetivo e o valor que você quer alcançar."
+        >
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <Input
-              label="Status"
-              value={goalStatusLabel(goalStatus)}
-              disabled
-            />
-          )}
-
-          <div className="md:col-span-2">
-            <Textarea
-              label="Descrição"
-              value={form.description}
+              label="Título"
+              value={form.title}
               onChange={(event) =>
                 setForm((current) => ({
                   ...current,
-                  description: event.target.value,
+                  title: event.target.value,
                 }))
               }
-              placeholder="Contexto e observações sobre a meta"
-              rows={4}
+              placeholder="Ex: Reserva de emergência"
+              required
+              error={errors.title}
             />
-          </div>
-        </div>
-      </SectionCard>
 
-      <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-        <Button
-          type="button"
-          variant="outline"
-          className="!border-gray-400 !text-gray-700 hover:!bg-gray-100"
-          onClick={() => navigate(goalRoutePaths.list)}
-          disabled={saving}
-        >
-          Cancelar
-        </Button>
-        <Button type="submit" variant="primary" loading={saving}>
-          {mode === "create" ? "Cadastrar meta" : "Salvar alterações"}
-        </Button>
-      </div>
-    </form>
+            <Input
+              label="Valor alvo"
+              inputMode="decimal"
+              value={form.targetAmount}
+              onChange={(event) =>
+                setForm((current) => ({
+                  ...current,
+                  targetAmount: maskCurrencyInput(event.target.value),
+                }))
+              }
+              placeholder="0,00"
+              required
+              error={errors.targetAmount}
+            />
+
+            <Input
+              label="Data alvo (opcional)"
+              type="date"
+              value={form.targetDate}
+              onChange={(event) =>
+                setForm((current) => ({
+                  ...current,
+                  targetDate: event.target.value,
+                }))
+              }
+            />
+
+            {mode === "edit" && goalStatus && (
+              <Input
+                label="Status"
+                value={goalStatusLabel(goalStatus)}
+                disabled
+              />
+            )}
+
+            <div className="md:col-span-2">
+              <Textarea
+                label="Descrição"
+                value={form.description}
+                onChange={(event) =>
+                  setForm((current) => ({
+                    ...current,
+                    description: event.target.value,
+                  }))
+                }
+                placeholder="Contexto e observações sobre a meta"
+                rows={4}
+              />
+            </div>
+          </div>
+        </SectionCard>
+
+        <div className="flex justify-end">
+          <Button type="submit" variant="primary" loading={saving}>
+            {mode === "create" ? "Cadastrar meta" : "Salvar alterações"}
+          </Button>
+        </div>
+      </form>
+    </div>
   );
 }

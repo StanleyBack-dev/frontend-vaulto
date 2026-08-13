@@ -21,7 +21,7 @@ import {
   maskCurrencyInput,
   onlyDigits,
 } from "@/utils/format";
-import { Plus } from "lucide-react";
+import { ArrowLeft, Plus } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -338,400 +338,413 @@ export default function DebtForm({ mode }: { mode: "create" | "edit" }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <SectionCard
-        title={title}
-        description="Fluxo de dívidas para cadastro e controle de status."
+    <div className="space-y-4">
+      <Button
+        type="button"
+        variant="outline"
+        className="!border-gray-400 !text-gray-700 hover:!bg-gray-100"
+        leftIcon={<ArrowLeft size={16} />}
+        onClick={() => navigate(debtRoutePaths.management)}
       >
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <Input
-            label="Título"
-            value={form.title}
-            onChange={(event) =>
-              setForm((current) => ({ ...current, title: event.target.value }))
-            }
-            placeholder="Ex: Fatura operação julho"
-            required
-            error={errors.title}
-          />
+        Voltar
+      </Button>
 
-          <Select
-            label="Categoria"
-            value={form.idCategory}
-            onChange={(event) =>
-              setForm((current) => ({
-                ...current,
-                idCategory: event.target.value,
-              }))
-            }
-            required
-            error={errors.category}
-          >
-            <option value="">Selecione</option>
-            {availableCategories.map((category) => (
-              <option key={category.idCategory} value={category.idCategory}>
-                {category.name}
-              </option>
-            ))}
-          </Select>
-
-          <Select
-            label="Tipo da dívida"
-            value={form.debtType}
-            onChange={(event) =>
-              setForm((current) => ({
-                ...current,
-                debtType: event.target.value as DebtFormValues["debtType"],
-              }))
-            }
-            required
-          >
-            {debtTypeOptions.map((type) => (
-              <option key={type.value} value={type.value}>
-                {type.label}
-              </option>
-            ))}
-          </Select>
-
-          {mode === "edit" && (
-            <div>
-              <Select
-                label="Status"
-                value={form.status}
-                onChange={(event) =>
-                  setForm((current) => ({
-                    ...current,
-                    status: event.target.value as DebtFormValues["status"],
-                  }))
-                }
-                required
-                disabled={
-                  originalStatus === "PAID" ||
-                  originalStatus === "PARTIALLY_PAID"
-                }
-                error={errors.status}
-              >
-                {debtStatusOptions
-                  .filter(
-                    (status) =>
-                      status.value === "OPEN" ||
-                      status.value === "OVERDUE" ||
-                      status.value === form.status,
-                  )
-                  .map((status) => (
-                    <option key={status.value} value={status.value}>
-                      {status.label}
-                    </option>
-                  ))}
-              </Select>
-              {(originalStatus === "PAID" ||
-                originalStatus === "PARTIALLY_PAID") && (
-                <p
-                  className="mt-1 text-xs"
-                  style={{ color: colors.brown[500] }}
-                >
-                  Este status é atualizado automaticamente pelos pagamentos
-                  registrados.
-                </p>
-              )}
-            </div>
-          )}
-
-          <div className="md:col-span-2">
-            <Textarea
-              label="Descrição"
-              value={form.description}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <SectionCard
+          title={title}
+          description="Fluxo de dívidas para cadastro e controle de status."
+        >
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <Input
+              label="Título"
+              value={form.title}
               onChange={(event) =>
                 setForm((current) => ({
                   ...current,
-                  description: event.target.value,
+                  title: event.target.value,
                 }))
               }
-              placeholder="Contexto da dívida e observações operacionais"
-              rows={4}
+              placeholder="Ex: Fatura operação julho"
+              required
+              error={errors.title}
             />
-          </div>
-        </div>
-      </SectionCard>
 
-      {mode === "create" && (
-        <SectionCard
-          title="Cartão de crédito"
-          description="Vincule a dívida a um cartão para calcular o vencimento automaticamente pela fatura, ou deixe em branco para uma dívida sem cartão."
-          action={
-            <Button
-              type="button"
-              variant="primary"
-              size="sm"
-              leftIcon={<Plus size={14} />}
-              onClick={() => navigate(creditCardRoutePaths.create)}
+            <Select
+              label="Categoria"
+              value={form.idCategory}
+              onChange={(event) =>
+                setForm((current) => ({
+                  ...current,
+                  idCategory: event.target.value,
+                }))
+              }
+              required
+              error={errors.category}
             >
-              Novo cartão
-            </Button>
-          }
-        >
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="md:col-span-2">
-              <Select
-                label="Cartão de crédito (opcional)"
-                value={form.idCreditCard}
-                onChange={(event) =>
-                  setForm((current) => ({
-                    ...current,
-                    idCreditCard: event.target.value,
-                    dueDate: event.target.value ? "" : current.dueDate,
-                    acquiredAt:
-                      event.target.value && !current.acquiredAt
-                        ? todayDateInputValue()
-                        : current.acquiredAt,
-                  }))
-                }
-              >
-                <option value="">Nenhum</option>
-                {debtCreditCards.map((card) => (
-                  <option key={card.idCreditCard} value={card.idCreditCard}>
-                    {card.name}
-                  </option>
-                ))}
-              </Select>
-              {debtCreditCards.length === 0 && (
-                <p
-                  className="mt-1 text-xs"
-                  style={{ color: colors.brown[500] }}
-                >
-                  Nenhum cartão cadastrado ainda. Use o botão "Novo cartão"
-                  acima para cadastrar um.
-                </p>
-              )}
-              {selectedCreditCard && (
-                <p
-                  className="mt-1 text-xs"
-                  style={{ color: colors.brown[500] }}
-                >
-                  Limite disponível:{" "}
-                  {new Intl.NumberFormat("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  }).format(selectedCreditCard.availableLimit)}
-                  . A data de vencimento será calculada automaticamente pelo
-                  cartão (dia {selectedCreditCard.dueDay}).
-                </p>
-              )}
-            </div>
-          </div>
-        </SectionCard>
-      )}
+              <option value="">Selecione</option>
+              {availableCategories.map((category) => (
+                <option key={category.idCategory} value={category.idCategory}>
+                  {category.name}
+                </option>
+              ))}
+            </Select>
 
-      <SectionCard
-        title="Valores"
-        description="Valor total da dívida e, se for parcelada, como as parcelas são calculadas."
-      >
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <Input
-            label="Valor total"
-            inputMode="decimal"
-            value={
-              form.hasInstallments &&
-              form.installmentEntryMode === "INSTALLMENT"
-                ? formatCurrencyForInput(calculatedTotalAmount)
-                : form.totalAmount
-            }
-            onChange={(event) =>
-              setForm((current) => ({
-                ...current,
-                totalAmount: maskCurrencyInput(event.target.value),
-              }))
-            }
-            placeholder="0,00"
-            disabled={
-              (mode === "edit" && form.hasInstallments) ||
-              (mode === "create" &&
-                form.hasInstallments &&
-                form.installmentEntryMode === "INSTALLMENT")
-            }
-            required={
-              (mode === "create" &&
-                !(
-                  form.hasInstallments &&
-                  form.installmentEntryMode === "INSTALLMENT"
-                )) ||
-              (mode === "edit" && !form.hasInstallments)
-            }
-            error={errors.totalAmount}
-          />
+            <Select
+              label="Tipo da dívida"
+              value={form.debtType}
+              onChange={(event) =>
+                setForm((current) => ({
+                  ...current,
+                  debtType: event.target.value as DebtFormValues["debtType"],
+                }))
+              }
+              required
+            >
+              {debtTypeOptions.map((type) => (
+                <option key={type.value} value={type.value}>
+                  {type.label}
+                </option>
+              ))}
+            </Select>
 
-          <div className="flex items-center md:col-span-2">
-            <label className="flex items-center gap-2 text-sm text-[#4a3f6b]">
-              <input
-                type="checkbox"
-                checked={form.hasInstallments}
-                onChange={(event) =>
-                  setForm((current) => ({
-                    ...current,
-                    hasInstallments: event.target.checked,
-                    installmentCount: event.target.checked
-                      ? current.installmentCount
-                      : "",
-                  }))
-                }
-                disabled={mode === "edit"}
-              />
-              Possui parcelamento
-            </label>
-          </div>
-
-          {form.hasInstallments && (
-            <>
-              <Input
-                label="Quantidade de parcelas"
-                inputMode="numeric"
-                value={form.installmentCount}
-                onChange={(event) =>
-                  setForm((current) => ({
-                    ...current,
-                    installmentCount: onlyDigits(event.target.value, 3),
-                  }))
-                }
-                disabled={mode === "edit"}
-                required={mode === "create"}
-                error={errors.installmentCount}
-              />
-
-              <Select
-                label="Forma de preenchimento"
-                value={form.installmentEntryMode}
-                onChange={(event) =>
-                  setForm((current) => ({
-                    ...current,
-                    installmentEntryMode: event.target
-                      .value as DebtFormValues["installmentEntryMode"],
-                  }))
-                }
-                disabled={mode === "edit"}
-              >
-                <option value="TOTAL">Informar valor total</option>
-                <option value="INSTALLMENT">Informar valor da parcela</option>
-              </Select>
-
-              {form.installmentEntryMode === "INSTALLMENT" ? (
-                <Input
-                  label="Valor da parcela"
-                  inputMode="decimal"
-                  value={form.installmentAmount}
+            {mode === "edit" && (
+              <div>
+                <Select
+                  label="Status"
+                  value={form.status}
                   onChange={(event) =>
                     setForm((current) => ({
                       ...current,
-                      installmentAmount: maskCurrencyInput(event.target.value),
+                      status: event.target.value as DebtFormValues["status"],
+                    }))
+                  }
+                  required
+                  disabled={
+                    originalStatus === "PAID" ||
+                    originalStatus === "PARTIALLY_PAID"
+                  }
+                  error={errors.status}
+                >
+                  {debtStatusOptions
+                    .filter(
+                      (status) =>
+                        status.value === "OPEN" ||
+                        status.value === "OVERDUE" ||
+                        status.value === form.status,
+                    )
+                    .map((status) => (
+                      <option key={status.value} value={status.value}>
+                        {status.label}
+                      </option>
+                    ))}
+                </Select>
+                {(originalStatus === "PAID" ||
+                  originalStatus === "PARTIALLY_PAID") && (
+                  <p
+                    className="mt-1 text-xs"
+                    style={{ color: colors.brown[500] }}
+                  >
+                    Este status é atualizado automaticamente pelos pagamentos
+                    registrados.
+                  </p>
+                )}
+              </div>
+            )}
+
+            <div className="md:col-span-2">
+              <Textarea
+                label="Descrição"
+                value={form.description}
+                onChange={(event) =>
+                  setForm((current) => ({
+                    ...current,
+                    description: event.target.value,
+                  }))
+                }
+                placeholder="Contexto da dívida e observações operacionais"
+                rows={4}
+              />
+            </div>
+          </div>
+        </SectionCard>
+
+        {mode === "create" && (
+          <SectionCard
+            title="Cartão de crédito"
+            description="Vincule a dívida a um cartão para calcular o vencimento automaticamente pela fatura, ou deixe em branco para uma dívida sem cartão."
+            action={
+              <Button
+                type="button"
+                variant="primary"
+                size="sm"
+                leftIcon={<Plus size={14} />}
+                onClick={() => navigate(creditCardRoutePaths.create)}
+              >
+                Novo cartão
+              </Button>
+            }
+          >
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="md:col-span-2">
+                <Select
+                  label="Cartão de crédito (opcional)"
+                  value={form.idCreditCard}
+                  onChange={(event) =>
+                    setForm((current) => ({
+                      ...current,
+                      idCreditCard: event.target.value,
+                      dueDate: event.target.value ? "" : current.dueDate,
+                      acquiredAt:
+                        event.target.value && !current.acquiredAt
+                          ? todayDateInputValue()
+                          : current.acquiredAt,
+                    }))
+                  }
+                >
+                  <option value="">Nenhum</option>
+                  {debtCreditCards.map((card) => (
+                    <option key={card.idCreditCard} value={card.idCreditCard}>
+                      {card.name}
+                    </option>
+                  ))}
+                </Select>
+                {debtCreditCards.length === 0 && (
+                  <p
+                    className="mt-1 text-xs"
+                    style={{ color: colors.brown[500] }}
+                  >
+                    Nenhum cartão cadastrado ainda. Use o botão "Novo cartão"
+                    acima para cadastrar um.
+                  </p>
+                )}
+                {selectedCreditCard && (
+                  <p
+                    className="mt-1 text-xs"
+                    style={{ color: colors.brown[500] }}
+                  >
+                    Limite disponível:{" "}
+                    {new Intl.NumberFormat("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    }).format(selectedCreditCard.availableLimit)}
+                    . A data de vencimento será calculada automaticamente pelo
+                    cartão (dia {selectedCreditCard.dueDay}).
+                  </p>
+                )}
+              </div>
+            </div>
+          </SectionCard>
+        )}
+
+        <SectionCard
+          title="Valores"
+          description="Valor total da dívida e, se for parcelada, como as parcelas são calculadas."
+        >
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <Input
+              label="Valor total"
+              inputMode="decimal"
+              value={
+                form.hasInstallments &&
+                form.installmentEntryMode === "INSTALLMENT"
+                  ? formatCurrencyForInput(calculatedTotalAmount)
+                  : form.totalAmount
+              }
+              onChange={(event) =>
+                setForm((current) => ({
+                  ...current,
+                  totalAmount: maskCurrencyInput(event.target.value),
+                }))
+              }
+              placeholder="0,00"
+              disabled={
+                (mode === "edit" && form.hasInstallments) ||
+                (mode === "create" &&
+                  form.hasInstallments &&
+                  form.installmentEntryMode === "INSTALLMENT")
+              }
+              required={
+                (mode === "create" &&
+                  !(
+                    form.hasInstallments &&
+                    form.installmentEntryMode === "INSTALLMENT"
+                  )) ||
+                (mode === "edit" && !form.hasInstallments)
+              }
+              error={errors.totalAmount}
+            />
+
+            <div className="flex items-center md:col-span-2">
+              <label className="flex items-center gap-2 text-sm text-[#4a3f6b]">
+                <input
+                  type="checkbox"
+                  checked={form.hasInstallments}
+                  onChange={(event) =>
+                    setForm((current) => ({
+                      ...current,
+                      hasInstallments: event.target.checked,
+                      installmentCount: event.target.checked
+                        ? current.installmentCount
+                        : "",
+                    }))
+                  }
+                  disabled={mode === "edit"}
+                />
+                Possui parcelamento
+              </label>
+            </div>
+
+            {form.hasInstallments && (
+              <>
+                <Input
+                  label="Quantidade de parcelas"
+                  inputMode="numeric"
+                  value={form.installmentCount}
+                  onChange={(event) =>
+                    setForm((current) => ({
+                      ...current,
+                      installmentCount: onlyDigits(event.target.value, 3),
                     }))
                   }
                   disabled={mode === "edit"}
                   required={mode === "create"}
-                  error={errors.installmentAmount}
+                  error={errors.installmentCount}
                 />
-              ) : (
-                <Input
-                  label="Valor da parcela (calculado)"
-                  value={formatCurrencyForInput(calculatedInstallmentAmount)}
-                  disabled
-                />
-              )}
-            </>
-          )}
-        </div>
-      </SectionCard>
 
-      <SectionCard
-        title="Datas e vencimento"
-        description="Quando a dívida vence e, se necessário, quando ela foi contraída ou comprada."
-      >
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div>
-            <Input
-              label={
-                form.hasInstallments
-                  ? "Data de vencimento (1a parcela)"
-                  : "Data de vencimento (opcional)"
-              }
-              type="date"
-              value={form.dueDate}
-              onChange={(event) =>
-                setForm((current) => ({
-                  ...current,
-                  dueDate: event.target.value,
-                }))
-              }
-              disabled={
-                (mode === "edit" &&
-                  (form.hasInstallments || Boolean(linkedCreditCard))) ||
-                (mode === "create" && Boolean(form.idCreditCard))
-              }
-              required={
-                mode === "create" && form.hasInstallments && !form.idCreditCard
-              }
-              error={errors.dueDate}
-            />
-            {mode === "edit" && linkedCreditCard && (
-              <p className="mt-1 text-xs" style={{ color: colors.brown[500] }}>
-                Vencimento calculado automaticamente pelo cartão{" "}
-                {linkedCreditCard}.
-              </p>
+                <Select
+                  label="Forma de preenchimento"
+                  value={form.installmentEntryMode}
+                  onChange={(event) =>
+                    setForm((current) => ({
+                      ...current,
+                      installmentEntryMode: event.target
+                        .value as DebtFormValues["installmentEntryMode"],
+                    }))
+                  }
+                  disabled={mode === "edit"}
+                >
+                  <option value="TOTAL">Informar valor total</option>
+                  <option value="INSTALLMENT">Informar valor da parcela</option>
+                </Select>
+
+                {form.installmentEntryMode === "INSTALLMENT" ? (
+                  <Input
+                    label="Valor da parcela"
+                    inputMode="decimal"
+                    value={form.installmentAmount}
+                    onChange={(event) =>
+                      setForm((current) => ({
+                        ...current,
+                        installmentAmount: maskCurrencyInput(
+                          event.target.value,
+                        ),
+                      }))
+                    }
+                    disabled={mode === "edit"}
+                    required={mode === "create"}
+                    error={errors.installmentAmount}
+                  />
+                ) : (
+                  <Input
+                    label="Valor da parcela (calculado)"
+                    value={formatCurrencyForInput(calculatedInstallmentAmount)}
+                    disabled
+                  />
+                )}
+              </>
             )}
           </div>
+        </SectionCard>
 
-          {(form.hasInstallments ||
-            (mode === "create" && Boolean(form.idCreditCard))) && (
+        <SectionCard
+          title="Datas e vencimento"
+          description="Quando a dívida vence e, se necessário, quando ela foi contraída ou comprada."
+        >
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
               <Input
                 label={
-                  mode === "create" && form.idCreditCard
-                    ? "Data da compra"
-                    : "Data de início (opcional)"
+                  form.hasInstallments
+                    ? "Data de vencimento (1a parcela)"
+                    : "Data de vencimento (opcional)"
                 }
                 type="date"
-                value={form.acquiredAt}
+                value={form.dueDate}
                 onChange={(event) =>
                   setForm((current) => ({
                     ...current,
-                    acquiredAt: event.target.value,
+                    dueDate: event.target.value,
                   }))
                 }
-                required={mode === "create" && Boolean(form.idCreditCard)}
-                error={errors.acquiredAt}
+                disabled={
+                  (mode === "edit" &&
+                    (form.hasInstallments || Boolean(linkedCreditCard))) ||
+                  (mode === "create" && Boolean(form.idCreditCard))
+                }
+                required={
+                  mode === "create" &&
+                  form.hasInstallments &&
+                  !form.idCreditCard
+                }
+                error={errors.dueDate}
               />
-              {mode === "create" && form.idCreditCard && (
+              {mode === "edit" && linkedCreditCard && (
                 <p
                   className="mt-1 text-xs"
                   style={{ color: colors.brown[500] }}
                 >
-                  Usada para calcular em qual fatura a compra cai — importante
-                  para dívidas antigas que não foram compradas hoje.
+                  Vencimento calculado automaticamente pelo cartão{" "}
+                  {linkedCreditCard}.
                 </p>
               )}
             </div>
-          )}
+
+            {(form.hasInstallments ||
+              (mode === "create" && Boolean(form.idCreditCard))) && (
+              <div>
+                <Input
+                  label={
+                    mode === "create" && form.idCreditCard
+                      ? "Data da compra"
+                      : "Data de início (opcional)"
+                  }
+                  type="date"
+                  value={form.acquiredAt}
+                  onChange={(event) =>
+                    setForm((current) => ({
+                      ...current,
+                      acquiredAt: event.target.value,
+                    }))
+                  }
+                  required={mode === "create" && Boolean(form.idCreditCard)}
+                  error={errors.acquiredAt}
+                />
+                {mode === "create" && form.idCreditCard && (
+                  <p
+                    className="mt-1 text-xs"
+                    style={{ color: colors.brown[500] }}
+                  >
+                    Usada para calcular em qual fatura a compra cai — importante
+                    para dívidas antigas que não foram compradas hoje.
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        </SectionCard>
+
+        <div className="flex justify-end">
+          <Button type="submit" variant="primary" loading={saving}>
+            {mode === "create" ? "Cadastrar dívida" : "Salvar alterações"}
+          </Button>
         </div>
-      </SectionCard>
 
-      <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-        <Button
-          type="button"
-          variant="outline"
-          className="!border-gray-400 !text-gray-700 hover:!bg-gray-100"
-          onClick={() => navigate(debtRoutePaths.management)}
-          disabled={saving}
-        >
-          Cancelar
-        </Button>
-        <Button type="submit" variant="primary" loading={saving}>
-          {mode === "create" ? "Cadastrar dívida" : "Salvar alterações"}
-        </Button>
-      </div>
-
-      <UpgradeModal
-        open={Boolean(planLimitMessage)}
-        message={planLimitMessage ?? ""}
-        onClose={dismissPlanLimitMessage}
-      />
-    </form>
+        <UpgradeModal
+          open={Boolean(planLimitMessage)}
+          message={planLimitMessage ?? ""}
+          onClose={dismissPlanLimitMessage}
+        />
+      </form>
+    </div>
   );
 }

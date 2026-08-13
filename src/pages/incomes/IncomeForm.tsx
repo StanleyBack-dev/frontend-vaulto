@@ -21,6 +21,7 @@ import {
   maskCurrencyInput,
   onlyDigits,
 } from "@/utils/format";
+import { ArrowLeft } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -312,302 +313,310 @@ export default function IncomeForm({ mode }: { mode: "create" | "edit" }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <SectionCard
-        title={title}
-        description="Fluxo de receitas para cadastro e controle de status."
+    <div className="space-y-4">
+      <Button
+        type="button"
+        variant="outline"
+        className="!border-gray-400 !text-gray-700 hover:!bg-gray-100"
+        leftIcon={<ArrowLeft size={16} />}
+        onClick={() => navigate(incomeRoutePaths.list)}
       >
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <Input
-            label="Título"
-            value={form.title}
-            onChange={(event) =>
-              setForm((current) => ({ ...current, title: event.target.value }))
-            }
-            placeholder="Ex: Salário de agosto"
-            required
-            error={errors.title}
-          />
+        Voltar
+      </Button>
 
-          <Select
-            label="Categoria"
-            value={form.idCategory}
-            onChange={(event) =>
-              setForm((current) => ({
-                ...current,
-                idCategory: event.target.value,
-              }))
-            }
-            required
-            error={errors.category}
-          >
-            <option value="">Selecione</option>
-            {incomeCategories.map((category) => (
-              <option key={category.idCategory} value={category.idCategory}>
-                {category.name}
-              </option>
-            ))}
-          </Select>
-
-          <Select
-            label="Tipo da receita"
-            value={form.incomeType}
-            onChange={(event) =>
-              setForm((current) => ({
-                ...current,
-                incomeType: event.target
-                  .value as IncomeFormValues["incomeType"],
-              }))
-            }
-            required
-          >
-            {incomeTypeOptions.map((type) => (
-              <option key={type.value} value={type.value}>
-                {type.label}
-              </option>
-            ))}
-          </Select>
-
-          {mode === "edit" && (
-            <Select
-              label="Status"
-              value={form.status}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <SectionCard
+          title={title}
+          description="Fluxo de receitas para cadastro e controle de status."
+        >
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <Input
+              label="Título"
+              value={form.title}
               onChange={(event) =>
                 setForm((current) => ({
                   ...current,
-                  status: event.target.value as IncomeFormValues["status"],
+                  title: event.target.value,
+                }))
+              }
+              placeholder="Ex: Salário de agosto"
+              required
+              error={errors.title}
+            />
+
+            <Select
+              label="Categoria"
+              value={form.idCategory}
+              onChange={(event) =>
+                setForm((current) => ({
+                  ...current,
+                  idCategory: event.target.value,
                 }))
               }
               required
-              disabled={
-                originalStatus === "RECEIVED" ||
-                originalStatus === "PARTIALLY_RECEIVED"
-              }
-              error={errors.status}
+              error={errors.category}
             >
-              {incomeStatusOptions
-                .filter(
-                  (status) =>
-                    status.value === "PENDING" ||
-                    status.value === "OVERDUE" ||
-                    status.value === form.status,
-                )
-                .map((status) => (
-                  <option key={status.value} value={status.value}>
-                    {status.label}
-                  </option>
-                ))}
+              <option value="">Selecione</option>
+              {incomeCategories.map((category) => (
+                <option key={category.idCategory} value={category.idCategory}>
+                  {category.name}
+                </option>
+              ))}
             </Select>
-          )}
-          {mode === "edit" &&
-            (originalStatus === "RECEIVED" ||
-              originalStatus === "PARTIALLY_RECEIVED") && (
-              <p
-                className="mt-1 text-xs md:col-span-2"
-                style={{ color: colors.brown[500] }}
-              >
-                Este status é atualizado automaticamente pelos recebimentos
-                registrados.
-              </p>
-            )}
 
-          <div className="md:col-span-2">
-            <label className="flex items-center gap-2 text-sm text-[#4a3f6b]">
-              <input
-                type="checkbox"
-                checked={form.isRecurring}
-                onChange={(event) =>
-                  setForm((current) => ({
-                    ...current,
-                    isRecurring: event.target.checked,
-                  }))
-                }
-              />
-              É uma receita recorrente (ex: salário mensal)
-            </label>
-          </div>
-
-          <div className="md:col-span-2">
-            <Textarea
-              label="Descrição"
-              value={form.description}
+            <Select
+              label="Tipo da receita"
+              value={form.incomeType}
               onChange={(event) =>
                 setForm((current) => ({
                   ...current,
-                  description: event.target.value,
+                  incomeType: event.target
+                    .value as IncomeFormValues["incomeType"],
                 }))
               }
-              placeholder="Contexto da receita e observações"
-              rows={4}
-            />
-          </div>
-        </div>
-      </SectionCard>
+              required
+            >
+              {incomeTypeOptions.map((type) => (
+                <option key={type.value} value={type.value}>
+                  {type.label}
+                </option>
+              ))}
+            </Select>
 
-      <SectionCard
-        title="Valores"
-        description="Valor total da receita e, se for parcelada (ex: valor a receber de um devedor), como as parcelas são calculadas."
-      >
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <Input
-            label="Valor total"
-            inputMode="decimal"
-            value={
-              form.hasInstallments &&
-              form.installmentEntryMode === "INSTALLMENT"
-                ? formatCurrencyForInput(calculatedTotalAmount)
-                : form.totalAmount
-            }
-            onChange={(event) =>
-              setForm((current) => ({
-                ...current,
-                totalAmount: maskCurrencyInput(event.target.value),
-              }))
-            }
-            placeholder="0,00"
-            disabled={
-              (mode === "edit" && form.hasInstallments) ||
-              (mode === "create" &&
-                form.hasInstallments &&
-                form.installmentEntryMode === "INSTALLMENT")
-            }
-            required={
-              (mode === "create" &&
-                !(
-                  form.hasInstallments &&
-                  form.installmentEntryMode === "INSTALLMENT"
-                )) ||
-              (mode === "edit" && !form.hasInstallments)
-            }
-            error={errors.totalAmount}
-          />
-
-          <div className="flex items-center md:col-span-2">
-            <label className="flex items-center gap-2 text-sm text-[#4a3f6b]">
-              <input
-                type="checkbox"
-                checked={form.hasInstallments}
-                onChange={(event) =>
-                  setForm((current) => ({
-                    ...current,
-                    hasInstallments: event.target.checked,
-                    installmentCount: event.target.checked
-                      ? current.installmentCount
-                      : "",
-                  }))
-                }
-                disabled={mode === "edit"}
-              />
-              Possui parcelamento (ex: valor a receber dividido em parcelas)
-            </label>
-          </div>
-
-          {form.hasInstallments && (
-            <>
-              <Input
-                label="Quantidade de parcelas"
-                inputMode="numeric"
-                value={form.installmentCount}
-                onChange={(event) =>
-                  setForm((current) => ({
-                    ...current,
-                    installmentCount: onlyDigits(event.target.value, 3),
-                  }))
-                }
-                disabled={mode === "edit"}
-                required={mode === "create"}
-                error={errors.installmentCount}
-              />
-
+            {mode === "edit" && (
               <Select
-                label="Forma de preenchimento"
-                value={form.installmentEntryMode}
+                label="Status"
+                value={form.status}
                 onChange={(event) =>
                   setForm((current) => ({
                     ...current,
-                    installmentEntryMode: event.target
-                      .value as IncomeFormValues["installmentEntryMode"],
+                    status: event.target.value as IncomeFormValues["status"],
                   }))
                 }
-                disabled={mode === "edit"}
+                required
+                disabled={
+                  originalStatus === "RECEIVED" ||
+                  originalStatus === "PARTIALLY_RECEIVED"
+                }
+                error={errors.status}
               >
-                <option value="TOTAL">Informar valor total</option>
-                <option value="INSTALLMENT">Informar valor da parcela</option>
+                {incomeStatusOptions
+                  .filter(
+                    (status) =>
+                      status.value === "PENDING" ||
+                      status.value === "OVERDUE" ||
+                      status.value === form.status,
+                  )
+                  .map((status) => (
+                    <option key={status.value} value={status.value}>
+                      {status.label}
+                    </option>
+                  ))}
               </Select>
+            )}
+            {mode === "edit" &&
+              (originalStatus === "RECEIVED" ||
+                originalStatus === "PARTIALLY_RECEIVED") && (
+                <p
+                  className="mt-1 text-xs md:col-span-2"
+                  style={{ color: colors.brown[500] }}
+                >
+                  Este status é atualizado automaticamente pelos recebimentos
+                  registrados.
+                </p>
+              )}
 
-              {form.installmentEntryMode === "INSTALLMENT" ? (
-                <Input
-                  label="Valor da parcela"
-                  inputMode="decimal"
-                  value={form.installmentAmount}
+            <div className="md:col-span-2">
+              <label className="flex items-center gap-2 text-sm text-[#4a3f6b]">
+                <input
+                  type="checkbox"
+                  checked={form.isRecurring}
                   onChange={(event) =>
                     setForm((current) => ({
                       ...current,
-                      installmentAmount: maskCurrencyInput(event.target.value),
+                      isRecurring: event.target.checked,
+                    }))
+                  }
+                />
+                É uma receita recorrente (ex: salário mensal)
+              </label>
+            </div>
+
+            <div className="md:col-span-2">
+              <Textarea
+                label="Descrição"
+                value={form.description}
+                onChange={(event) =>
+                  setForm((current) => ({
+                    ...current,
+                    description: event.target.value,
+                  }))
+                }
+                placeholder="Contexto da receita e observações"
+                rows={4}
+              />
+            </div>
+          </div>
+        </SectionCard>
+
+        <SectionCard
+          title="Valores"
+          description="Valor total da receita e, se for parcelada (ex: valor a receber de um devedor), como as parcelas são calculadas."
+        >
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <Input
+              label="Valor total"
+              inputMode="decimal"
+              value={
+                form.hasInstallments &&
+                form.installmentEntryMode === "INSTALLMENT"
+                  ? formatCurrencyForInput(calculatedTotalAmount)
+                  : form.totalAmount
+              }
+              onChange={(event) =>
+                setForm((current) => ({
+                  ...current,
+                  totalAmount: maskCurrencyInput(event.target.value),
+                }))
+              }
+              placeholder="0,00"
+              disabled={
+                (mode === "edit" && form.hasInstallments) ||
+                (mode === "create" &&
+                  form.hasInstallments &&
+                  form.installmentEntryMode === "INSTALLMENT")
+              }
+              required={
+                (mode === "create" &&
+                  !(
+                    form.hasInstallments &&
+                    form.installmentEntryMode === "INSTALLMENT"
+                  )) ||
+                (mode === "edit" && !form.hasInstallments)
+              }
+              error={errors.totalAmount}
+            />
+
+            <div className="flex items-center md:col-span-2">
+              <label className="flex items-center gap-2 text-sm text-[#4a3f6b]">
+                <input
+                  type="checkbox"
+                  checked={form.hasInstallments}
+                  onChange={(event) =>
+                    setForm((current) => ({
+                      ...current,
+                      hasInstallments: event.target.checked,
+                      installmentCount: event.target.checked
+                        ? current.installmentCount
+                        : "",
+                    }))
+                  }
+                  disabled={mode === "edit"}
+                />
+                Possui parcelamento (ex: valor a receber dividido em parcelas)
+              </label>
+            </div>
+
+            {form.hasInstallments && (
+              <>
+                <Input
+                  label="Quantidade de parcelas"
+                  inputMode="numeric"
+                  value={form.installmentCount}
+                  onChange={(event) =>
+                    setForm((current) => ({
+                      ...current,
+                      installmentCount: onlyDigits(event.target.value, 3),
                     }))
                   }
                   disabled={mode === "edit"}
                   required={mode === "create"}
-                  error={errors.installmentAmount}
+                  error={errors.installmentCount}
                 />
-              ) : (
-                <Input
-                  label="Valor da parcela (calculado)"
-                  value={formatCurrencyForInput(calculatedInstallmentAmount)}
-                  disabled
-                />
-              )}
-            </>
-          )}
-        </div>
-      </SectionCard>
 
-      <SectionCard
-        title="Datas e vencimento"
-        description="Quando a receita é esperada, ou quando vence a 1ª parcela, se parcelada."
-      >
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <Input
-            label={
-              form.hasInstallments
-                ? "Data de vencimento (1ª parcela)"
-                : "Data de vencimento (opcional)"
-            }
-            type="date"
-            value={form.dueDate}
-            onChange={(event) =>
-              setForm((current) => ({
-                ...current,
-                dueDate: event.target.value,
-              }))
-            }
-            disabled={mode === "edit" && form.hasInstallments}
-            required={mode === "create" && form.hasInstallments}
-            error={errors.dueDate}
-          />
-        </div>
-      </SectionCard>
+                <Select
+                  label="Forma de preenchimento"
+                  value={form.installmentEntryMode}
+                  onChange={(event) =>
+                    setForm((current) => ({
+                      ...current,
+                      installmentEntryMode: event.target
+                        .value as IncomeFormValues["installmentEntryMode"],
+                    }))
+                  }
+                  disabled={mode === "edit"}
+                >
+                  <option value="TOTAL">Informar valor total</option>
+                  <option value="INSTALLMENT">Informar valor da parcela</option>
+                </Select>
 
-      <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-        <Button
-          type="button"
-          variant="outline"
-          className="!border-gray-400 !text-gray-700 hover:!bg-gray-100"
-          onClick={() => navigate(incomeRoutePaths.list)}
-          disabled={saving}
+                {form.installmentEntryMode === "INSTALLMENT" ? (
+                  <Input
+                    label="Valor da parcela"
+                    inputMode="decimal"
+                    value={form.installmentAmount}
+                    onChange={(event) =>
+                      setForm((current) => ({
+                        ...current,
+                        installmentAmount: maskCurrencyInput(
+                          event.target.value,
+                        ),
+                      }))
+                    }
+                    disabled={mode === "edit"}
+                    required={mode === "create"}
+                    error={errors.installmentAmount}
+                  />
+                ) : (
+                  <Input
+                    label="Valor da parcela (calculado)"
+                    value={formatCurrencyForInput(calculatedInstallmentAmount)}
+                    disabled
+                  />
+                )}
+              </>
+            )}
+          </div>
+        </SectionCard>
+
+        <SectionCard
+          title="Datas e vencimento"
+          description="Quando a receita é esperada, ou quando vence a 1ª parcela, se parcelada."
         >
-          Cancelar
-        </Button>
-        <Button type="submit" variant="primary" loading={saving}>
-          {mode === "create" ? "Cadastrar receita" : "Salvar alterações"}
-        </Button>
-      </div>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <Input
+              label={
+                form.hasInstallments
+                  ? "Data de vencimento (1ª parcela)"
+                  : "Data de vencimento (opcional)"
+              }
+              type="date"
+              value={form.dueDate}
+              onChange={(event) =>
+                setForm((current) => ({
+                  ...current,
+                  dueDate: event.target.value,
+                }))
+              }
+              disabled={mode === "edit" && form.hasInstallments}
+              required={mode === "create" && form.hasInstallments}
+              error={errors.dueDate}
+            />
+          </div>
+        </SectionCard>
 
-      <UpgradeModal
-        open={Boolean(planLimitMessage)}
-        message={planLimitMessage ?? ""}
-        onClose={dismissPlanLimitMessage}
-      />
-    </form>
+        <div className="flex justify-end">
+          <Button type="submit" variant="primary" loading={saving}>
+            {mode === "create" ? "Cadastrar receita" : "Salvar alterações"}
+          </Button>
+        </div>
+
+        <UpgradeModal
+          open={Boolean(planLimitMessage)}
+          message={planLimitMessage ?? ""}
+          onClose={dismissPlanLimitMessage}
+        />
+      </form>
+    </div>
   );
 }
