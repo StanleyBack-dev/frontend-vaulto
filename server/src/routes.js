@@ -1,4 +1,5 @@
 import { Router } from "express";
+import accountLifecycleRoutes from "./modules/account-lifecycle/routes.js";
 import adminRoutes from "./modules/admin/routes.js";
 import authRoutes from "./modules/auth/routes.js";
 import billingRoutes from "./modules/billing/routes.js";
@@ -18,6 +19,7 @@ import supportRoutes from "./modules/support/routes.js";
 const router = Router();
 
 router.use("/auth", authRoutes);
+router.use("/account", accountLifecycleRoutes);
 router.use("/admin", adminRoutes);
 router.use("/billing", billingRoutes);
 router.use("/categories", categoriesRoutes);

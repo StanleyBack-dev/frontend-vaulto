@@ -10,6 +10,8 @@ const USER_FIELDS = `
   lastLoginAt
   failedLoginAttempts
   lockedUntil
+  inactivatedAt
+  deletionRequestedAt
   createdAt
   updatedAt
 `;
