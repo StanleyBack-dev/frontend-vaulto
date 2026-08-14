@@ -24,6 +24,11 @@ export { default as RequireAuthenticatedRoute } from "./guards/RequireAuthentica
 export { default as RequirePasswordChangeRoute } from "./guards/RequirePasswordChangeRoute";
 export { createPageAccessPolicy } from "./policies/page-access.policy";
 export { requireActiveUserPolicy } from "./policies/active-user.policy";
+export {
+  captureReferralCodeFromUrl,
+  clearStoredReferralCode,
+  readStoredReferralCode,
+} from "./model/referral-code-storage";
 export type {
   AuthorizationPolicy,
   AuthorizationPolicyContext,

@@ -6,8 +6,11 @@ import {
   type CredentialResponse,
 } from "@react-oauth/google";
 import {
+  captureReferralCodeFromUrl,
+  clearStoredReferralCode,
   loginWithGoogle,
   loginWithPassword,
+  readStoredReferralCode,
   useLoginForm,
 } from "../features/auth";
 import Input from "../components/atoms/Input";
@@ -36,6 +39,10 @@ export default function Login() {
     isInitializing,
   } = useAuthSession();
   const [googleSubmitting, setGoogleSubmitting] = useState(false);
+
+  useEffect(() => {
+    captureReferralCodeFromUrl(window.location.search);
+  }, []);
 
   useEffect(() => {
     if (isInitializing || !isAuthenticated) return;
@@ -113,7 +120,10 @@ export default function Login() {
     setGoogleSubmitting(true);
 
     try {
-      const session = await loginWithGoogle(credentialResponse.credential);
+      const session = await loginWithGoogle(
+        credentialResponse.credential,
+        readStoredReferralCode(),
+      );
 
       if (!session.authenticated) {
         showError(
@@ -123,6 +133,7 @@ export default function Login() {
         return;
       }
 
+      clearStoredReferralCode();
       setSession(session);
       showSuccess("Login realizado", `Bem-vindo, ${session.user.name}.`);
 

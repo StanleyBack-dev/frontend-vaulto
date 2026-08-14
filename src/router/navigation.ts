@@ -17,6 +17,7 @@ export {
   incomeRoutePaths,
   paymentRoutePaths,
   planRoutePaths,
+  referralsRoutePaths,
   reminderRoutePaths,
   routePaths,
   supportRoutePaths,

@@ -20,6 +20,7 @@ import {
   incomeRoutePaths,
   paymentRoutePaths,
   planRoutePaths,
+  referralsRoutePaths,
   reminderRoutePaths,
   routePaths,
   supportRoutePaths,
@@ -57,6 +58,7 @@ const GoalContributions = lazy(
 );
 const Profile = lazy(() => import("../../pages/Profile"));
 const Plans = lazy(() => import("../../pages/Plans"));
+const Referrals = lazy(() => import("../../pages/Referrals"));
 const Forecast = lazy(() => import("../../pages/Forecast"));
 const CalendarPage = lazy(() => import("../../pages/Calendar"));
 const Reminders = lazy(() => import("../../pages/Reminders"));
@@ -292,6 +294,11 @@ export function AppShellRoutes({ userId }: AppShellRoutesProps) {
       />
       {/* Planos - comparativo de planos e assinatura do Vaulto Pro */}
       <Route path={planRoutePaths.list} element={withPageSuspense(<Plans />)} />
+      {/* Indique e Ganhe - programa de indicações, comum a todos os usuários */}
+      <Route
+        path={referralsRoutePaths.list}
+        element={withPageSuspense(<Referrals />)}
+      />
       {/* Previsão financeira - "quanto posso gastar" (recurso Pro) */}
       <Route
         path={forecastRoutePaths.list}

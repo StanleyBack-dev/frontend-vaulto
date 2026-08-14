@@ -19,4 +19,5 @@ export type ActiveView =
   | "financialHealth"
   | "faq"
   | "support"
-  | "termsOfUse";
+  | "termsOfUse"
+  | "referrals";

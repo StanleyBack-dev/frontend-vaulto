@@ -4,6 +4,7 @@ import { AuthApiError } from "./http-error";
 
 export async function loginWithGoogle(payload: {
   idToken: string;
+  referralCode?: string;
 }): Promise<AuthSessionResponse> {
   try {
     const response = await apiHttp.post<AuthSessionResponse>(
