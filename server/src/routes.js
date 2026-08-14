@@ -13,6 +13,7 @@ import incomesRoutes from "./modules/incomes/routes.js";
 import incomeReceiptsRoutes from "./modules/income-receipts/routes.js";
 import legalRoutes from "./modules/legal/routes.js";
 import paymentsRoutes from "./modules/payments/routes.js";
+import referralsRoutes from "./modules/referrals/routes.js";
 import reportsRoutes from "./modules/reports/routes.js";
 import supportRoutes from "./modules/support/routes.js";
 
@@ -31,6 +32,7 @@ router.use("/goals", goalsRoutes);
 router.use("/incomes", incomesRoutes);
 router.use("/income-receipts", incomeReceiptsRoutes);
 router.use("/payments", paymentsRoutes);
+router.use("/referrals", referralsRoutes);
 router.use("/reports", reportsRoutes);
 router.use("/support", supportRoutes);
 router.use("/legal", legalRoutes);

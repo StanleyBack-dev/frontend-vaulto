@@ -1,6 +1,7 @@
 import type { ActiveView } from "../../types/views";
 
 export const routePaths: Record<ActiveView, string> = {
+  referrals: "/indique-e-ganhe",
   dashboard: "/dashboard",
   admin: "/admin",
   debts: "/dividas",
@@ -146,4 +147,8 @@ export const goalContributionRoutePaths = {
 
 export const utilityRoutePaths = {
   accessDenied: "/acesso-negado",
+};
+
+export const referralsRoutePaths = {
+  list: "/indique-e-ganhe",
 };

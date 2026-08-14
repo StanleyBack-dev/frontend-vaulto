@@ -8,6 +8,7 @@ import {
   CalendarDays,
   CreditCard,
   Crown,
+  Gift,
   HandCoins,
   HeartPulse,
   HelpCircle,
@@ -79,6 +80,7 @@ export const primaryNavigationItems: NavigationItem[] = [
 export const secondaryNavigationItems: NavigationItem[] = [
   { id: "profile", label: "Perfil", icon: <User size={20} /> },
   { id: "plans", label: "Planos", icon: <Crown size={20} /> },
+  { id: "referrals", label: "Indique e Ganhe", icon: <Gift size={20} /> },
   { id: "reminders", label: "Lembretes", icon: <Bell size={20} /> },
   { id: "faq", label: "Ajuda", icon: <HelpCircle size={20} /> },
   { id: "support", label: "Suporte", icon: <LifeBuoy size={20} /> },

@@ -78,4 +78,8 @@ export const viewTitles: Record<
     title: "Termos e Privacidade",
     subtitle: "Termos de Uso e Política de Privacidade da plataforma",
   },
+  referrals: {
+    title: "Indique e Ganhe",
+    subtitle: "Indique amigos e ganhe 1 mês grátis de Vaulto Pro",
+  },
 };

@@ -17,6 +17,7 @@ import {
   incomeRoutePaths,
   paymentRoutePaths,
   planRoutePaths,
+  referralsRoutePaths,
   reminderRoutePaths,
   routePaths,
   supportRoutePaths,
@@ -79,6 +80,10 @@ export function getActiveView(pathname: string): ActiveView {
     return "plans";
   }
 
+  if (pathname.startsWith(referralsRoutePaths.list)) {
+    return "referrals";
+  }
+
   if (pathname.startsWith(forecastRoutePaths.list)) {
     return "forecast";
   }
@@ -136,6 +141,8 @@ export function getPathForView(view: ActiveView) {
       return routePaths.profile;
     case "plans":
       return planRoutePaths.list;
+    case "referrals":
+      return referralsRoutePaths.list;
     case "forecast":
       return forecastRoutePaths.list;
     case "calendar":
