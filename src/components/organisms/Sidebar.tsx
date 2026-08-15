@@ -7,12 +7,73 @@ import { logoutCurrentSession, useAuthSession } from "../../features/auth";
 import { useBillingContext } from "../../features/billing";
 import { authRoutePaths } from "../../router";
 import {
-  primaryNavigationItems,
+  isNavigationGroup,
+  primaryNavigationLayout,
   secondaryNavigationItems,
+  type NavigationItem,
 } from "../../router/navigation";
 import ConfirmDialog from "@molecules/ConfirmDialog";
 import { useToast } from "../../shared/toast/useToast";
 import { AuthApiError } from "../../api/auth/methods/http-error";
+
+interface NavItemButtonProps {
+  item: NavigationItem;
+  isActive: boolean;
+  isPro: boolean;
+  onSelect: () => void;
+}
+
+function NavItemButton({
+  item,
+  isActive,
+  isPro,
+  onSelect,
+}: NavItemButtonProps) {
+  return (
+    <button
+      type="button"
+      data-tour-nav={item.id}
+      onClick={onSelect}
+      className={`relative flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-all duration-200 ${
+        isActive ? "text-white" : "text-brown-300 hover:text-white"
+      }`}
+      style={
+        isActive
+          ? {
+              background: `linear-gradient(135deg, ${colors.purple[700]}, ${colors.gold[500]})`,
+              color: "#fff",
+            }
+          : { color: colors.brown[300] }
+      }
+      onMouseEnter={(e) => {
+        if (!isActive) {
+          (e.currentTarget as HTMLButtonElement).style.background =
+            colors.black[700];
+          (e.currentTarget as HTMLButtonElement).style.color = "#fff";
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (!isActive) {
+          (e.currentTarget as HTMLButtonElement).style.background =
+            "transparent";
+          (e.currentTarget as HTMLButtonElement).style.color =
+            colors.brown[300];
+        }
+      }}
+    >
+      <span className={isActive ? "text-white" : ""}>{item.icon}</span>
+      <span className="flex-1 text-left">{item.label}</span>
+      {item.proOnly && !isPro && (
+        <Crown
+          size={14}
+          className="shrink-0"
+          style={{ color: isActive ? "#fff" : colors.gold[500] }}
+        />
+      )}
+      {isActive && <ChevronRight size={14} className="text-white opacity-70" />}
+    </button>
+  );
+}
 
 interface SidebarProps {
   active: ActiveView;
@@ -35,6 +96,7 @@ export default function Sidebar({
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
   const [isAccountSectionOpen, setIsAccountSectionOpen] = useState(false);
   const [avatarLoadFailed, setAvatarLoadFailed] = useState(false);
+  const [openGroupIds, setOpenGroupIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     setAvatarLoadFailed(false);
@@ -42,12 +104,35 @@ export default function Sidebar({
 
   const isPro = subscription?.plan === "PRO";
 
-  const visiblePrimaryItems = primaryNavigationItems.filter((item) =>
-    hasPageAccess(item.id),
-  );
+  const visiblePrimaryLayout = primaryNavigationLayout
+    .map((entry) => {
+      if (isNavigationGroup(entry)) {
+        const visibleItems = entry.items.filter((item) =>
+          hasPageAccess(item.id),
+        );
+        return visibleItems.length > 0
+          ? { ...entry, items: visibleItems }
+          : null;
+      }
+
+      return hasPageAccess(entry.id) ? entry : null;
+    })
+    .filter((entry) => entry !== null);
   const visibleSecondaryItems = secondaryNavigationItems.filter((item) =>
     hasPageAccess(item.id),
   );
+
+  function toggleGroup(id: string) {
+    setOpenGroupIds((current) => {
+      const next = new Set(current);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  }
 
   async function handleLogout() {
     setIsLoggingOut(true);
@@ -147,58 +232,89 @@ export default function Sidebar({
         </div>
 
         <nav className="sidebar-scrollbar min-h-0 flex-1 space-y-1 overflow-y-auto px-3 py-5 lg:py-6">
-          {visiblePrimaryItems.map((item) => {
-            const isActive = active === item.id;
+          {visiblePrimaryLayout.map((entry) => {
+            if (isNavigationGroup(entry)) {
+              const hasActiveChild = entry.items.some(
+                (item) => item.id === active,
+              );
+              const isOpen = openGroupIds.has(entry.id) || hasActiveChild;
+              const isGroupProOnly = entry.items.every((item) => item.proOnly);
+
+              return (
+                <div key={entry.id}>
+                  <button
+                    type="button"
+                    onClick={() => toggleGroup(entry.id)}
+                    aria-expanded={isOpen}
+                    className="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-all duration-200"
+                    style={{
+                      color: hasActiveChild ? "#fff" : colors.brown[300],
+                    }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLButtonElement).style.background =
+                        colors.black[700];
+                      (e.currentTarget as HTMLButtonElement).style.color =
+                        "#fff";
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLButtonElement).style.background =
+                        "transparent";
+                      (e.currentTarget as HTMLButtonElement).style.color =
+                        hasActiveChild ? "#fff" : colors.brown[300];
+                    }}
+                  >
+                    <span>{entry.icon}</span>
+                    <span className="flex-1 text-left">{entry.label}</span>
+                    {isGroupProOnly && !isPro && (
+                      <Crown
+                        size={14}
+                        className="shrink-0"
+                        style={{
+                          color: hasActiveChild ? "#fff" : colors.gold[500],
+                        }}
+                      />
+                    )}
+                    <ChevronDown
+                      size={14}
+                      className={`shrink-0 transition-transform duration-200 ${
+                        isOpen ? "" : "-rotate-90"
+                      }`}
+                    />
+                  </button>
+                  {isOpen && (
+                    <div
+                      className="ml-3 space-y-1 border-l pl-3"
+                      style={{ borderColor: colors.brown[100] }}
+                    >
+                      {entry.items.map((item) => (
+                        <NavItemButton
+                          key={item.id}
+                          item={item}
+                          isActive={active === item.id}
+                          isPro={isPro}
+                          onSelect={() => {
+                            onNavigate(item.id);
+                            onClose?.();
+                          }}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
             return (
-              <button
-                key={item.id}
-                data-tour-nav={item.id}
-                onClick={() => {
-                  onNavigate(item.id);
+              <NavItemButton
+                key={entry.id}
+                item={entry}
+                isActive={active === entry.id}
+                isPro={isPro}
+                onSelect={() => {
+                  onNavigate(entry.id);
                   onClose?.();
                 }}
-                className={`relative flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-all duration-200 ${
-                  isActive ? "text-white" : "text-brown-300 hover:text-white"
-                }`}
-                style={
-                  isActive
-                    ? {
-                        background: `linear-gradient(135deg, ${colors.purple[700]}, ${colors.gold[500]})`,
-                        color: "#fff",
-                      }
-                    : { color: colors.brown[300] }
-                }
-                onMouseEnter={(e) => {
-                  if (!isActive) {
-                    (e.currentTarget as HTMLButtonElement).style.background =
-                      colors.black[700];
-                    (e.currentTarget as HTMLButtonElement).style.color = "#fff";
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!isActive) {
-                    (e.currentTarget as HTMLButtonElement).style.background =
-                      "transparent";
-                    (e.currentTarget as HTMLButtonElement).style.color =
-                      colors.brown[300];
-                  }
-                }}
-              >
-                <span className={isActive ? "text-white" : ""}>
-                  {item.icon}
-                </span>
-                <span className="flex-1 text-left">{item.label}</span>
-                {item.proOnly && !isPro && (
-                  <Crown
-                    size={14}
-                    className="shrink-0"
-                    style={{ color: isActive ? "#fff" : colors.gold[500] }}
-                  />
-                )}
-                {isActive && (
-                  <ChevronRight size={14} className="text-white opacity-70" />
-                )}
-              </button>
+              />
             );
           })}
         </nav>

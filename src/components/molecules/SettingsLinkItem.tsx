@@ -1,11 +1,12 @@
 import type { ReactNode } from "react";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Crown } from "lucide-react";
 import { colors, radii, typography } from "../../config";
 
 interface SettingsLinkItemProps {
   icon: ReactNode;
   title: string;
   description: string;
+  showProBadge?: boolean;
   onClick: () => void;
 }
 
@@ -13,6 +14,7 @@ export default function SettingsLinkItem({
   icon,
   title,
   description,
+  showProBadge = false,
   onClick,
 }: SettingsLinkItemProps) {
   return (
@@ -48,6 +50,13 @@ export default function SettingsLinkItem({
           {description}
         </p>
       </div>
+      {showProBadge && (
+        <Crown
+          size={16}
+          className="shrink-0"
+          style={{ color: colors.gold[600] }}
+        />
+      )}
       <ChevronRight
         size={18}
         className="shrink-0"
