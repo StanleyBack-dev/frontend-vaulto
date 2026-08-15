@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Bell, Crown, Mail } from "lucide-react";
+import { ArrowLeft, Bell, Crown, Mail } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Button from "@/components/atoms/Button";
 import Loading from "@/components/atoms/Loading";
@@ -17,7 +17,7 @@ import {
   getRemainingInstallmentsCount as getRemainingIncomeInstallmentsCount,
   incomeStatusLabel,
 } from "@/features/incomes";
-import { planRoutePaths } from "@/router";
+import { planRoutePaths, settingsRoutePaths } from "@/router";
 import { formatDateDisplay } from "@/utils/format";
 import { colors } from "@/config";
 import { useToast } from "../shared/toast/useToast";
@@ -173,37 +173,49 @@ export default function Reminders() {
 
   if (!isPro) {
     return (
-      <SectionCard
-        title="Lembretes"
-        description="Nunca mais perca um vencimento."
-      >
-        <div className="flex flex-col items-center gap-4 py-8 text-center">
-          <div
-            className="flex h-14 w-14 items-center justify-center rounded-full"
-            style={{
-              background: `linear-gradient(135deg, ${colors.purple[700]}, ${colors.gold[500]})`,
-              color: "#fff",
-            }}
-          >
-            <Crown size={26} />
+      <div className="space-y-6">
+        <Button
+          type="button"
+          variant="outline"
+          className="!border-gray-400 !text-gray-700 hover:!bg-gray-100"
+          leftIcon={<ArrowLeft size={16} />}
+          onClick={() => navigate(settingsRoutePaths.list)}
+        >
+          Voltar para Configurações
+        </Button>
+
+        <SectionCard
+          title="Lembretes"
+          description="Nunca mais perca um vencimento."
+        >
+          <div className="flex flex-col items-center gap-4 py-8 text-center">
+            <div
+              className="flex h-14 w-14 items-center justify-center rounded-full"
+              style={{
+                background: `linear-gradient(135deg, ${colors.purple[700]}, ${colors.gold[500]})`,
+                color: "#fff",
+              }}
+            >
+              <Crown size={26} />
+            </div>
+            <p
+              className="max-w-md text-sm leading-relaxed"
+              style={{ color: colors.brown[500] }}
+            >
+              Os lembretes são um recurso exclusivo do Vaulto Pro. Todo dia,
+              avisamos por e-mail o que vence amanhã, para você nunca ser pego
+              de surpresa.
+            </p>
+            <Button
+              type="button"
+              variant="primary"
+              onClick={() => navigate(planRoutePaths.list)}
+            >
+              Assinar Vaulto Pro
+            </Button>
           </div>
-          <p
-            className="max-w-md text-sm leading-relaxed"
-            style={{ color: colors.brown[500] }}
-          >
-            Os lembretes são um recurso exclusivo do Vaulto Pro. Todo dia,
-            avisamos por e-mail o que vence amanhã, para você nunca ser pego de
-            surpresa.
-          </p>
-          <Button
-            type="button"
-            variant="primary"
-            onClick={() => navigate(planRoutePaths.list)}
-          >
-            Assinar Vaulto Pro
-          </Button>
-        </div>
-      </SectionCard>
+        </SectionCard>
+      </div>
     );
   }
 
@@ -273,6 +285,16 @@ export default function Reminders() {
 
   return (
     <div className="space-y-6">
+      <Button
+        type="button"
+        variant="outline"
+        className="!border-gray-400 !text-gray-700 hover:!bg-gray-100"
+        leftIcon={<ArrowLeft size={16} />}
+        onClick={() => navigate(settingsRoutePaths.list)}
+      >
+        Voltar para Configurações
+      </Button>
+
       <SectionCard
         title="Lembretes por e-mail"
         description="Como avisamos você."

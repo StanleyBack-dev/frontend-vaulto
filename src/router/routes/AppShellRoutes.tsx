@@ -23,6 +23,7 @@ import {
   referralsRoutePaths,
   reminderRoutePaths,
   routePaths,
+  settingsRoutePaths,
   supportRoutePaths,
   supportTicketRoutePaths,
   termsOfUseRoutePaths,
@@ -57,6 +58,7 @@ const GoalContributions = lazy(
   () => import("../../pages/goals/GoalContributions"),
 );
 const Profile = lazy(() => import("../../pages/Profile"));
+const Settings = lazy(() => import("../../pages/Settings"));
 const Plans = lazy(() => import("../../pages/Plans"));
 const Referrals = lazy(() => import("../../pages/Referrals"));
 const Forecast = lazy(() => import("../../pages/Forecast"));
@@ -291,6 +293,11 @@ export function AppShellRoutes({ userId }: AppShellRoutesProps) {
       <Route
         path={routePaths.profile}
         element={withPageSuspense(<Profile />)}
+      />
+      {/* Configurações - agrega planos, indicações, lembretes, ajuda, suporte e termos */}
+      <Route
+        path={settingsRoutePaths.list}
+        element={withPageSuspense(<Settings />)}
       />
       {/* Planos - comparativo de planos e assinatura do Vaulto Pro */}
       <Route path={planRoutePaths.list} element={withPageSuspense(<Plans />)} />

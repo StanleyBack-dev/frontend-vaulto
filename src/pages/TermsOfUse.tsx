@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import { CheckCircle2, ScrollText } from "lucide-react";
+import { ArrowLeft, CheckCircle2, ScrollText } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import Button from "@atoms/Button";
 import SectionCard from "@/components/organisms/SectionCard";
 import {
   fetchMyTermsAcceptanceStatus,
@@ -8,6 +10,7 @@ import {
   TERMS_OF_USE_SECTIONS,
   type TermsAcceptanceStatus,
 } from "@/features/legal";
+import { settingsRoutePaths } from "@/router/navigation";
 import { colors } from "@/config";
 
 function formatAcceptedAt(value?: string | null): string | null {
@@ -24,6 +27,7 @@ function formatAcceptedAt(value?: string | null): string | null {
 }
 
 export default function TermsOfUse() {
+  const navigate = useNavigate();
   const [status, setStatus] = useState<TermsAcceptanceStatus | null>(null);
 
   useEffect(() => {
@@ -49,6 +53,16 @@ export default function TermsOfUse() {
 
   return (
     <div className="space-y-6">
+      <Button
+        type="button"
+        variant="outline"
+        className="!border-gray-400 !text-gray-700 hover:!bg-gray-100"
+        leftIcon={<ArrowLeft size={16} />}
+        onClick={() => navigate(settingsRoutePaths.list)}
+      >
+        Voltar para Configurações
+      </Button>
+
       <SectionCard
         title="Termos de Uso e Política de Privacidade"
         description={`Versão de ${LEGAL_CONTENT_VERSION_LABEL}.`}

@@ -1,8 +1,10 @@
-import { useState } from "react";
-import { ChevronDown, Sparkles } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { ArrowLeft, ChevronDown, Sparkles } from "lucide-react";
 import SectionCard from "@/components/organisms/SectionCard";
 import Button from "@atoms/Button";
 import { useOnboardingContext } from "@/features/onboarding";
+import { settingsRoutePaths } from "@/router/navigation";
 import { colors, radii } from "@/config";
 
 interface ManualTopic {
@@ -184,6 +186,247 @@ const topics: ManualTopic[] = [
       </>
     ),
   },
+  {
+    id: "previsao",
+    title: "Previsão financeira",
+    description: "Quanto você pode gastar com segurança no período.",
+    content: (
+      <>
+        <p>
+          <strong>Recurso exclusivo do Vaulto Pro.</strong> Informe o saldo que
+          você tem disponível hoje e escolha até quando olhar — um período
+          pré-definido (7 a 90 dias) ou uma data específica.
+        </p>
+        <p>
+          O cálculo soma ao seu saldo as receitas previstas para o período e
+          subtrai as dívidas em aberto no mesmo período, mostrando quanto você
+          pode gastar com segurança sem comprometer o que já está programado. Se
+          o resultado for negativo, significa que suas dívidas previstas superam
+          o saldo e as receitas do período.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: "calendario",
+    title: "Calendário financeiro",
+    description: "Dívidas e receitas organizadas por dia de vencimento.",
+    content: (
+      <>
+        <p>
+          <strong>Recurso exclusivo do Vaulto Pro.</strong> Mostra um calendário
+          do mês escolhido com o total de dívidas e receitas que vencem em cada
+          dia. Toque em um dia para ver a lista detalhada dos lançamentos
+          daquela data, incluindo se e quando já foram pagos ou recebidos.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: "metas",
+    title: "Metas financeiras",
+    description: "Defina objetivos e acompanhe seu progresso.",
+    content: (
+      <>
+        <p>
+          <strong>Recurso exclusivo do Vaulto Pro.</strong> Cadastre metas com
+          um valor alvo e, opcionalmente, uma data alvo — por exemplo, juntar
+          uma reserva de emergência ou guardar para uma viagem.
+        </p>
+        <p>
+          O progresso de cada meta é calculado a partir das contribuições
+          registradas para ela em <strong>Contribuições de metas</strong>. Ao
+          excluir uma meta, todo o histórico de contribuições dela é perdido
+          permanentemente.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: "contribuicoes-metas",
+    title: "Contribuições de metas",
+    description: "Registro de contribuições para suas metas financeiras.",
+    content: (
+      <>
+        <p>
+          <strong>Recurso exclusivo do Vaulto Pro.</strong> Selecione uma meta
+          já cadastrada para ver o valor alvo, o valor já acumulado, quanto
+          falta e o percentual de progresso.
+        </p>
+        <p>
+          Registre novas contribuições informando valor, data e uma observação
+          opcional. Contribuições já lançadas podem ser editadas ou excluídas a
+          qualquer momento — o progresso da meta é recalculado automaticamente.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: "comparativos",
+    title: "Comparativos",
+    description: "Gastos e receitas por categoria, mês a mês.",
+    content: (
+      <>
+        <p>
+          <strong>Recurso exclusivo do Vaulto Pro.</strong> Compare o quanto
+          você gastou ou recebeu em cada categoria entre dois períodos — mês,
+          trimestre, semestre ou ano. Por padrão a comparação é sempre com o
+          período anterior, mas também é possível escolher manualmente os dois
+          períodos a comparar.
+        </p>
+        <p>
+          O resultado mostra, categoria por categoria, a variação percentual
+          entre os dois períodos, destacando se ela é uma melhora ou uma piora —
+          para despesas, uma redução é destacada em verde; para receitas, um
+          aumento é destacado em verde.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: "saude-financeira",
+    title: "Saúde Financeira",
+    description:
+      "Um indicador de 0 a 100 combinando comprometimento com dívidas, pontualidade e reservas.",
+    content: (
+      <>
+        <p>
+          <strong>Recurso exclusivo do Vaulto Pro.</strong> Escolha até quando
+          olhar as dívidas e receitas em aberto (um período pré-definido ou uma
+          data específica) e o sistema calcula um score de 0 a 100, classificado
+          como <strong>Saudável</strong>, <strong>Atenção</strong> ou{" "}
+          <strong>Crítico</strong>.
+        </p>
+        <p>
+          O score combina três pilares, cada um com seu próprio peso:{" "}
+          <strong>Comprometimento com dívidas</strong> (quanto das suas receitas
+          esperadas já está comprometido com dívidas em aberto no período),{" "}
+          <strong>Pontualidade</strong> (proporção de dívidas em dia, sem
+          vencimentos em atraso) e <strong>Reservas</strong> (progresso médio
+          das suas metas financeiras — se você ainda não tem metas cadastradas,
+          esse pilar fica vazio até que você crie uma).
+        </p>
+      </>
+    ),
+  },
+  {
+    id: "lembretes",
+    title: "Lembretes",
+    description: "O que vence amanhã, e como avisamos você por e-mail.",
+    content: (
+      <>
+        <p>
+          <strong>Recurso exclusivo do Vaulto Pro.</strong> Todo dia, se houver
+          dívidas ou receitas vencendo no dia seguinte, o Vaulto envia
+          automaticamente um e-mail de resumo para o seu endereço cadastrado.
+        </p>
+        <p>
+          Esta página mostra a mesma prévia do que seria enviado: tudo o que
+          vence amanhã, separado em dívidas a pagar e receitas a receber, com
+          detalhes de parcela, valor já pago/recebido e quanto ainda resta.
+          Itens que já foram totalmente pagos ou recebidos não aparecem aqui.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: "perfil",
+    title: "Perfil",
+    description: "Seus dados, sua assinatura e o gerenciamento da sua conta.",
+    content: (
+      <>
+        <p>
+          Mostra seus dados cadastrais, o status da sua assinatura (Free ou Pro)
+          e o histórico de pagamentos da assinatura Vaulto Pro.
+        </p>
+        <p>
+          Se você é assinante Pro, pode <strong>cancelar a assinatura</strong> a
+          qualquer momento — ela permanece ativa até o fim do período já pago,
+          sem renovar depois disso.
+        </p>
+        <p>
+          Também é possível <strong>inativar</strong> a conta (você pode voltar
+          quando quiser, basta fazer login novamente) ou{" "}
+          <strong>solicitar a exclusão definitiva</strong> da conta e dos dados
+          pessoais. A exclusão não é imediata: existe um prazo de{" "}
+          <strong>30 dias</strong> a partir da solicitação para você mudar de
+          ideia e cancelar o pedido antes que os dados sejam apagados de
+          verdade.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: "planos",
+    title: "Planos",
+    description: "Compare o Free e o Vaulto Pro e escolha o seu.",
+    content: (
+      <>
+        <p>
+          Mostra lado a lado tudo o que muda entre o plano <strong>Free</strong>{" "}
+          (gratuito, com limites de cadastros e histórico) e o{" "}
+          <strong>Vaulto Pro</strong> (cadastros ilimitados, relatórios
+          avançados, exportação, lembretes, calendário, previsão financeira e
+          metas). O Vaulto Pro tem 7 dias grátis para testar antes da primeira
+          cobrança.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: "indique-e-ganhe",
+    title: "Indique e Ganhe",
+    description: "Indique amigos e ganhe 1 mês grátis de Vaulto Pro.",
+    content: (
+      <>
+        <p>
+          Todo usuário tem um código de indicação único e um link para
+          compartilhar. Quando um amigo entra pelo seu link e assina o Vaulto
+          Pro, a indicação só conta de verdade depois que a{" "}
+          <strong>primeira cobrança dele for confirmada</strong> — assinar e
+          cancelar ainda no período de teste grátis não conta.
+        </p>
+        <p>
+          A cada <strong>3 amigos</strong> que assinarem o Pro dessa forma, você
+          ganha <strong>1 mês grátis</strong> de Vaulto Pro. Se você já é Pro, o
+          mês grátis entra automaticamente quando o seu ciclo atual terminar.
+          Essa recompensa é única — não se acumula além do primeiro mês grátis.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: "suporte",
+    title: "Suporte",
+    description: "Fale com a nossa equipe por e-mail.",
+    content: (
+      <>
+        <p>
+          Escolha uma categoria (dúvida, problema técnico, sugestão, financeiro
+          ou outro) e escreva sua mensagem. Ela é enviada por e-mail para a
+          nossa equipe, e você recebe uma confirmação no seu e-mail cadastrado.
+        </p>
+        <p>
+          Para evitar abuso, é possível enviar apenas{" "}
+          <strong>1 mensagem por dia</strong>. Enquanto esse limite estiver
+          ativo, a tela mostra quando você poderá enviar a próxima mensagem.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: "termos-de-uso",
+    title: "Termos e Privacidade",
+    description: "Termos de Uso e Política de Privacidade da plataforma.",
+    content: (
+      <>
+        <p>
+          Reúne o texto completo dos Termos de Uso e da Política de Privacidade
+          do Vaulto, além da data em que você os aceitou.
+        </p>
+      </>
+    ),
+  },
 ];
 
 const faqs: { question: string; answer: React.ReactNode }[] = [
@@ -272,6 +515,8 @@ function ManualTopicCard({ topic, isOpen, onToggle }: ManualTopicCardProps) {
 export default function Manual() {
   const [openTopics, setOpenTopics] = useState<Set<string>>(new Set());
   const { restartTour } = useOnboardingContext();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   function toggleTopic(id: string) {
     setOpenTopics((current) => {
@@ -289,8 +534,27 @@ export default function Manual() {
     setOpenTopics((current) => new Set(current).add(id));
   }
 
+  useEffect(() => {
+    const id = location.hash.replace("#", "");
+    if (!id) return;
+
+    openTopic(id);
+    const element = document.getElementById(id);
+    element?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [location.hash]);
+
   return (
     <div className="space-y-6">
+      <Button
+        type="button"
+        variant="outline"
+        className="!border-gray-400 !text-gray-700 hover:!bg-gray-100"
+        leftIcon={<ArrowLeft size={16} />}
+        onClick={() => navigate(settingsRoutePaths.list)}
+      >
+        Voltar para Configurações
+      </Button>
+
       <SectionCard
         title="Bem-vindo ao Vaulto"
         description="Um guia rápido de como usar cada área do sistema."

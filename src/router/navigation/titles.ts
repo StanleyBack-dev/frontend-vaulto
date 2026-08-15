@@ -4,7 +4,7 @@ export const viewTitles: Record<
   ActiveView,
   { title: string; subtitle: string }
 > = {
-  dashboard: { title: "Dashboard", subtitle: "Visão geral das dívidas" },
+  dashboard: { title: "Dashboard", subtitle: "Visão geral" },
   debts: { title: "Dívidas", subtitle: "Contas a pagar e receber" },
   debtsStatement: {
     title: "Extratos",
@@ -32,6 +32,10 @@ export const viewTitles: Record<
     subtitle: "Usuários, assinaturas e chamados de suporte",
   },
   profile: { title: "Perfil", subtitle: "Seus dados e sua assinatura" },
+  settings: {
+    title: "Configurações",
+    subtitle: "Planos, indicações, lembretes, ajuda, suporte e mais",
+  },
   plans: {
     title: "Planos",
     subtitle: "Compare o Free e o Vaulto Pro e escolha o seu",

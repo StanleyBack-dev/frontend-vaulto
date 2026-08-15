@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { LifeBuoy, Send } from "lucide-react";
+import { ArrowLeft, LifeBuoy, Send } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import Button from "@atoms/Button";
 import Select from "@atoms/Select";
 import Textarea from "@atoms/Textarea";
@@ -10,6 +11,7 @@ import {
   requestSendSupportMessage,
 } from "@/features/support";
 import type { SupportCategory } from "@/features/support";
+import { settingsRoutePaths } from "@/router/navigation";
 import { colors } from "@/config";
 import { useToast } from "../shared/toast/useToast";
 
@@ -29,6 +31,7 @@ function toErrorMessage(error: unknown): string | undefined {
 }
 
 export default function Support() {
+  const navigate = useNavigate();
   const { showSuccess, showError } = useToast();
   const [category, setCategory] = useState<SupportCategory>("DOUBT");
   const [message, setMessage] = useState("");
@@ -95,6 +98,16 @@ export default function Support() {
 
   return (
     <div className="space-y-6">
+      <Button
+        type="button"
+        variant="outline"
+        className="!border-gray-400 !text-gray-700 hover:!bg-gray-100"
+        leftIcon={<ArrowLeft size={16} />}
+        onClick={() => navigate(settingsRoutePaths.list)}
+      >
+        Voltar para Configurações
+      </Button>
+
       <SectionCard
         title="Falar com o suporte"
         description="Escolha uma categoria e conte o que você precisa. Você pode enviar 1 mensagem por dia."

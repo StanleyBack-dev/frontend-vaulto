@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
-import { Check, Copy, Gift } from "lucide-react";
+import { ArrowLeft, Check, Copy, Gift } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import SectionCard from "@/components/organisms/SectionCard";
 import Button from "@atoms/Button";
 import Loading from "@atoms/Loading";
 import type { ReferralStats } from "@/api/referrals/schema";
 import { fetchMyReferralStats } from "@/features/referrals";
+import { settingsRoutePaths } from "@/router/navigation";
 import { colors } from "@/config";
 import { useToast } from "@/shared/toast/useToast";
 
 export default function Referrals() {
+  const navigate = useNavigate();
   const { showError, showSuccess } = useToast();
   const [stats, setStats] = useState<ReferralStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -55,11 +58,26 @@ export default function Referrals() {
     }
   }
 
+  const backButton = (
+    <Button
+      type="button"
+      variant="outline"
+      className="!border-gray-400 !text-gray-700 hover:!bg-gray-100"
+      leftIcon={<ArrowLeft size={16} />}
+      onClick={() => navigate(settingsRoutePaths.list)}
+    >
+      Voltar para Configurações
+    </Button>
+  );
+
   if (isLoading || !stats) {
     return (
-      <SectionCard title="Indique e Ganhe">
-        <Loading label="Carregando seus dados de indicação..." />
-      </SectionCard>
+      <div className="space-y-6">
+        {backButton}
+        <SectionCard title="Indique e Ganhe">
+          <Loading label="Carregando seus dados de indicação..." />
+        </SectionCard>
+      </div>
     );
   }
 
@@ -73,6 +91,8 @@ export default function Referrals() {
 
   return (
     <div className="space-y-6">
+      {backButton}
+
       <SectionCard
         title="Indique e ganhe 1 mês grátis de Vaulto Pro"
         description={`A cada ${stats.thresholdCount} amigos que assinarem o Vaulto Pro com o seu código, você ganha 1 mês grátis de Pro.`}
