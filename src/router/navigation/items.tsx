@@ -17,6 +17,7 @@ import {
   PiggyBank,
   Receipt,
   ScrollText,
+  Settings,
   Tags,
   Target,
   TrendingUp,
@@ -29,6 +30,7 @@ export interface NavigationItem {
   id: ActiveView;
   label: string;
   icon: ReactNode;
+  proOnly?: boolean;
 }
 
 export const primaryNavigationItems: NavigationItem[] = [
@@ -40,27 +42,37 @@ export const primaryNavigationItems: NavigationItem[] = [
     id: "forecast",
     label: "Previsão financeira",
     icon: <TrendingUp size={20} />,
+    proOnly: true,
   },
   {
     id: "calendar",
     label: "Calendário financeiro",
     icon: <CalendarDays size={20} />,
+    proOnly: true,
   },
-  { id: "goals", label: "Metas financeiras", icon: <Target size={20} /> },
+  {
+    id: "goals",
+    label: "Metas financeiras",
+    icon: <Target size={20} />,
+    proOnly: true,
+  },
   {
     id: "goalContributions",
     label: "Contribuições de metas",
     icon: <PiggyBank size={20} />,
+    proOnly: true,
   },
   {
     id: "comparisons",
     label: "Comparativos",
     icon: <BarChart3 size={20} />,
+    proOnly: true,
   },
   {
     id: "financialHealth",
     label: "Saúde Financeira",
     icon: <HeartPulse size={20} />,
+    proOnly: true,
   },
   { id: "payments", label: "Pagamentos", icon: <Wallet size={20} /> },
   {
@@ -74,11 +86,15 @@ export const primaryNavigationItems: NavigationItem[] = [
     label: "Cartões de Crédito",
     icon: <CreditCard size={20} />,
   },
-  { id: "admin", label: "Admin", icon: <Shield size={20} /> },
 ];
 
 export const secondaryNavigationItems: NavigationItem[] = [
   { id: "profile", label: "Perfil", icon: <User size={20} /> },
+  { id: "admin", label: "Admin", icon: <Shield size={20} /> },
+  { id: "settings", label: "Configurações", icon: <Settings size={20} /> },
+];
+
+export const settingsPageItems: NavigationItem[] = [
   { id: "plans", label: "Planos", icon: <Crown size={20} /> },
   { id: "referrals", label: "Indique e Ganhe", icon: <Gift size={20} /> },
   { id: "reminders", label: "Lembretes", icon: <Bell size={20} /> },

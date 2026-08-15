@@ -9,6 +9,7 @@ export type ActiveView =
   | "creditCards"
   | "admin"
   | "profile"
+  | "settings"
   | "plans"
   | "forecast"
   | "calendar"

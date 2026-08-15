@@ -12,6 +12,7 @@ export const routePaths: Record<ActiveView, string> = {
   categories: "/categorias",
   creditCards: "/cartoes-de-credito",
   profile: "/perfil",
+  settings: "/configuracoes",
   plans: "/planos",
   forecast: "/previsao",
   calendar: "/calendario",
@@ -151,4 +152,8 @@ export const utilityRoutePaths = {
 
 export const referralsRoutePaths = {
   list: "/indique-e-ganhe",
+};
+
+export const settingsRoutePaths = {
+  list: "/configuracoes",
 };

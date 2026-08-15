@@ -20,6 +20,7 @@ import {
   referralsRoutePaths,
   reminderRoutePaths,
   routePaths,
+  settingsRoutePaths,
   supportRoutePaths,
   termsOfUseRoutePaths,
   userRoutePaths,
@@ -74,6 +75,10 @@ export function getActiveView(pathname: string): ActiveView {
 
   if (pathname.startsWith(routePaths.profile)) {
     return "profile";
+  }
+
+  if (pathname.startsWith(settingsRoutePaths.list)) {
+    return "settings";
   }
 
   if (pathname.startsWith(planRoutePaths.list)) {
@@ -139,6 +144,8 @@ export function getPathForView(view: ActiveView) {
       return adminRoutePaths.list;
     case "profile":
       return routePaths.profile;
+    case "settings":
+      return settingsRoutePaths.list;
     case "plans":
       return planRoutePaths.list;
     case "referrals":

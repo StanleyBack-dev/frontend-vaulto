@@ -20,6 +20,7 @@ export {
   referralsRoutePaths,
   reminderRoutePaths,
   routePaths,
+  settingsRoutePaths,
   supportRoutePaths,
   supportTicketRoutePaths,
   termsOfUseRoutePaths,
@@ -27,9 +28,11 @@ export {
   userRoutePaths,
 } from "./navigation/paths";
 export { viewTitles } from "./navigation/titles";
+export { manualTopicByView } from "./navigation/help-topics";
 export {
   primaryNavigationItems,
   secondaryNavigationItems,
+  settingsPageItems,
   type NavigationItem,
 } from "./navigation/items";
 export { getActiveView, getPathForView } from "./navigation/helpers";

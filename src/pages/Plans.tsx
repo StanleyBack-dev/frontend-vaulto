@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import SectionCard from "@/components/organisms/SectionCard";
 import PlanComparisonTable from "@organisms/PlanComparisonTable";
 import SubscribeToProModal from "@organisms/SubscribeToProModal";
@@ -12,9 +14,11 @@ import {
   PRO_PLAN_PRICES,
   useBillingContext,
 } from "@/features/billing";
+import { settingsRoutePaths } from "@/router/navigation";
 import { colors } from "@/config";
 
 export default function Plans() {
+  const navigate = useNavigate();
   const { subscription, refresh } = useBillingContext();
   const { showSuccess, showError } = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -44,6 +48,16 @@ export default function Plans() {
 
   return (
     <div className="space-y-6">
+      <Button
+        type="button"
+        variant="outline"
+        className="!border-gray-400 !text-gray-700 hover:!bg-gray-100"
+        leftIcon={<ArrowLeft size={16} />}
+        onClick={() => navigate(settingsRoutePaths.list)}
+      >
+        Voltar para Configurações
+      </Button>
+
       <SectionCard
         title="Escolha o seu plano"
         description="Comece grátis e evolua para o Pro quando precisar de mais controle sobre suas finanças."
