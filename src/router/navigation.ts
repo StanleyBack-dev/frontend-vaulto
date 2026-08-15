@@ -30,9 +30,13 @@ export {
 export { viewTitles } from "./navigation/titles";
 export { manualTopicByView } from "./navigation/help-topics";
 export {
+  isNavigationGroup,
   primaryNavigationItems,
+  primaryNavigationLayout,
   secondaryNavigationItems,
   settingsPageItems,
+  type NavigationGroup,
   type NavigationItem,
+  type PrimaryNavigationEntry,
 } from "./navigation/items";
 export { getActiveView, getPathForView } from "./navigation/helpers";

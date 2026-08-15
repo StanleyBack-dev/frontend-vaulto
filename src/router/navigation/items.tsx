@@ -33,11 +33,74 @@ export interface NavigationItem {
   proOnly?: boolean;
 }
 
-export const primaryNavigationItems: NavigationItem[] = [
+export interface NavigationGroup {
+  id: string;
+  label: string;
+  icon: ReactNode;
+  items: NavigationItem[];
+}
+
+export type PrimaryNavigationEntry = NavigationItem | NavigationGroup;
+
+export function isNavigationGroup(
+  entry: PrimaryNavigationEntry,
+): entry is NavigationGroup {
+  return "items" in entry;
+}
+
+// Groups related pages under a single collapsible parent in the sidebar
+// (e.g. Dívidas > Pagamentos e Cartões de Crédito) — ungrouped entries
+// render as flat top-level links, same as before.
+export const primaryNavigationLayout: PrimaryNavigationEntry[] = [
   { id: "dashboard", label: "Dashboard", icon: <LayoutDashboard size={20} /> },
-  { id: "debts", label: "Dívidas", icon: <DebtsIcon size={20} /> },
+  {
+    id: "debts-group",
+    label: "Dívidas",
+    icon: <DebtsIcon size={20} />,
+    items: [
+      { id: "debts", label: "Dívidas", icon: <DebtsIcon size={20} /> },
+      { id: "payments", label: "Pagamentos", icon: <Wallet size={20} /> },
+      {
+        id: "creditCards",
+        label: "Cartões de Crédito",
+        icon: <CreditCard size={20} />,
+      },
+    ],
+  },
+  {
+    id: "incomes-group",
+    label: "Receitas",
+    icon: <Banknote size={20} />,
+    items: [
+      { id: "incomes", label: "Receitas", icon: <Banknote size={20} /> },
+      {
+        id: "incomeReceipts",
+        label: "Recebimentos",
+        icon: <HandCoins size={20} />,
+      },
+    ],
+  },
   { id: "debtsStatement", label: "Extratos", icon: <Receipt size={20} /> },
-  { id: "incomes", label: "Receitas", icon: <Banknote size={20} /> },
+  { id: "categories", label: "Categorias", icon: <Tags size={20} /> },
+  {
+    id: "goals-group",
+    label: "Metas financeiras",
+    icon: <Target size={20} />,
+    items: [
+      {
+        id: "goals",
+        label: "Metas financeiras",
+        icon: <Target size={20} />,
+        proOnly: true,
+      },
+      {
+        id: "goalContributions",
+        label: "Contribuições de metas",
+        icon: <PiggyBank size={20} />,
+        proOnly: true,
+      },
+    ],
+  },
   {
     id: "forecast",
     label: "Previsão financeira",
@@ -48,18 +111,6 @@ export const primaryNavigationItems: NavigationItem[] = [
     id: "calendar",
     label: "Calendário financeiro",
     icon: <CalendarDays size={20} />,
-    proOnly: true,
-  },
-  {
-    id: "goals",
-    label: "Metas financeiras",
-    icon: <Target size={20} />,
-    proOnly: true,
-  },
-  {
-    id: "goalContributions",
-    label: "Contribuições de metas",
-    icon: <PiggyBank size={20} />,
     proOnly: true,
   },
   {
@@ -74,19 +125,16 @@ export const primaryNavigationItems: NavigationItem[] = [
     icon: <HeartPulse size={20} />,
     proOnly: true,
   },
-  { id: "payments", label: "Pagamentos", icon: <Wallet size={20} /> },
-  {
-    id: "incomeReceipts",
-    label: "Recebimentos",
-    icon: <HandCoins size={20} />,
-  },
-  { id: "categories", label: "Categorias", icon: <Tags size={20} /> },
-  {
-    id: "creditCards",
-    label: "Cartões de Crédito",
-    icon: <CreditCard size={20} />,
-  },
 ];
+
+// Flat view of every primary destination, regardless of grouping — used
+// wherever the sidebar hierarchy doesn't matter (e.g. the header's menu
+// search, which should still find "Pagamentos" even though it now renders
+// nested under the "Dívidas" group).
+export const primaryNavigationItems: NavigationItem[] =
+  primaryNavigationLayout.flatMap((entry) =>
+    isNavigationGroup(entry) ? entry.items : [entry],
+  );
 
 export const secondaryNavigationItems: NavigationItem[] = [
   { id: "profile", label: "Perfil", icon: <User size={20} /> },
@@ -97,7 +145,12 @@ export const secondaryNavigationItems: NavigationItem[] = [
 export const settingsPageItems: NavigationItem[] = [
   { id: "plans", label: "Planos", icon: <Crown size={20} /> },
   { id: "referrals", label: "Indique e Ganhe", icon: <Gift size={20} /> },
-  { id: "reminders", label: "Lembretes", icon: <Bell size={20} /> },
+  {
+    id: "reminders",
+    label: "Lembretes",
+    icon: <Bell size={20} />,
+    proOnly: true,
+  },
   { id: "faq", label: "Ajuda", icon: <HelpCircle size={20} /> },
   { id: "support", label: "Suporte", icon: <LifeBuoy size={20} /> },
   {
