@@ -3,12 +3,25 @@ import type { ActiveView } from "../../types/views";
 import DebtsIcon from "../../components/atoms/icons/DebtsIcon";
 import {
   Banknote,
+  BarChart3,
+  Bell,
+  CalendarDays,
   CreditCard,
+  Crown,
+  Gift,
   HandCoins,
+  HeartPulse,
   HelpCircle,
   LayoutDashboard,
+  LifeBuoy,
+  PieChart,
+  PiggyBank,
   Receipt,
+  ScrollText,
+  Settings,
   Tags,
+  Target,
+  TrendingUp,
   User,
   Shield,
   Wallet,
@@ -18,29 +31,138 @@ export interface NavigationItem {
   id: ActiveView;
   label: string;
   icon: ReactNode;
+  proOnly?: boolean;
 }
 
-export const primaryNavigationItems: NavigationItem[] = [
+export interface NavigationGroup {
+  id: string;
+  label: string;
+  icon: ReactNode;
+  items: NavigationItem[];
+}
+
+export type PrimaryNavigationEntry = NavigationItem | NavigationGroup;
+
+export function isNavigationGroup(
+  entry: PrimaryNavigationEntry,
+): entry is NavigationGroup {
+  return "items" in entry;
+}
+
+// Groups related pages under a single collapsible parent in the sidebar
+// (e.g. Dívidas > Pagamentos e Cartões de Crédito) — ungrouped entries
+// render as flat top-level links, same as before.
+export const primaryNavigationLayout: PrimaryNavigationEntry[] = [
   { id: "dashboard", label: "Dashboard", icon: <LayoutDashboard size={20} /> },
-  { id: "debts", label: "Dívidas", icon: <DebtsIcon size={20} /> },
-  { id: "debtsStatement", label: "Extratos", icon: <Receipt size={20} /> },
-  { id: "incomes", label: "Receitas", icon: <Banknote size={20} /> },
-  { id: "payments", label: "Pagamentos", icon: <Wallet size={20} /> },
   {
-    id: "incomeReceipts",
-    label: "Recebimentos",
-    icon: <HandCoins size={20} />,
+    id: "debts-group",
+    label: "Dívidas",
+    icon: <DebtsIcon size={20} />,
+    items: [
+      { id: "debts", label: "Dívidas", icon: <DebtsIcon size={20} /> },
+      { id: "payments", label: "Pagamentos", icon: <Wallet size={20} /> },
+      {
+        id: "creditCards",
+        label: "Cartões de Crédito",
+        icon: <CreditCard size={20} />,
+      },
+    ],
   },
+  {
+    id: "incomes-group",
+    label: "Receitas",
+    icon: <Banknote size={20} />,
+    items: [
+      { id: "incomes", label: "Receitas", icon: <Banknote size={20} /> },
+      {
+        id: "incomeReceipts",
+        label: "Recebimentos",
+        icon: <HandCoins size={20} />,
+      },
+    ],
+  },
+  { id: "debtsStatement", label: "Extratos", icon: <Receipt size={20} /> },
   { id: "categories", label: "Categorias", icon: <Tags size={20} /> },
   {
-    id: "creditCards",
-    label: "Cartões de Crédito",
-    icon: <CreditCard size={20} />,
+    id: "charts",
+    label: "Gráficos",
+    icon: <PieChart size={20} />,
+    proOnly: true,
   },
-  { id: "users", label: "Usuários", icon: <Shield size={20} /> },
+  {
+    id: "goals-group",
+    label: "Metas financeiras",
+    icon: <Target size={20} />,
+    items: [
+      {
+        id: "goals",
+        label: "Metas financeiras",
+        icon: <Target size={20} />,
+        proOnly: true,
+      },
+      {
+        id: "goalContributions",
+        label: "Contribuições de metas",
+        icon: <PiggyBank size={20} />,
+        proOnly: true,
+      },
+    ],
+  },
+  {
+    id: "forecast",
+    label: "Previsão financeira",
+    icon: <TrendingUp size={20} />,
+    proOnly: true,
+  },
+  {
+    id: "calendar",
+    label: "Calendário financeiro",
+    icon: <CalendarDays size={20} />,
+    proOnly: true,
+  },
+  {
+    id: "comparisons",
+    label: "Comparativos",
+    icon: <BarChart3 size={20} />,
+    proOnly: true,
+  },
+  {
+    id: "financialHealth",
+    label: "Saúde Financeira",
+    icon: <HeartPulse size={20} />,
+    proOnly: true,
+  },
 ];
+
+// Flat view of every primary destination, regardless of grouping — used
+// wherever the sidebar hierarchy doesn't matter (e.g. the header's menu
+// search, which should still find "Pagamentos" even though it now renders
+// nested under the "Dívidas" group).
+export const primaryNavigationItems: NavigationItem[] =
+  primaryNavigationLayout.flatMap((entry) =>
+    isNavigationGroup(entry) ? entry.items : [entry],
+  );
 
 export const secondaryNavigationItems: NavigationItem[] = [
   { id: "profile", label: "Perfil", icon: <User size={20} /> },
+  { id: "admin", label: "Admin", icon: <Shield size={20} /> },
+  { id: "settings", label: "Configurações", icon: <Settings size={20} /> },
+];
+
+export const settingsPageItems: NavigationItem[] = [
+  { id: "plans", label: "Planos", icon: <Crown size={20} /> },
+  { id: "referrals", label: "Indique e Ganhe", icon: <Gift size={20} /> },
+  {
+    id: "reminders",
+    label: "Lembretes",
+    icon: <Bell size={20} />,
+    proOnly: true,
+  },
   { id: "faq", label: "Ajuda", icon: <HelpCircle size={20} /> },
+  { id: "support", label: "Suporte", icon: <LifeBuoy size={20} /> },
+  {
+    id: "termsOfUse",
+    label: "Termos e Privacidade",
+    icon: <ScrollText size={20} />,
+  },
 ];

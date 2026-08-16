@@ -4,6 +4,8 @@ import Button from "@/components/atoms/Button";
 import EditIcon from "@/components/atoms/icons/EditIcon";
 import Input from "@/components/atoms/Input";
 import Select from "@/components/atoms/Select";
+import ConfirmDialog from "@molecules/ConfirmDialog";
+import ExportButtons from "@/components/molecules/ExportButtons";
 import SectionCard from "@/components/organisms/SectionCard";
 import { colors } from "@/config";
 import {
@@ -119,6 +121,8 @@ export default function Recebimentos() {
   const [editAmount, setEditAmount] = useState("");
   const [editDate, setEditDate] = useState("");
   const [receipts, setReceipts] = useState<IncomeReceipt[]>([]);
+  const [receiptPendingDelete, setReceiptPendingDelete] =
+    useState<IncomeReceipt | null>(null);
 
   async function loadDetail(idIncome: string) {
     setLoadingDetail(true);
@@ -267,14 +271,15 @@ export default function Recebimentos() {
     }
   }
 
-  async function handleDeleteReceipt(receipt: IncomeReceipt) {
-    if (!receipt.idIncomeReceipt) return;
-    if (!window.confirm(incomeReceiptUiCopy.history.deleteConfirm)) return;
+  async function handleConfirmDeleteReceipt() {
+    if (!receiptPendingDelete?.idIncomeReceipt) return;
 
+    const receipt = receiptPendingDelete;
     setSubmitting(true);
     try {
-      await deleteIncomeReceipt(receipt.idIncomeReceipt);
+      await deleteIncomeReceipt(receipt.idIncomeReceipt!);
       showSuccess(incomeReceiptUiCopy.success.deleteReceipt);
+      setReceiptPendingDelete(null);
       if (receipt.idIncome) {
         await loadDetail(receipt.idIncome);
         await loadReceipts(receipt.idIncome);
@@ -341,6 +346,15 @@ export default function Recebimentos() {
               borderColor: colors.gold[500],
               borderTopColor: "transparent",
             }}
+          />
+        </div>
+      )}
+
+      {selectedIncomeId && !loadingDetail && incomeDetail && (
+        <div className="flex justify-end">
+          <ExportButtons
+            resource="income-receipts"
+            filters={{ idIncome: selectedIncomeId }}
           />
         </div>
       )}
@@ -620,7 +634,9 @@ export default function Recebimentos() {
                                     type="button"
                                     title="Excluir"
                                     className="text-rose-700 transition hover:text-rose-900"
-                                    onClick={() => handleDeleteReceipt(receipt)}
+                                    onClick={() =>
+                                      setReceiptPendingDelete(receipt)
+                                    }
                                   >
                                     <Trash2 size={18} />
                                   </button>
@@ -638,6 +654,21 @@ export default function Recebimentos() {
           )}
         </SectionCard>
       )}
+
+      <ConfirmDialog
+        open={Boolean(receiptPendingDelete)}
+        title="Excluir recebimento"
+        description={incomeReceiptUiCopy.history.deleteConfirm}
+        confirmLabel="Excluir"
+        cancelLabel="Cancelar"
+        variant="danger"
+        icon={<Trash2 size={20} />}
+        loading={submitting}
+        onConfirm={() => {
+          void handleConfirmDeleteReceipt();
+        }}
+        onCancel={() => setReceiptPendingDelete(null)}
+      />
     </div>
   );
 }

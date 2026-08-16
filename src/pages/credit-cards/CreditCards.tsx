@@ -4,7 +4,10 @@ import { useNavigate } from "react-router-dom";
 import SearchIcon from "@/components/atoms/icons/SearchIcon";
 import Select from "@/components/atoms/Select";
 import DataTable from "@/components/organisms/DataTable";
+import ExportButtons from "@/components/molecules/ExportButtons";
 import FilterBar from "@/components/molecules/FilterBar";
+import UpgradeBanner from "@molecules/UpgradeBanner";
+import UpgradeModal from "@/components/organisms/UpgradeModal";
 import { colors } from "@/config";
 import {
   creditCardUiCopy,
@@ -12,6 +15,11 @@ import {
   getCreditCardTableColumns,
   useCreditCardsContext,
 } from "@/features/credit-cards";
+import {
+  buildPlanLimitMessage,
+  FREE_PLAN_LIMITS,
+  useBillingContext,
+} from "@/features/billing";
 import { creditCardRoutePaths } from "@/router";
 
 export default function CreditCards() {
@@ -25,6 +33,7 @@ export default function CreditCards() {
     prevPage,
     load,
   } = useCreditCardsContext();
+  const { subscription } = useBillingContext();
 
   useEffect(() => {
     void load();
@@ -33,6 +42,11 @@ export default function CreditCards() {
 
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<"" | "true" | "false">("");
+  const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
+
+  const isAtCreditCardLimit =
+    subscription?.plan === "FREE" &&
+    pagination.total >= FREE_PLAN_LIMITS.CREDIT_CARDS;
 
   const filteredCreditCards = useMemo(() => {
     let result = filterCreditCardsBySearch(creditCards, search);
@@ -54,6 +68,14 @@ export default function CreditCards() {
 
   return (
     <div className="space-y-4">
+      {subscription?.plan === "FREE" && (
+        <UpgradeBanner
+          used={pagination.total}
+          limit={FREE_PLAN_LIMITS.CREDIT_CARDS}
+          resourceLabel="cartões de crédito"
+        />
+      )}
+
       <FilterBar
         searchValue={search}
         onSearchChange={setSearch}
@@ -63,7 +85,13 @@ export default function CreditCards() {
         }
         action={{
           label: creditCardUiCopy.listing.newAction,
-          onClick: () => navigate(creditCardRoutePaths.create),
+          onClick: () => {
+            if (isAtCreditCardLimit) {
+              setIsUpgradeModalOpen(true);
+              return;
+            }
+            navigate(creditCardRoutePaths.create);
+          },
           leftIcon: <Plus size={16} />,
         }}
       />
@@ -107,6 +135,12 @@ export default function CreditCards() {
         </div>
       ) : (
         <>
+          <div className="mb-3 flex justify-end">
+            <ExportButtons
+              resource="credit-cards"
+              filters={{ activeOnly: statusFilter || undefined }}
+            />
+          </div>
           <DataTable
             data={filteredCreditCards}
             columns={columns}
@@ -167,6 +201,15 @@ export default function CreditCards() {
           </div>
         </>
       )}
+
+      <UpgradeModal
+        open={isUpgradeModalOpen}
+        message={buildPlanLimitMessage(
+          "cartões de crédito",
+          FREE_PLAN_LIMITS.CREDIT_CARDS,
+        )}
+        onClose={() => setIsUpgradeModalOpen(false)}
+      />
     </div>
   );
 }

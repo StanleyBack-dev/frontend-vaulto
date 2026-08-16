@@ -3,7 +3,9 @@ import { useEffect, useMemo, useState } from "react";
 import Sidebar from "../components/organisms/Sidebar";
 import Header from "../components/organisms/Header";
 import OnboardingTour from "../components/organisms/OnboardingTour";
+import TermsAcceptanceGate from "../components/organisms/TermsAcceptanceGate";
 import { OnboardingProvider } from "../features/onboarding";
+import { BillingProvider } from "../features/billing";
 import type { ActiveView } from "../types/views";
 import { getActiveView, getPathForView } from "./navigation";
 
@@ -30,28 +32,31 @@ export default function AppLayout() {
   }
 
   return (
-    <OnboardingProvider>
-      <div className="flex min-h-screen bg-[#faf6f2] text-[#2c1810]">
-        <Sidebar
-          active={activeView}
-          onNavigate={handleNavigate}
-          mobileOpen={mobileSidebarOpen}
-          onClose={() => setMobileSidebarOpen(false)}
-        />
-        <div className="flex min-w-0 flex-1 flex-col lg:ml-64">
-          <Header
-            activeView={activeView}
+    <BillingProvider>
+      <OnboardingProvider>
+        <div className="flex min-h-screen bg-[#faf6f2] text-[#2c1810]">
+          <Sidebar
+            active={activeView}
             onNavigate={handleNavigate}
-            onMenuClick={() => setMobileSidebarOpen(true)}
+            mobileOpen={mobileSidebarOpen}
+            onClose={() => setMobileSidebarOpen(false)}
           />
-          <main className="flex-1 overflow-x-hidden">
-            <div className="mx-auto flex w-full max-w-7xl flex-col px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
-              <Outlet />
-            </div>
-          </main>
+          <div className="flex min-w-0 flex-1 flex-col lg:ml-64">
+            <Header
+              activeView={activeView}
+              onNavigate={handleNavigate}
+              onMenuClick={() => setMobileSidebarOpen(true)}
+            />
+            <main className="flex-1 overflow-x-hidden">
+              <div className="mx-auto flex w-full max-w-7xl flex-col px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
+                <Outlet />
+              </div>
+            </main>
+          </div>
+          <OnboardingTour />
         </div>
-        <OnboardingTour />
-      </div>
-    </OnboardingProvider>
+      </OnboardingProvider>
+      <TermsAcceptanceGate />
+    </BillingProvider>
   );
 }

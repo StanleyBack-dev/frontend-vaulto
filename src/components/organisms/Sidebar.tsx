@@ -1,17 +1,79 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { brand, colors, typography } from "../../config";
-import { ChevronRight, LogOut } from "lucide-react";
+import { ChevronDown, ChevronRight, Crown, LogOut } from "lucide-react";
 import type { ActiveView } from "../../types/views";
 import { logoutCurrentSession, useAuthSession } from "../../features/auth";
+import { useBillingContext } from "../../features/billing";
 import { authRoutePaths } from "../../router";
 import {
-  primaryNavigationItems,
+  isNavigationGroup,
+  primaryNavigationLayout,
   secondaryNavigationItems,
+  type NavigationItem,
 } from "../../router/navigation";
 import ConfirmDialog from "@molecules/ConfirmDialog";
 import { useToast } from "../../shared/toast/useToast";
 import { AuthApiError } from "../../api/auth/methods/http-error";
+
+interface NavItemButtonProps {
+  item: NavigationItem;
+  isActive: boolean;
+  isPro: boolean;
+  onSelect: () => void;
+}
+
+function NavItemButton({
+  item,
+  isActive,
+  isPro,
+  onSelect,
+}: NavItemButtonProps) {
+  return (
+    <button
+      type="button"
+      data-tour-nav={item.id}
+      onClick={onSelect}
+      className={`relative flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-all duration-200 ${
+        isActive ? "text-white" : "text-brown-300 hover:text-white"
+      }`}
+      style={
+        isActive
+          ? {
+              background: `linear-gradient(135deg, ${colors.purple[700]}, ${colors.gold[500]})`,
+              color: "#fff",
+            }
+          : { color: colors.brown[300] }
+      }
+      onMouseEnter={(e) => {
+        if (!isActive) {
+          (e.currentTarget as HTMLButtonElement).style.background =
+            colors.black[700];
+          (e.currentTarget as HTMLButtonElement).style.color = "#fff";
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (!isActive) {
+          (e.currentTarget as HTMLButtonElement).style.background =
+            "transparent";
+          (e.currentTarget as HTMLButtonElement).style.color =
+            colors.brown[300];
+        }
+      }}
+    >
+      <span className={isActive ? "text-white" : ""}>{item.icon}</span>
+      <span className="flex-1 text-left">{item.label}</span>
+      {item.proOnly && !isPro && (
+        <Crown
+          size={14}
+          className="shrink-0"
+          style={{ color: isActive ? "#fff" : colors.gold[500] }}
+        />
+      )}
+      {isActive && <ChevronRight size={14} className="text-white opacity-70" />}
+    </button>
+  );
+}
 
 interface SidebarProps {
   active: ActiveView;
@@ -28,18 +90,49 @@ export default function Sidebar({
 }: SidebarProps) {
   const navigate = useNavigate();
   const { session, hasPageAccess, clearSession } = useAuthSession();
+  const { subscription } = useBillingContext();
   const { showSuccess, showError } = useToast();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
+  const [isAccountSectionOpen, setIsAccountSectionOpen] = useState(false);
   const [avatarLoadFailed, setAvatarLoadFailed] = useState(false);
+  const [openGroupIds, setOpenGroupIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     setAvatarLoadFailed(false);
   }, [session?.user?.urlAvatar]);
 
-  const visiblePrimaryItems = primaryNavigationItems.filter((item) =>
+  const isPro = subscription?.plan === "PRO";
+
+  const visiblePrimaryLayout = primaryNavigationLayout
+    .map((entry) => {
+      if (isNavigationGroup(entry)) {
+        const visibleItems = entry.items.filter((item) =>
+          hasPageAccess(item.id),
+        );
+        return visibleItems.length > 0
+          ? { ...entry, items: visibleItems }
+          : null;
+      }
+
+      return hasPageAccess(entry.id) ? entry : null;
+    })
+    .filter((entry) => entry !== null);
+  const visibleSecondaryItems = secondaryNavigationItems.filter((item) =>
     hasPageAccess(item.id),
   );
+
+  function toggleGroup(id: string) {
+    setOpenGroupIds((current) => {
+      const next = new Set(current);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  }
 
   async function handleLogout() {
     setIsLoggingOut(true);
@@ -84,13 +177,34 @@ export default function Sidebar({
           className="flex items-center justify-between border-b px-5 py-6 lg:px-6 lg:py-8"
           style={{ borderColor: colors.brown[100] }}
         >
-          <div className="flex items-center gap-3">
-            <img
-              src="/vaulto-logo-96.png"
-              alt={brand.name}
-              className="h-10 w-10 rounded-full"
-            />
-            <div>
+          <button
+            type="button"
+            onClick={() => {
+              onNavigate("profile");
+              onClose?.();
+            }}
+            className="flex min-w-0 items-center gap-3 text-left"
+            aria-label="Ir para o perfil"
+          >
+            {session?.user?.urlAvatar && !avatarLoadFailed ? (
+              <img
+                src={session.user.urlAvatar}
+                alt={session.user.name || brand.name}
+                className="h-10 w-10 shrink-0 rounded-full object-cover"
+                onError={() => setAvatarLoadFailed(true)}
+              />
+            ) : (
+              <div
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
+                style={{
+                  background: `linear-gradient(135deg, ${colors.purple[700]}, ${colors.gold[500]})`,
+                }}
+              >
+                {session?.user?.name?.slice(0, 2).toUpperCase() ||
+                  brand.initials}
+              </div>
+            )}
+            <div className="min-w-0">
               <h1
                 className="text-sm font-bold leading-tight tracking-wide text-white"
                 style={{ fontFamily: typography.fontFamily }}
@@ -98,16 +212,16 @@ export default function Sidebar({
                 {brand.name}
               </h1>
               <p
-                className="text-xs tracking-widest"
+                className="truncate text-xs tracking-widest"
                 style={{
                   color: colors.gold[500],
                   fontFamily: typography.fontFamily,
                 }}
               >
-                {brand.subtitle.toUpperCase()}
+                {session?.user?.name || brand.subtitle.toUpperCase()}
               </p>
             </div>
-          </div>
+          </button>
           <button
             type="button"
             onClick={onClose}
@@ -117,142 +231,154 @@ export default function Sidebar({
           </button>
         </div>
 
-        <div
-          className="flex items-center gap-3 border-b px-5 py-4 lg:px-6"
-          style={{ borderColor: colors.brown[100] }}
-        >
-          {session?.user?.urlAvatar && !avatarLoadFailed ? (
-            <img
-              src={session.user.urlAvatar}
-              alt={session.user.name || brand.name}
-              className="h-9 w-9 shrink-0 rounded-full object-cover"
-              onError={() => setAvatarLoadFailed(true)}
-            />
-          ) : (
-            <div
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
-              style={{
-                background: `linear-gradient(135deg, ${colors.purple[700]}, ${colors.gold[500]})`,
-              }}
-            >
-              {session?.user?.name?.slice(0, 2).toUpperCase() || brand.initials}
-            </div>
-          )}
-          <div className="min-w-0">
-            <p className="truncate text-sm font-semibold text-white">
-              {session?.user?.name || brand.name}
-            </p>
-          </div>
-        </div>
+        <nav className="sidebar-scrollbar min-h-0 flex-1 space-y-1 overflow-y-auto px-3 py-5 lg:py-6">
+          {visiblePrimaryLayout.map((entry) => {
+            if (isNavigationGroup(entry)) {
+              const hasActiveChild = entry.items.some(
+                (item) => item.id === active,
+              );
+              const isOpen = openGroupIds.has(entry.id) || hasActiveChild;
+              const isGroupProOnly = entry.items.every((item) => item.proOnly);
 
-        <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-5 lg:py-6">
-          <p
-            className="mb-4 px-3 text-xs font-semibold uppercase tracking-widest"
-            style={{
-              color: colors.brown[500],
-              fontFamily: typography.fontFamily,
-            }}
-          >
-            Menu Principal
-          </p>
-          {visiblePrimaryItems.map((item) => {
-            const isActive = active === item.id;
+              return (
+                <div key={entry.id}>
+                  <button
+                    type="button"
+                    onClick={() => toggleGroup(entry.id)}
+                    aria-expanded={isOpen}
+                    className="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-all duration-200"
+                    style={{
+                      color: hasActiveChild ? "#fff" : colors.brown[300],
+                    }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLButtonElement).style.background =
+                        colors.black[700];
+                      (e.currentTarget as HTMLButtonElement).style.color =
+                        "#fff";
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLButtonElement).style.background =
+                        "transparent";
+                      (e.currentTarget as HTMLButtonElement).style.color =
+                        hasActiveChild ? "#fff" : colors.brown[300];
+                    }}
+                  >
+                    <span>{entry.icon}</span>
+                    <span className="flex-1 text-left">{entry.label}</span>
+                    {isGroupProOnly && !isPro && (
+                      <Crown
+                        size={14}
+                        className="shrink-0"
+                        style={{
+                          color: hasActiveChild ? "#fff" : colors.gold[500],
+                        }}
+                      />
+                    )}
+                    <ChevronDown
+                      size={14}
+                      className={`shrink-0 transition-transform duration-200 ${
+                        isOpen ? "" : "-rotate-90"
+                      }`}
+                    />
+                  </button>
+                  {isOpen && (
+                    <div
+                      className="ml-3 space-y-1 border-l pl-3"
+                      style={{ borderColor: colors.brown[100] }}
+                    >
+                      {entry.items.map((item) => (
+                        <NavItemButton
+                          key={item.id}
+                          item={item}
+                          isActive={active === item.id}
+                          isPro={isPro}
+                          onSelect={() => {
+                            onNavigate(item.id);
+                            onClose?.();
+                          }}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
             return (
-              <button
-                key={item.id}
-                data-tour-nav={item.id}
-                onClick={() => {
-                  onNavigate(item.id);
+              <NavItemButton
+                key={entry.id}
+                item={entry}
+                isActive={active === entry.id}
+                isPro={isPro}
+                onSelect={() => {
+                  onNavigate(entry.id);
                   onClose?.();
                 }}
-                className={`relative flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-all duration-200 ${
-                  isActive ? "text-white" : "text-brown-300 hover:text-white"
-                }`}
-                style={
-                  isActive
-                    ? {
-                        background: `linear-gradient(135deg, ${colors.purple[700]}, ${colors.gold[500]})`,
-                        color: "#fff",
-                      }
-                    : { color: colors.brown[300] }
-                }
-                onMouseEnter={(e) => {
-                  if (!isActive) {
-                    (e.currentTarget as HTMLButtonElement).style.background =
-                      colors.black[700];
-                    (e.currentTarget as HTMLButtonElement).style.color = "#fff";
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!isActive) {
-                    (e.currentTarget as HTMLButtonElement).style.background =
-                      "transparent";
-                    (e.currentTarget as HTMLButtonElement).style.color =
-                      colors.brown[300];
-                  }
-                }}
-              >
-                <span className={isActive ? "text-white" : ""}>
-                  {item.icon}
-                </span>
-                <span className="flex-1 text-left">{item.label}</span>
-                {isActive && (
-                  <ChevronRight size={14} className="text-white opacity-70" />
-                )}
-              </button>
+              />
             );
           })}
         </nav>
 
         <div
-          className="space-y-1 border-t px-3 pb-6 pt-4"
+          className="shrink-0 space-y-1 border-t px-3 pb-6 pt-4"
           style={{ borderColor: colors.brown[100] }}
         >
-          <p
-            className="mb-3 px-3 text-xs font-semibold uppercase tracking-widest"
+          <button
+            type="button"
+            onClick={() => setIsAccountSectionOpen((open) => !open)}
+            className="mb-1 flex w-full items-center justify-between px-3 py-1 text-xs font-semibold uppercase tracking-widest"
             style={{ color: colors.brown[500] }}
+            aria-expanded={isAccountSectionOpen}
           >
-            Conta
-          </p>
-          {secondaryNavigationItems.map((item) => {
-            const isActive = active === item.id;
-            return (
-              <button
-                key={item.id}
-                onClick={() => {
-                  onNavigate(item.id);
-                  onClose?.();
-                }}
-                className="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-all duration-200"
-                style={
-                  isActive
-                    ? {
-                        background: `linear-gradient(135deg, ${colors.purple[700]}, ${colors.gold[500]})`,
-                        color: "#fff",
-                      }
-                    : { color: colors.brown[300] }
-                }
-                onMouseEnter={(e) => {
-                  if (!isActive) {
-                    (e.currentTarget as HTMLButtonElement).style.background =
-                      colors.black[700];
-                    (e.currentTarget as HTMLButtonElement).style.color = "#fff";
+            <span>Conta</span>
+            <ChevronDown
+              size={14}
+              className={`transition-transform duration-200 ${
+                isAccountSectionOpen ? "" : "-rotate-90"
+              }`}
+            />
+          </button>
+          {isAccountSectionOpen &&
+            visibleSecondaryItems.map((item) => {
+              const isActive = active === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    onNavigate(item.id);
+                    onClose?.();
+                  }}
+                  className="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-all duration-200"
+                  style={
+                    isActive
+                      ? {
+                          background: `linear-gradient(135deg, ${colors.purple[700]}, ${colors.gold[500]})`,
+                          color: "#fff",
+                        }
+                      : { color: colors.brown[300] }
                   }
-                }}
-                onMouseLeave={(e) => {
-                  if (!isActive) {
-                    (e.currentTarget as HTMLButtonElement).style.background =
-                      "transparent";
-                    (e.currentTarget as HTMLButtonElement).style.color =
-                      colors.brown[300];
-                  }
-                }}
-              >
-                {item.icon}
-                <span>{item.label}</span>
-              </button>
-            );
-          })}
+                  onMouseEnter={(e) => {
+                    if (!isActive) {
+                      (e.currentTarget as HTMLButtonElement).style.background =
+                        colors.black[700];
+                      (e.currentTarget as HTMLButtonElement).style.color =
+                        "#fff";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) {
+                      (e.currentTarget as HTMLButtonElement).style.background =
+                        "transparent";
+                      (e.currentTarget as HTMLButtonElement).style.color =
+                        colors.brown[300];
+                    }
+                  }}
+                >
+                  {item.icon}
+                  <span>{item.label}</span>
+                </button>
+              );
+            })}
           <button
             type="button"
             onClick={() => setIsLogoutDialogOpen(true)}

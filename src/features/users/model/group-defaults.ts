@@ -30,7 +30,7 @@ export const defaultByGroup: Record<UserGroup, PageAccessKey[]> = {
     "PAYMENTS",
     "INCOME_RECEIPTS",
     "CREDIT_CARDS",
-    "USERS",
+    "ADMIN",
   ],
 };
 

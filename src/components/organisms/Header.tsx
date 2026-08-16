@@ -2,13 +2,17 @@ import SearchIcon from "../atoms/icons/SearchIcon";
 import PageHeader from "@atoms/PageHeader";
 import SearchBar from "@atoms/SearchBar";
 import { useState } from "react";
-import { Menu } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { HelpCircle, Menu } from "lucide-react";
 
 import type { ActiveView } from "../../types/views";
 import { useAuthSession } from "../../features/auth";
 import {
+  faqRoutePaths,
+  manualTopicByView,
   primaryNavigationItems,
   secondaryNavigationItems,
+  settingsPageItems,
   viewTitles,
 } from "../../router/navigation";
 
@@ -27,15 +31,18 @@ export default function Header({
   onMenuClick,
 }: HeaderProps) {
   const { hasPageAccess } = useAuthSession();
+  const navigate = useNavigate();
 
   const info = viewTitles[activeView as keyof typeof viewTitles] || {
     title: "Painel",
     subtitle: "",
   };
+  const helpTopicId = manualTopicByView[activeView];
   const [search, setSearch] = useState("");
   const sidebarItems = [
     ...primaryNavigationItems.filter((item) => hasPageAccess(item.id)),
-    ...secondaryNavigationItems,
+    ...secondaryNavigationItems.filter((item) => hasPageAccess(item.id)),
+    ...settingsPageItems,
   ];
   const filtered =
     search.length > 0
@@ -59,7 +66,7 @@ export default function Header({
             >
               <Menu size={18} />
             </button>
-            <div className="relative w-full sm:max-w-xs">
+            <div className="relative min-w-0 flex-1 sm:max-w-xs">
               <SearchBar
                 value={search}
                 onChange={setSearch}
@@ -87,6 +94,17 @@ export default function Header({
                 </div>
               )}
             </div>
+            {helpTopicId && (
+              <button
+                type="button"
+                onClick={() => navigate(`${faqRoutePaths.list}#${helpTopicId}`)}
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-[#3a2f5e] bg-[#19142b] text-[#f5f2ff]"
+                aria-label="Ajuda desta página"
+                title="Ajuda desta página"
+              >
+                <HelpCircle size={18} />
+              </button>
+            )}
           </>
         }
       />

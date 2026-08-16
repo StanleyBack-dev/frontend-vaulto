@@ -1,8 +1,9 @@
 import type { ActiveView } from "../../types/views";
 
 export const routePaths: Record<ActiveView, string> = {
+  referrals: "/indique-e-ganhe",
   dashboard: "/dashboard",
-  users: "/usuarios",
+  admin: "/admin",
   debts: "/dividas",
   debtsStatement: "/extrato",
   incomes: "/receitas",
@@ -10,8 +11,20 @@ export const routePaths: Record<ActiveView, string> = {
   incomeReceipts: "/recebimentos",
   categories: "/categorias",
   creditCards: "/cartoes-de-credito",
+  charts: "/graficos",
   profile: "/perfil",
+  settings: "/configuracoes",
+  plans: "/planos",
+  forecast: "/previsao",
+  calendar: "/calendario",
+  reminders: "/lembretes",
+  goals: "/metas",
+  goalContributions: "/metas/contribuicoes",
+  comparisons: "/comparativos",
+  financialHealth: "/saude-financeira",
   faq: "/manual",
+  support: "/suporte",
+  termsOfUse: "/termos-e-privacidade",
 };
 
 export const dashboardRoutePaths = {
@@ -25,6 +38,14 @@ export const userRoutePaths = {
   legacyList: "/users",
   legacyCreate: "/users/new",
   legacyEdit: (id = ":id") => `/users/${id}/edit`,
+};
+
+export const adminRoutePaths = {
+  list: "/admin",
+};
+
+export const supportTicketRoutePaths = {
+  detail: (id = ":id") => `/admin/chamados/${id}`,
 };
 
 export const debtRoutePaths = {
@@ -84,6 +105,60 @@ export const faqRoutePaths = {
   list: "/manual",
 };
 
+export const supportRoutePaths = {
+  list: "/suporte",
+};
+
+export const termsOfUseRoutePaths = {
+  list: "/termos-e-privacidade",
+};
+
+export const planRoutePaths = {
+  list: "/planos",
+};
+
+export const forecastRoutePaths = {
+  list: "/previsao",
+};
+
+export const calendarRoutePaths = {
+  list: "/calendario",
+};
+
+export const reminderRoutePaths = {
+  list: "/lembretes",
+};
+
+export const comparisonRoutePaths = {
+  list: "/comparativos",
+};
+
+export const financialHealthRoutePaths = {
+  list: "/saude-financeira",
+};
+
+export const goalRoutePaths = {
+  list: "/metas",
+  create: "/metas/new",
+  edit: (id = ":id") => `/metas/${id}/edit`,
+};
+
+export const goalContributionRoutePaths = {
+  list: "/metas/contribuicoes",
+};
+
 export const utilityRoutePaths = {
   accessDenied: "/acesso-negado",
+};
+
+export const referralsRoutePaths = {
+  list: "/indique-e-ganhe",
+};
+
+export const settingsRoutePaths = {
+  list: "/configuracoes",
+};
+
+export const chartsRoutePaths = {
+  list: "/graficos",
 };

@@ -43,6 +43,33 @@
 }
 
 /*
+ * Mirrors colors.brown[800]/[100] and colors.black[700] from
+ * src/config/theme.ts (no CSS custom properties are wired up for those
+ * tokens yet), so the sidebar's scroll track blends into its background.
+ */
+.sidebar-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #2a2042 #09090f;
+}
+
+.sidebar-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-scrollbar::-webkit-scrollbar-track {
+  background: #09090f;
+}
+
+.sidebar-scrollbar::-webkit-scrollbar-thumb {
+  background: #2a2042;
+  border-radius: 9999px;
+}
+
+.sidebar-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #1c1730;
+}
+
+/*
  * Chrome/Edge paint autofilled and browser-remembered inputs/selects with
  * their own blue tint via the :-webkit-autofill pseudo-class, which is
  * unreachable from React's inline `style` prop and overrides it. This block

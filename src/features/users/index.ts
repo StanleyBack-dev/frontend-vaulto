@@ -29,6 +29,7 @@ export {
 } from "./model/mappers";
 export { userUiCopy, userValidationMessages } from "./model/messages";
 export {
+  fetchMyProfile,
   fetchUsers,
   fetchUserFilterOptions,
   fetchUserPagePermissions,

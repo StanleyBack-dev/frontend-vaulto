@@ -1,6 +1,31 @@
 export { reportUiCopy } from "./model/messages";
-export { fetchDebtsReport } from "./services/report.service";
+export {
+  fetchCategoryComparison,
+  fetchDebtsAmountByCategory,
+  fetchDebtsReport,
+  fetchFinancialForecast,
+  fetchFinancialHealthScore,
+  fetchIncomesAmountByCategory,
+  fetchIncomesReport,
+  fetchMonthlyCashflowTrend,
+} from "./services/report.service";
 export type {
+  CategoryAmountQueryParams,
+  CategoryAmountRow,
+  CategoryComparison,
+  CategoryComparisonEntry,
+  CategoryComparisonGroup,
+  CategoryComparisonQueryParams,
   DebtsReport,
   DebtsReportStatusCounts,
+  FinancialForecast,
+  FinancialForecastPayload,
+  FinancialHealthPillarScore,
+  FinancialHealthScore,
+  FinancialHealthScoreQueryParams,
+  FinancialHealthStatus,
+  IncomesReport,
+  IncomesReportQueryParams,
+  IncomesReportStatusCounts,
+  MonthlyCashflowPoint,
 } from "@/api/reports/schema";

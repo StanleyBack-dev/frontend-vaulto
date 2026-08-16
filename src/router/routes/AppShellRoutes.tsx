@@ -4,23 +4,43 @@ import { useAuthSession } from "@/features/auth";
 import { Navigate, Route } from "react-router-dom";
 import AppLayout from "../AppLayout";
 import {
+  adminRoutePaths,
   authRoutePaths,
+  calendarRoutePaths,
+  chartsRoutePaths,
+  comparisonRoutePaths,
   dashboardRoutePaths,
   debtRoutePaths,
   debtsStatementRoutePaths,
   faqRoutePaths,
+  financialHealthRoutePaths,
+  forecastRoutePaths,
+  goalContributionRoutePaths,
+  goalRoutePaths,
   incomeReceiptRoutePaths,
   incomeRoutePaths,
   paymentRoutePaths,
+  planRoutePaths,
+  referralsRoutePaths,
+  reminderRoutePaths,
   routePaths,
+  settingsRoutePaths,
+  supportRoutePaths,
+  supportTicketRoutePaths,
+  termsOfUseRoutePaths,
   utilityRoutePaths,
 } from "../navigation";
 import RequirePageAccessRoute from "../../features/auth/guards/RequirePageAccessRoute";
 import { DebtsProviderOutlet } from "../../features/debts";
+import { GoalsProviderOutlet } from "../../features/goals";
 import { IncomesProviderOutlet } from "../../features/incomes";
 import { ManagementRoutes } from "./ManagementRoutes";
 
 const AccessDenied = lazy(() => import("../../pages/AccessDenied"));
+const AdminDashboard = lazy(() => import("../../pages/admin/AdminDashboard"));
+const SupportTicketDetail = lazy(
+  () => import("../../pages/admin/SupportTicketDetail"),
+);
 const DebtsDashboardKanban = lazy(
   () => import("../../pages/debts/DebtsDashboardKanban"),
 );
@@ -33,8 +53,24 @@ const Payments = lazy(() => import("../../pages/payments/Payments"));
 const Recebimentos = lazy(
   () => import("../../pages/income-receipts/Recebimentos"),
 );
+const Goals = lazy(() => import("../../pages/goals/Goals"));
+const GoalForm = lazy(() => import("../../pages/goals/GoalForm"));
+const GoalContributions = lazy(
+  () => import("../../pages/goals/GoalContributions"),
+);
 const Profile = lazy(() => import("../../pages/Profile"));
+const Settings = lazy(() => import("../../pages/Settings"));
+const Plans = lazy(() => import("../../pages/Plans"));
+const Referrals = lazy(() => import("../../pages/Referrals"));
+const Forecast = lazy(() => import("../../pages/Forecast"));
+const CalendarPage = lazy(() => import("../../pages/Calendar"));
+const Reminders = lazy(() => import("../../pages/Reminders"));
+const Charts = lazy(() => import("../../pages/Charts"));
+const Comparisons = lazy(() => import("../../pages/Comparisons"));
+const FinancialHealth = lazy(() => import("../../pages/FinancialHealth"));
 const Manual = lazy(() => import("../../pages/Manual"));
+const Support = lazy(() => import("../../pages/Support"));
+const TermsOfUse = lazy(() => import("../../pages/TermsOfUse"));
 
 function withPageSuspense(element: React.ReactNode) {
   return (
@@ -199,6 +235,34 @@ export function AppShellRoutes({ userId }: AppShellRoutesProps) {
         </Route>
       </Route>
 
+      {/* Metas financeiras - recurso exclusivo do Vaulto Pro (gate feito na pagina) */}
+      <Route
+        element={
+          <UserScopedProviderRoute
+            userId={userId}
+            loginPath={authRoutePaths.login}
+            ProviderOutlet={GoalsProviderOutlet}
+          />
+        }
+      >
+        <Route
+          path={goalRoutePaths.list}
+          element={withPageSuspense(<Goals />)}
+        />
+        <Route
+          path={goalRoutePaths.create}
+          element={withPageSuspense(<GoalForm mode="create" />)}
+        />
+        <Route
+          path={goalRoutePaths.edit()}
+          element={withPageSuspense(<GoalForm mode="edit" />)}
+        />
+        <Route
+          path={goalContributionRoutePaths.list}
+          element={withPageSuspense(<GoalContributions />)}
+        />
+      </Route>
+
       {/* Redirects legados */}
       <Route
         path={debtRoutePaths.legacyList}
@@ -232,8 +296,71 @@ export function AppShellRoutes({ userId }: AppShellRoutesProps) {
         path={routePaths.profile}
         element={withPageSuspense(<Profile />)}
       />
+      {/* Configurações - agrega planos, indicações, lembretes, ajuda, suporte e termos */}
+      <Route
+        path={settingsRoutePaths.list}
+        element={withPageSuspense(<Settings />)}
+      />
+      {/* Planos - comparativo de planos e assinatura do Vaulto Pro */}
+      <Route path={planRoutePaths.list} element={withPageSuspense(<Plans />)} />
+      {/* Indique e Ganhe - programa de indicações, comum a todos os usuários */}
+      <Route
+        path={referralsRoutePaths.list}
+        element={withPageSuspense(<Referrals />)}
+      />
+      {/* Previsão financeira - "quanto posso gastar" (recurso Pro) */}
+      <Route
+        path={forecastRoutePaths.list}
+        element={withPageSuspense(<Forecast />)}
+      />
+      {/* Calendário financeiro - vencimentos por dia (recurso Pro) */}
+      <Route
+        path={calendarRoutePaths.list}
+        element={withPageSuspense(<CalendarPage />)}
+      />
+      {/* Lembretes - vencimentos de amanhã e aviso por e-mail (recurso Pro) */}
+      <Route
+        path={reminderRoutePaths.list}
+        element={withPageSuspense(<Reminders />)}
+      />
+      {/* Gráficos - dívidas e receitas por status no mês, comum a todos os usuários */}
+      <Route
+        path={chartsRoutePaths.list}
+        element={withPageSuspense(<Charts />)}
+      />
+      {/* Comparativos - gastos e receitas por categoria, mês a mês (recurso Pro) */}
+      <Route
+        path={comparisonRoutePaths.list}
+        element={withPageSuspense(<Comparisons />)}
+      />
+      {/* Saúde Financeira - score 0-100 combinando dívidas, pontualidade e reservas (recurso Pro) */}
+      <Route
+        path={financialHealthRoutePaths.list}
+        element={withPageSuspense(<FinancialHealth />)}
+      />
       {/* Manual/Ajuda - documentação de uso, comum a todos os usuários */}
       <Route path={faqRoutePaths.list} element={withPageSuspense(<Manual />)} />
+      {/* Suporte - contato com a equipe por e-mail, comum a todos os usuários */}
+      <Route
+        path={supportRoutePaths.list}
+        element={withPageSuspense(<Support />)}
+      />
+      {/* Termos e Privacidade - consulta a qualquer momento, comum a todos os usuários */}
+      <Route
+        path={termsOfUseRoutePaths.list}
+        element={withPageSuspense(<TermsOfUse />)}
+      />
+      {/* Admin - dashboard, usuários e chamados de suporte (ADMIN_MASTER) */}
+      <Route element={<RequirePageAccessRoute view="admin" />}>
+        <Route
+          path={adminRoutePaths.list}
+          element={withPageSuspense(<AdminDashboard />)}
+        />
+        <Route
+          path={supportTicketRoutePaths.detail()}
+          element={withPageSuspense(<SupportTicketDetail />)}
+        />
+      </Route>
       <Route
         path={utilityRoutePaths.accessDenied}
         element={withPageSuspense(<AccessDenied />)}

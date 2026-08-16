@@ -15,6 +15,7 @@ export const AuthSessionResponseSchema = z.object({
   user: AuthUserSchema,
   mustChangePassword: z.boolean().optional(),
   onboardingTourCompleted: z.boolean().optional(),
+  termsAccepted: z.boolean().optional(),
 });
 
 export const AuthMessageResponseSchema = z.object({

@@ -340,7 +340,7 @@ export default function DebtsDashboardKanban() {
   const monthBalance = incomeReceivedTotal - totals.paid;
 
   return (
-    <div className="space-y-5">
+    <div className="-mt-3 space-y-5 sm:-mt-5 lg:-mt-6">
       {/* Header */}
       <div>
         <h2 className="text-lg font-bold text-[#f7f5ff]">

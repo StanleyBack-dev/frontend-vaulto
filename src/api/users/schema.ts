@@ -10,7 +10,7 @@ export const PageAccessKeySchema = z.enum([
   "PAYMENTS",
   "INCOME_RECEIPTS",
   "CREDIT_CARDS",
-  "USERS",
+  "ADMIN",
 ]);
 export const UserGroupSchema = z.enum(["USER", "ADMIN", "ADMIN_MASTER"]);
 
@@ -26,6 +26,8 @@ export const UserSchema = z.object({
   lastLoginAt: z.string().nullable().optional(),
   failedLoginAttempts: z.number().nullable().optional(),
   lockedUntil: z.string().nullable().optional(),
+  inactivatedAt: z.string().nullable().optional(),
+  deletionRequestedAt: z.string().nullable().optional(),
   createdAt: z.string(),
   updatedAt: z.string().optional(),
 });

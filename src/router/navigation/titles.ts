@@ -4,7 +4,7 @@ export const viewTitles: Record<
   ActiveView,
   { title: string; subtitle: string }
 > = {
-  dashboard: { title: "Dashboard", subtitle: "Visão geral das dívidas" },
+  dashboard: { title: "Dashboard", subtitle: "Visão geral" },
   debts: { title: "Dívidas", subtitle: "Contas a pagar e receber" },
   debtsStatement: {
     title: "Extratos",
@@ -27,14 +27,67 @@ export const viewTitles: Record<
     title: "Cartões de Crédito",
     subtitle: "Cadastro de cartões e limites",
   },
-  users: {
-    title: "Usuários",
-    subtitle: "Gerenciar usuários de acesso",
+  charts: {
+    title: "Gráficos",
+    subtitle: "Dívidas e receitas por status no mês selecionado",
   },
-  profile: { title: "Perfil", subtitle: "Informações da empresa" },
+  admin: {
+    title: "Admin",
+    subtitle: "Usuários, assinaturas e chamados de suporte",
+  },
+  profile: { title: "Perfil", subtitle: "Seus dados e sua assinatura" },
+  settings: {
+    title: "Configurações",
+    subtitle: "Planos, indicações, lembretes, ajuda, suporte e mais",
+  },
+  plans: {
+    title: "Planos",
+    subtitle: "Compare o Free e o Vaulto Pro e escolha o seu",
+  },
+  forecast: {
+    title: "Previsão financeira",
+    subtitle: "Quanto você pode gastar com segurança no período",
+  },
+  calendar: {
+    title: "Calendário financeiro",
+    subtitle: "Dívidas e receitas organizadas por dia de vencimento",
+  },
+  reminders: {
+    title: "Lembretes",
+    subtitle: "O que vence amanhã, e como avisamos você por e-mail",
+  },
+  goals: {
+    title: "Metas financeiras",
+    subtitle: "Defina objetivos e acompanhe seu progresso",
+  },
+  goalContributions: {
+    title: "Contribuições de metas",
+    subtitle: "Registro de contribuições para suas metas financeiras",
+  },
+  comparisons: {
+    title: "Comparativos",
+    subtitle: "Gastos e receitas por categoria, mês a mês",
+  },
+  financialHealth: {
+    title: "Saúde Financeira",
+    subtitle:
+      "Um indicador de 0 a 100 combinando comprometimento com dívidas, pontualidade e reservas",
+  },
   faq: {
     title: "Manual do Sistema",
     subtitle:
       "Guia de uso, dúvidas frequentes e regras de cada área do sistema",
+  },
+  support: {
+    title: "Suporte",
+    subtitle: "Fale com a nossa equipe por e-mail",
+  },
+  termsOfUse: {
+    title: "Termos e Privacidade",
+    subtitle: "Termos de Uso e Política de Privacidade da plataforma",
+  },
+  referrals: {
+    title: "Indique e Ganhe",
+    subtitle: "Indique amigos e ganhe 1 mês grátis de Vaulto Pro",
   },
 };

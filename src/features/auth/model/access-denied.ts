@@ -21,8 +21,8 @@ export function toAccessDeniedState(
 
 export function getDeniedViewLabel(deniedView?: ActiveView): string {
   switch (deniedView) {
-    case "users":
-      return "Usuários";
+    case "admin":
+      return "Admin";
     case "debts":
       return "Dívidas";
     case "debtsStatement":

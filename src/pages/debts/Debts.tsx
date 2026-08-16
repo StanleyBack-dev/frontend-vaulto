@@ -1,6 +1,9 @@
 import DataTable from "@/components/organisms/DataTable";
 import ConfirmDialog from "@molecules/ConfirmDialog";
+import ExportButtons from "@/components/molecules/ExportButtons";
 import FilterBar from "@/components/molecules/FilterBar";
+import UpgradeBanner from "@molecules/UpgradeBanner";
+import UpgradeModal from "@/components/organisms/UpgradeModal";
 import SearchIcon from "@/components/atoms/icons/SearchIcon";
 import Select from "@/components/atoms/Select";
 import { colors } from "@/config";
@@ -16,6 +19,11 @@ import {
   getDebtTableColumns,
   useDebtsContext,
 } from "@/features/debts";
+import {
+  buildPlanLimitMessage,
+  FREE_PLAN_LIMITS,
+  useBillingContext,
+} from "@/features/billing";
 
 export default function Debts() {
   const navigate = useNavigate();
@@ -34,6 +42,7 @@ export default function Debts() {
     load,
     remove,
   } = useDebtsContext();
+  const { subscription } = useBillingContext();
 
   useEffect(() => {
     void load();
@@ -43,6 +52,10 @@ export default function Debts() {
   const [search, setSearch] = useState("");
   const [debtPendingDelete, setDebtPendingDelete] = useState<Debt | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
+
+  const isAtDebtLimit =
+    subscription?.plan === "FREE" && pagination.total >= FREE_PLAN_LIMITS.DEBTS;
 
   const filteredDebts = useMemo(
     () => filterDebtsBySearch(debts, search),
@@ -72,6 +85,14 @@ export default function Debts() {
 
   return (
     <div className="space-y-4">
+      {subscription?.plan === "FREE" && (
+        <UpgradeBanner
+          used={pagination.total}
+          limit={FREE_PLAN_LIMITS.DEBTS}
+          resourceLabel="dívidas"
+        />
+      )}
+
       <FilterBar
         searchValue={search}
         onSearchChange={setSearch}
@@ -81,7 +102,13 @@ export default function Debts() {
         }
         action={{
           label: "Nova dívida",
-          onClick: () => navigate(debtRoutePaths.create),
+          onClick: () => {
+            if (isAtDebtLimit) {
+              setIsUpgradeModalOpen(true);
+              return;
+            }
+            navigate(debtRoutePaths.create);
+          },
           leftIcon: <Plus size={16} />,
         }}
       />
@@ -162,6 +189,16 @@ export default function Debts() {
         </div>
       ) : (
         <>
+          <div className="mb-3 flex justify-end">
+            <ExportButtons
+              resource="debts"
+              filters={{
+                debtStatus: filters.status || undefined,
+                debtType: filters.debtType || undefined,
+                idCategory: filters.idCategory || undefined,
+              }}
+            />
+          </div>
           <DataTable
             data={filteredDebts}
             columns={columns}
@@ -242,6 +279,12 @@ export default function Debts() {
           void handleConfirmDelete();
         }}
         onCancel={() => setDebtPendingDelete(null)}
+      />
+
+      <UpgradeModal
+        open={isUpgradeModalOpen}
+        message={buildPlanLimitMessage("dívidas", FREE_PLAN_LIMITS.DEBTS)}
+        onClose={() => setIsUpgradeModalOpen(false)}
       />
     </div>
   );

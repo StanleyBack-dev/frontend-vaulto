@@ -10,6 +10,8 @@ const USER_FIELDS = `
   lastLoginAt
   failedLoginAttempts
   lockedUntil
+  inactivatedAt
+  deletionRequestedAt
   createdAt
   updatedAt
 `;
@@ -24,6 +26,14 @@ const CREATE_USER_FIELDS = `
   status
   mustChangePassword
   createdAt
+`;
+
+export const ME_QUERY = `
+  query Me {
+    me {
+      ${USER_FIELDS}
+    }
+  }
 `;
 
 export const GET_USERS_QUERY = `

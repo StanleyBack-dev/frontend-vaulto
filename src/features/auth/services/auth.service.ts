@@ -33,8 +33,9 @@ export async function loginWithPassword(
 
 export async function loginWithGoogle(
   idToken: string,
+  referralCode?: string,
 ): Promise<AuthSessionResponse> {
-  const response = await loginWithGoogleRequest({ idToken });
+  const response = await loginWithGoogleRequest({ idToken, referralCode });
 
   const parsed = AuthSessionResponseSchema.safeParse(response);
 

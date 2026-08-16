@@ -10,7 +10,8 @@ import type {
   UpdateIncomeStatusPayload,
 } from "@/api/incomes/schema";
 import type { PaginationMeta } from "@/api/shared/contracts";
-import { fetchCategories } from "@/features/categories/services/category.service";
+import { PlanLimitReachedError } from "@/api/shared/plan-limit-error";
+import { fetchCategoryOptions } from "@/features/categories/services/category.service";
 import {
   fetchIncomes,
   removeIncome,
@@ -33,6 +34,8 @@ export interface UseIncomesResult {
   loading: boolean;
   saving: boolean;
   error: string | null;
+  planLimitMessage: string | null;
+  dismissPlanLimitMessage: () => void;
   pagination: PaginationMeta;
   filters: IncomeFilters;
   load: () => Promise<void>;
@@ -106,9 +109,14 @@ export function useIncomes(): UseIncomesResult {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [planLimitMessage, setPlanLimitMessage] = useState<string | null>(null);
   const [pagination, setPagination] =
     useState<PaginationMeta>(EMPTY_PAGINATION);
   const { showError, showSuccess } = useToast();
+
+  const dismissPlanLimitMessage = useCallback(() => {
+    setPlanLimitMessage(null);
+  }, []);
 
   const currentPage = toPositiveInt(searchParams.get("page"), 1);
   const currentLimit = toPositiveInt(searchParams.get("limit"), DEFAULT_LIMIT);
@@ -155,7 +163,7 @@ export function useIncomes(): UseIncomesResult {
   useEffect(() => {
     void (async () => {
       try {
-        const activeIncomeCategories = await fetchCategories({
+        const activeIncomeCategories = await fetchCategoryOptions({
           page: 1,
           limit: 100,
           status: true,
@@ -242,6 +250,11 @@ export function useIncomes(): UseIncomesResult {
         await load();
         return created;
       } catch (err) {
+        if (err instanceof PlanLimitReachedError) {
+          setPlanLimitMessage(err.message);
+          return null;
+        }
+
         const message = toErrorMessage(
           err,
           incomeUiCopy.errors.saveIncomeFallback,
@@ -337,6 +350,8 @@ export function useIncomes(): UseIncomesResult {
     loading,
     saving,
     error,
+    planLimitMessage,
+    dismissPlanLimitMessage,
     pagination,
     filters,
     load,

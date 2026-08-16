@@ -16,15 +16,15 @@ function formatDate(value?: string | null): string {
   return formatDateDisplay(value ?? undefined) || "-";
 }
 
-function getPaidAmount(debt: Debt): number {
+export function getPaidAmount(debt: Debt): number {
   return debt.payments.reduce((sum, payment) => sum + payment.amountPaid, 0);
 }
 
-function getRemainingAmount(debt: Debt): number {
+export function getRemainingAmount(debt: Debt): number {
   return Math.max(debt.totalAmount - getPaidAmount(debt), 0);
 }
 
-function getInstallmentAmount(debt: Debt): number {
+export function getInstallmentAmount(debt: Debt): number {
   if (debt.installments[0]) {
     return debt.installments[0].amountDue;
   }
@@ -37,6 +37,12 @@ function getInstallmentAmount(debt: Debt): number {
 export function getPaidInstallmentsCount(debt: Debt): number {
   return debt.installments.filter(
     (installment) => installment.status === "PAID",
+  ).length;
+}
+
+export function getRemainingInstallmentsCount(debt: Debt): number {
+  return debt.installments.filter(
+    (installment) => installment.status !== "PAID",
   ).length;
 }
 

@@ -1,15 +1,29 @@
 import type { ActiveView } from "../../types/views";
 import {
+  adminRoutePaths,
+  calendarRoutePaths,
   categoryRoutePaths,
+  chartsRoutePaths,
+  comparisonRoutePaths,
   creditCardRoutePaths,
   dashboardRoutePaths,
   debtRoutePaths,
   debtsStatementRoutePaths,
   faqRoutePaths,
+  financialHealthRoutePaths,
+  forecastRoutePaths,
+  goalContributionRoutePaths,
+  goalRoutePaths,
   incomeReceiptRoutePaths,
   incomeRoutePaths,
   paymentRoutePaths,
+  planRoutePaths,
+  referralsRoutePaths,
+  reminderRoutePaths,
   routePaths,
+  settingsRoutePaths,
+  supportRoutePaths,
+  termsOfUseRoutePaths,
   userRoutePaths,
 } from "./paths";
 
@@ -19,10 +33,11 @@ export function getActiveView(pathname: string): ActiveView {
   }
 
   if (
+    pathname.startsWith(adminRoutePaths.list) ||
     pathname.startsWith(userRoutePaths.list) ||
     pathname.startsWith(userRoutePaths.legacyList)
   ) {
-    return "users";
+    return "admin";
   }
 
   if (
@@ -59,12 +74,64 @@ export function getActiveView(pathname: string): ActiveView {
     return "creditCards";
   }
 
+  if (pathname.startsWith(chartsRoutePaths.list)) {
+    return "charts";
+  }
+
   if (pathname.startsWith(routePaths.profile)) {
     return "profile";
   }
 
+  if (pathname.startsWith(settingsRoutePaths.list)) {
+    return "settings";
+  }
+
+  if (pathname.startsWith(planRoutePaths.list)) {
+    return "plans";
+  }
+
+  if (pathname.startsWith(referralsRoutePaths.list)) {
+    return "referrals";
+  }
+
+  if (pathname.startsWith(forecastRoutePaths.list)) {
+    return "forecast";
+  }
+
+  if (pathname.startsWith(calendarRoutePaths.list)) {
+    return "calendar";
+  }
+
+  if (pathname.startsWith(reminderRoutePaths.list)) {
+    return "reminders";
+  }
+
+  if (pathname.startsWith(goalContributionRoutePaths.list)) {
+    return "goalContributions";
+  }
+
+  if (pathname.startsWith(goalRoutePaths.list)) {
+    return "goals";
+  }
+
+  if (pathname.startsWith(comparisonRoutePaths.list)) {
+    return "comparisons";
+  }
+
+  if (pathname.startsWith(financialHealthRoutePaths.list)) {
+    return "financialHealth";
+  }
+
   if (pathname.startsWith(faqRoutePaths.list)) {
     return "faq";
+  }
+
+  if (pathname.startsWith(supportRoutePaths.list)) {
+    return "support";
+  }
+
+  if (pathname.startsWith(termsOfUseRoutePaths.list)) {
+    return "termsOfUse";
   }
 
   return "dashboard";
@@ -78,12 +145,38 @@ export function getPathForView(view: ActiveView) {
       return categoryRoutePaths.list;
     case "creditCards":
       return creditCardRoutePaths.list;
-    case "users":
-      return userRoutePaths.list;
+    case "charts":
+      return chartsRoutePaths.list;
+    case "admin":
+      return adminRoutePaths.list;
     case "profile":
       return routePaths.profile;
+    case "settings":
+      return settingsRoutePaths.list;
+    case "plans":
+      return planRoutePaths.list;
+    case "referrals":
+      return referralsRoutePaths.list;
+    case "forecast":
+      return forecastRoutePaths.list;
+    case "calendar":
+      return calendarRoutePaths.list;
+    case "reminders":
+      return reminderRoutePaths.list;
+    case "goals":
+      return goalRoutePaths.list;
+    case "goalContributions":
+      return goalContributionRoutePaths.list;
+    case "comparisons":
+      return comparisonRoutePaths.list;
+    case "financialHealth":
+      return financialHealthRoutePaths.list;
     case "faq":
       return faqRoutePaths.list;
+    case "support":
+      return supportRoutePaths.list;
+    case "termsOfUse":
+      return termsOfUseRoutePaths.list;
     case "payments":
       return paymentRoutePaths.list;
     case "incomeReceipts":
