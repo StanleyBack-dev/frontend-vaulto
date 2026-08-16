@@ -7,6 +7,7 @@ import {
   adminRoutePaths,
   authRoutePaths,
   calendarRoutePaths,
+  chartsRoutePaths,
   comparisonRoutePaths,
   dashboardRoutePaths,
   debtRoutePaths,
@@ -64,6 +65,7 @@ const Referrals = lazy(() => import("../../pages/Referrals"));
 const Forecast = lazy(() => import("../../pages/Forecast"));
 const CalendarPage = lazy(() => import("../../pages/Calendar"));
 const Reminders = lazy(() => import("../../pages/Reminders"));
+const Charts = lazy(() => import("../../pages/Charts"));
 const Comparisons = lazy(() => import("../../pages/Comparisons"));
 const FinancialHealth = lazy(() => import("../../pages/FinancialHealth"));
 const Manual = lazy(() => import("../../pages/Manual"));
@@ -320,6 +322,11 @@ export function AppShellRoutes({ userId }: AppShellRoutesProps) {
       <Route
         path={reminderRoutePaths.list}
         element={withPageSuspense(<Reminders />)}
+      />
+      {/* Gráficos - dívidas e receitas por status no mês, comum a todos os usuários */}
+      <Route
+        path={chartsRoutePaths.list}
+        element={withPageSuspense(<Charts />)}
       />
       {/* Comparativos - gastos e receitas por categoria, mês a mês (recurso Pro) */}
       <Route

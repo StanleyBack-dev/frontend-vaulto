@@ -11,6 +11,7 @@ export const routePaths: Record<ActiveView, string> = {
   incomeReceipts: "/recebimentos",
   categories: "/categorias",
   creditCards: "/cartoes-de-credito",
+  charts: "/graficos",
   profile: "/perfil",
   settings: "/configuracoes",
   plans: "/planos",
@@ -156,4 +157,8 @@ export const referralsRoutePaths = {
 
 export const settingsRoutePaths = {
   list: "/configuracoes",
+};
+
+export const chartsRoutePaths = {
+  list: "/graficos",
 };

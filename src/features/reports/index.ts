@@ -1,11 +1,17 @@
 export { reportUiCopy } from "./model/messages";
 export {
   fetchCategoryComparison,
+  fetchDebtsAmountByCategory,
   fetchDebtsReport,
   fetchFinancialForecast,
   fetchFinancialHealthScore,
+  fetchIncomesAmountByCategory,
+  fetchIncomesReport,
+  fetchMonthlyCashflowTrend,
 } from "./services/report.service";
 export type {
+  CategoryAmountQueryParams,
+  CategoryAmountRow,
   CategoryComparison,
   CategoryComparisonEntry,
   CategoryComparisonGroup,
@@ -18,4 +24,8 @@ export type {
   FinancialHealthScore,
   FinancialHealthScoreQueryParams,
   FinancialHealthStatus,
+  IncomesReport,
+  IncomesReportQueryParams,
+  IncomesReportStatusCounts,
+  MonthlyCashflowPoint,
 } from "@/api/reports/schema";

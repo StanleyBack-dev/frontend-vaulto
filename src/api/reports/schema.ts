@@ -27,6 +27,55 @@ export interface DebtsReportQueryParams {
   idCategory?: string;
 }
 
+export const IncomesReportStatusCountsSchema = z.object({
+  pending: z.number(),
+  overdue: z.number(),
+  partiallyReceived: z.number(),
+  received: z.number(),
+});
+
+export const IncomesReportSchema = z.object({
+  totalAmountDue: z.number(),
+  totalAmountReceived: z.number(),
+  totalOutstanding: z.number(),
+  totalCount: z.number(),
+  countByStatus: IncomesReportStatusCountsSchema,
+});
+
+export type IncomesReportStatusCounts = z.infer<
+  typeof IncomesReportStatusCountsSchema
+>;
+export type IncomesReport = z.infer<typeof IncomesReportSchema>;
+
+export interface IncomesReportQueryParams {
+  dueDateFrom?: string;
+  dueDateTo?: string;
+  incomeType?: string;
+  idCategory?: string;
+}
+
+export const CategoryAmountRowSchema = z.object({
+  idCategory: z.string(),
+  categoryName: z.string(),
+  amount: z.number(),
+});
+
+export type CategoryAmountRow = z.infer<typeof CategoryAmountRowSchema>;
+
+export interface CategoryAmountQueryParams {
+  dueDateFrom: string;
+  dueDateTo: string;
+}
+
+export const MonthlyCashflowPointSchema = z.object({
+  month: z.string(),
+  expenses: z.number(),
+  income: z.number(),
+  balance: z.number(),
+});
+
+export type MonthlyCashflowPoint = z.infer<typeof MonthlyCashflowPointSchema>;
+
 export const FinancialForecastSchema = z.object({
   currentBalance: z.number(),
   projectedIncome: z.number(),
