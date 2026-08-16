@@ -38,10 +38,7 @@ export async function getIncomesReport(input, authContext, requestId) {
     ...authContext,
   });
 
-  return requireData(
-    data.getIncomesReport,
-    "Invalid incomes report response.",
-  );
+  return requireData(data.getIncomesReport, "Invalid incomes report response.");
 }
 
 export async function getDebtsAmountByCategory(input, authContext, requestId) {
