@@ -22,6 +22,8 @@ export const SUBSCRIBE_TO_PRO_MUTATION = `
         ${SUBSCRIPTION_FIELDS}
       }
       checkoutUrl
+      pixQrCodePayload
+      pixQrCodeImage
     }
   }
 `;

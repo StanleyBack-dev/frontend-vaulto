@@ -14,17 +14,11 @@ function canCancel(subscription: Subscription): boolean {
   return (
     subscription.plan === "PRO" &&
     !subscription.cancelAtPeriodEnd &&
-    (subscription.status === "ACTIVE" ||
-      subscription.status === "TRIALING" ||
-      subscription.status === "PAST_DUE")
+    (subscription.status === "ACTIVE" || subscription.status === "PAST_DUE")
   );
 }
 
 function describeStatus(subscription: Subscription): string {
-  if (subscription.status === "TRIALING" && subscription.trialEndsAt) {
-    return `Seu período de teste do Pro termina em ${formatDateDisplay(subscription.trialEndsAt)}.`;
-  }
-
   if (subscription.status === "PAST_DUE") {
     return "Identificamos um pagamento pendente. Regularize para manter o Pro ativo.";
   }

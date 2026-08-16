@@ -27,14 +27,6 @@ function resolveBadge(plan: SubscriptionPlan, status: SubscriptionStatus) {
     };
   }
 
-  if (plan === "PRO" && status === "TRIALING") {
-    return {
-      label: "Pro · teste grátis",
-      background: `${colors.purple[500]}1f`,
-      color: colors.purple[700],
-    };
-  }
-
   if (plan === "PRO") {
     return {
       label: "Vaulto Pro",

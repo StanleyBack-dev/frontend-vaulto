@@ -24,8 +24,7 @@ export default function Plans() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const isProActive =
-    subscription?.plan === "PRO" &&
-    (subscription.status === "ACTIVE" || subscription.status === "TRIALING");
+    subscription?.plan === "PRO" && subscription.status === "ACTIVE";
 
   function handleSubscribed(checkoutUrl?: string) {
     setIsModalOpen(false);
@@ -42,6 +41,15 @@ export default function Plans() {
     showError(
       "Assinatura iniciada",
       "Não recebemos o link de pagamento. Tente novamente em instantes.",
+    );
+    void refresh();
+  }
+
+  function handlePixAuthorizationCreated() {
+    setIsModalOpen(false);
+    showSuccess(
+      "Pix Automático criado!",
+      "Assim que o pagamento for confirmado, seu Pro é ativado automaticamente.",
     );
     void refresh();
   }
@@ -112,7 +120,6 @@ export default function Plans() {
               "Exportação em PDF/Excel",
               "Lembretes e calendário financeiro",
               "Previsão financeira e metas",
-              "7 dias grátis para testar",
             ]}
             footer={
               isProActive ? (
@@ -158,6 +165,7 @@ export default function Plans() {
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSubscribed={handleSubscribed}
+        onPixAuthorizationCreated={handlePixAuthorizationCreated}
       />
     </div>
   );

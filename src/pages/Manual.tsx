@@ -367,8 +367,8 @@ const topics: ManualTopic[] = [
           (gratuito, com limites de cadastros e histórico) e o{" "}
           <strong>Vaulto Pro</strong> (cadastros ilimitados, relatórios
           avançados, exportação, lembretes, calendário, previsão financeira e
-          metas). O Vaulto Pro tem 7 dias grátis para testar antes da primeira
-          cobrança.
+          metas). A cobrança do Vaulto Pro acontece assim que você assina, e o
+          Pro é ativado na hora após a confirmação do pagamento.
         </p>
       </>
     ),
@@ -384,7 +384,7 @@ const topics: ManualTopic[] = [
           compartilhar. Quando um amigo entra pelo seu link e assina o Vaulto
           Pro, a indicação só conta de verdade depois que a{" "}
           <strong>primeira cobrança dele for confirmada</strong> — assinar e
-          cancelar ainda no período de teste grátis não conta.
+          cancelar antes de pagar não conta.
         </p>
         <p>
           A cada <strong>3 amigos</strong> que assinarem o Pro dessa forma, você

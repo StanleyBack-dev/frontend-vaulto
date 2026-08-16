@@ -23,11 +23,14 @@ export const SubscriptionSchema = z.object({
 export const SubscribeToProPayloadSchema = z.object({
   cpfCnpj: z.string(),
   billingCycle: SubscriptionBillingCycleSchema,
+  pixAutomatic: z.boolean().optional(),
 });
 
 export const SubscribeToProResponseSchema = z.object({
   subscription: SubscriptionSchema,
   checkoutUrl: z.string().nullable().optional(),
+  pixQrCodePayload: z.string().nullable().optional(),
+  pixQrCodeImage: z.string().nullable().optional(),
 });
 
 export const CancellationReasonSchema = z.enum([
