@@ -90,7 +90,7 @@ export default function Sidebar({
 }: SidebarProps) {
   const navigate = useNavigate();
   const { session, hasPageAccess, clearSession } = useAuthSession();
-  const { subscription } = useBillingContext();
+  const { isPro } = useBillingContext();
   const { showSuccess, showError } = useToast();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
@@ -101,8 +101,6 @@ export default function Sidebar({
   useEffect(() => {
     setAvatarLoadFailed(false);
   }, [session?.user?.urlAvatar]);
-
-  const isPro = subscription?.plan === "PRO";
 
   const visiblePrimaryLayout = primaryNavigationLayout
     .map((entry) => {

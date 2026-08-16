@@ -22,8 +22,7 @@ import { useBillingContext } from "@/features/billing";
 
 export default function Goals() {
   const navigate = useNavigate();
-  const { subscription, isLoading: isSubscriptionLoading } =
-    useBillingContext();
+  const { isPro, isLoading: isSubscriptionLoading } = useBillingContext();
   const {
     goals,
     loading,
@@ -35,8 +34,6 @@ export default function Goals() {
     load,
     remove,
   } = useGoalsContext();
-
-  const isPro = subscription?.plan === "PRO";
 
   useEffect(() => {
     if (isPro) {

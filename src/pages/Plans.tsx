@@ -19,12 +19,11 @@ import { colors } from "@/config";
 
 export default function Plans() {
   const navigate = useNavigate();
-  const { subscription, refresh } = useBillingContext();
+  const { subscription, isPro, refresh } = useBillingContext();
   const { showSuccess, showError } = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const isProActive =
-    subscription?.plan === "PRO" && subscription.status === "ACTIVE";
+  const isProActive = isPro && subscription?.status === "ACTIVE";
 
   function handleSubscribed(checkoutUrl?: string) {
     setIsModalOpen(false);

@@ -193,9 +193,7 @@ function buildIncomeSegments(
 export default function Charts() {
   const navigate = useNavigate();
   const { showError } = useToast();
-  const { subscription, isLoading: isSubscriptionLoading } =
-    useBillingContext();
-  const isPro = subscription?.plan === "PRO";
+  const { isPro, isLoading: isSubscriptionLoading } = useBillingContext();
 
   const [month, setMonth] = useState(currentMonthValue);
   const [debtsReport, setDebtsReport] = useState<DebtsReport | null>(null);

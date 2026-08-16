@@ -134,8 +134,7 @@ function PillarCard({
 
 export default function FinancialHealth() {
   const navigate = useNavigate();
-  const { subscription, isLoading: isSubscriptionLoading } =
-    useBillingContext();
+  const { isPro, isLoading: isSubscriptionLoading } = useBillingContext();
   const { showError } = useToast();
 
   const [periodMode, setPeriodMode] = useState<PeriodMode>("predefined");
@@ -144,7 +143,6 @@ export default function FinancialHealth() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<FinancialHealthScore | null>(null);
 
-  const isPro = subscription?.plan === "PRO";
   const minCustomDate = tomorrowDateInputValue();
 
   async function loadScore(periodEnd?: Date) {

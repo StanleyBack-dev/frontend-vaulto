@@ -42,7 +42,7 @@ export default function Incomes() {
     load,
     remove,
   } = useIncomesContext();
-  const { subscription } = useBillingContext();
+  const { isPro } = useBillingContext();
 
   useEffect(() => {
     void load();
@@ -57,8 +57,7 @@ export default function Incomes() {
   const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
 
   const isAtIncomeLimit =
-    subscription?.plan === "FREE" &&
-    pagination.total >= FREE_PLAN_LIMITS.INCOMES;
+    !isPro && pagination.total >= FREE_PLAN_LIMITS.INCOMES;
 
   const filteredIncomes = useMemo(
     () => filterIncomesBySearch(incomes, search),
@@ -88,7 +87,7 @@ export default function Incomes() {
 
   return (
     <div className="space-y-4">
-      {subscription?.plan === "FREE" && (
+      {!isPro && (
         <UpgradeBanner
           used={pagination.total}
           limit={FREE_PLAN_LIMITS.INCOMES}

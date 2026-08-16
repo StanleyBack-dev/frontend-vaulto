@@ -10,8 +10,7 @@ import {
 
 export default function Settings() {
   const navigate = useNavigate();
-  const { subscription } = useBillingContext();
-  const isPro = subscription?.plan === "PRO";
+  const { isPro } = useBillingContext();
 
   return (
     <div className="space-y-6">

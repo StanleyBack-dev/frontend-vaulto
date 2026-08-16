@@ -49,12 +49,9 @@ function toErrorMessage(error: unknown): string | undefined {
 
 export default function GoalContributions() {
   const navigate = useNavigate();
-  const { subscription, isLoading: isSubscriptionLoading } =
-    useBillingContext();
+  const { isPro, isLoading: isSubscriptionLoading } = useBillingContext();
   const { goals, load: loadGoals } = useGoalsContext();
   const { showError, showSuccess } = useToast();
-
-  const isPro = subscription?.plan === "PRO";
 
   useEffect(() => {
     if (isPro) {
