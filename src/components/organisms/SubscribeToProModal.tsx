@@ -40,23 +40,29 @@ const CYCLE_OPTIONS: {
   },
 ];
 
-const BILLING_METHOD_OPTIONS: {
-  value: boolean;
-  label: string;
-  description: string;
-}[] = [
-  {
-    value: false,
-    label: "Cartão, Pix ou Boleto",
-    description: "Escolha a forma de pagamento no checkout seguro da Asaas.",
-  },
-  {
-    value: true,
-    label: "Pix Automático",
-    description:
-      "Cobrança recorrente via Pix, sem precisar pagar manualmente todo mês.",
-  },
-];
+// TEMP: Pix Automático hidden from checkout — the Asaas account isn't
+// eligible yet (Pix Automático requires a PJ/CNPJ account approved by
+// Asaas; ours is currently PF). Backend support is fully implemented and
+// working (SubscribeToProCommand.pixAutomatic); once the account is
+// eligible, uncomment this and the "Forma de pagamento" block below to
+// bring the picker back.
+// const BILLING_METHOD_OPTIONS: {
+//   value: boolean;
+//   label: string;
+//   description: string;
+// }[] = [
+//   {
+//     value: false,
+//     label: "Cartão, Pix ou Boleto",
+//     description: "Escolha a forma de pagamento no checkout seguro da Asaas.",
+//   },
+//   {
+//     value: true,
+//     label: "Pix Automático",
+//     description:
+//       "Cobrança recorrente via Pix, sem precisar pagar manualmente todo mês.",
+//   },
+// ];
 
 export default function SubscribeToProModal({
   open,
@@ -67,7 +73,10 @@ export default function SubscribeToProModal({
   const { showSuccess, showError } = useToast();
   const [billingCycle, setBillingCycle] =
     useState<SubscriptionBillingCycle>("MONTHLY");
-  const [pixAutomatic, setPixAutomatic] = useState(false);
+  // TEMP: hardcoded false while the Pix Automático picker is hidden — see
+  // note above BILLING_METHOD_OPTIONS. Restore to
+  // `useState(false)`/`setPixAutomatic` once the picker comes back.
+  const pixAutomatic = false;
   const [cpfCnpj, setCpfCnpj] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -303,6 +312,8 @@ export default function SubscribeToProModal({
                   </div>
                 </div>
 
+                {/* TEMP: Pix Automático payment-method picker hidden — see
+                    note above BILLING_METHOD_OPTIONS.
                 <div>
                   <Label>Forma de pagamento</Label>
                   <div className="mt-2 space-y-2">
@@ -340,6 +351,7 @@ export default function SubscribeToProModal({
                     })}
                   </div>
                 </div>
+                */}
 
                 <Input
                   label="CPF ou CNPJ"
