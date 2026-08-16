@@ -27,6 +27,10 @@ export const viewTitles: Record<
     title: "Cartões de Crédito",
     subtitle: "Cadastro de cartões e limites",
   },
+  charts: {
+    title: "Gráficos",
+    subtitle: "Dívidas e receitas por status no mês selecionado",
+  },
   admin: {
     title: "Admin",
     subtitle: "Usuários, assinaturas e chamados de suporte",

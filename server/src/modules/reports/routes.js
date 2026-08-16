@@ -4,9 +4,13 @@ import { buildErrorResponse } from "../../shared/http/error-response.js";
 import { buildListInput } from "../../shared/http/parse-pagination.js";
 import {
   getCategoryComparison,
+  getDebtsAmountByCategory,
   getDebtsReport,
   getFinancialForecast,
   getFinancialHealthScore,
+  getIncomesAmountByCategory,
+  getIncomesReport,
+  getMonthlyCashflowTrend,
 } from "./service.js";
 
 const router = Router();
@@ -27,6 +31,67 @@ router.get("/debts", async (req, res) => {
     ]);
     const report = await getDebtsReport(input, authContext, req.requestId);
     res.json(report);
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
+router.get("/incomes", async (req, res) => {
+  try {
+    const authContext = getAuthContext(req);
+    const input = buildListInput(req.query, [
+      "dueDateFrom",
+      "dueDateTo",
+      "incomeType",
+      "idCategory",
+    ]);
+    const report = await getIncomesReport(input, authContext, req.requestId);
+    res.json(report);
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
+router.get("/debts-by-category", async (req, res) => {
+  try {
+    const authContext = getAuthContext(req);
+    const input = buildListInput(req.query, ["dueDateFrom", "dueDateTo"]);
+    const rows = await getDebtsAmountByCategory(
+      input,
+      authContext,
+      req.requestId,
+    );
+    res.json(rows);
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
+router.get("/incomes-by-category", async (req, res) => {
+  try {
+    const authContext = getAuthContext(req);
+    const input = buildListInput(req.query, ["dueDateFrom", "dueDateTo"]);
+    const rows = await getIncomesAmountByCategory(
+      input,
+      authContext,
+      req.requestId,
+    );
+    res.json(rows);
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
+router.get("/monthly-cashflow-trend", async (req, res) => {
+  try {
+    const authContext = getAuthContext(req);
+    const input = buildListInput(req.query, ["dueDateFrom", "dueDateTo"]);
+    const points = await getMonthlyCashflowTrend(
+      input,
+      authContext,
+      req.requestId,
+    );
+    res.json(points);
   } catch (error) {
     sendError(res, error);
   }

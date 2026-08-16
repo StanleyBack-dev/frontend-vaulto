@@ -14,6 +14,7 @@ import {
   HelpCircle,
   LayoutDashboard,
   LifeBuoy,
+  PieChart,
   PiggyBank,
   Receipt,
   ScrollText,
@@ -82,6 +83,12 @@ export const primaryNavigationLayout: PrimaryNavigationEntry[] = [
   },
   { id: "debtsStatement", label: "Extratos", icon: <Receipt size={20} /> },
   { id: "categories", label: "Categorias", icon: <Tags size={20} /> },
+  {
+    id: "charts",
+    label: "Gráficos",
+    icon: <PieChart size={20} />,
+    proOnly: true,
+  },
   {
     id: "goals-group",
     label: "Metas financeiras",

@@ -3,6 +3,7 @@ export {
   authRoutePaths,
   calendarRoutePaths,
   categoryRoutePaths,
+  chartsRoutePaths,
   comparisonRoutePaths,
   creditCardRoutePaths,
   dashboardRoutePaths,

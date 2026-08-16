@@ -3,6 +3,7 @@ import {
   adminRoutePaths,
   calendarRoutePaths,
   categoryRoutePaths,
+  chartsRoutePaths,
   comparisonRoutePaths,
   creditCardRoutePaths,
   dashboardRoutePaths,
@@ -73,6 +74,10 @@ export function getActiveView(pathname: string): ActiveView {
     return "creditCards";
   }
 
+  if (pathname.startsWith(chartsRoutePaths.list)) {
+    return "charts";
+  }
+
   if (pathname.startsWith(routePaths.profile)) {
     return "profile";
   }
@@ -140,6 +145,8 @@ export function getPathForView(view: ActiveView) {
       return categoryRoutePaths.list;
     case "creditCards":
       return creditCardRoutePaths.list;
+    case "charts":
+      return chartsRoutePaths.list;
     case "admin":
       return adminRoutePaths.list;
     case "profile":
