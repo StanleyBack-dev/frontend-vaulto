@@ -1,7 +1,6 @@
 const SUBSCRIPTION_FIELDS = `
   plan
   status
-  trialEndsAt
   currentPeriodEnd
   billingCycle
   cancelAtPeriodEnd

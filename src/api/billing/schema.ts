@@ -14,7 +14,6 @@ export const SubscriptionBillingCycleSchema = z.enum(["MONTHLY", "YEARLY"]);
 export const SubscriptionSchema = z.object({
   plan: SubscriptionPlanSchema,
   status: SubscriptionStatusSchema,
-  trialEndsAt: z.string().nullable().optional(),
   currentPeriodEnd: z.string().nullable().optional(),
   billingCycle: SubscriptionBillingCycleSchema.nullable().optional(),
   cancelAtPeriodEnd: z.boolean(),
