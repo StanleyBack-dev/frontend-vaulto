@@ -1,7 +1,6 @@
 const SUBSCRIPTION_FIELDS = `
   plan
   status
-  trialEndsAt
   currentPeriodEnd
   billingCycle
   cancelAtPeriodEnd
@@ -22,6 +21,8 @@ export const SUBSCRIBE_TO_PRO_MUTATION = `
         ${SUBSCRIPTION_FIELDS}
       }
       checkoutUrl
+      pixQrCodePayload
+      pixQrCodeImage
     }
   }
 `;
