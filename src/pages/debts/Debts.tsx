@@ -42,7 +42,7 @@ export default function Debts() {
     load,
     remove,
   } = useDebtsContext();
-  const { subscription } = useBillingContext();
+  const { isPro } = useBillingContext();
 
   useEffect(() => {
     void load();
@@ -54,8 +54,7 @@ export default function Debts() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
 
-  const isAtDebtLimit =
-    subscription?.plan === "FREE" && pagination.total >= FREE_PLAN_LIMITS.DEBTS;
+  const isAtDebtLimit = !isPro && pagination.total >= FREE_PLAN_LIMITS.DEBTS;
 
   const filteredDebts = useMemo(
     () => filterDebtsBySearch(debts, search),
@@ -85,7 +84,7 @@ export default function Debts() {
 
   return (
     <div className="space-y-4">
-      {subscription?.plan === "FREE" && (
+      {!isPro && (
         <UpgradeBanner
           used={pagination.total}
           limit={FREE_PLAN_LIMITS.DEBTS}

@@ -55,8 +55,7 @@ function tomorrowDateInputValue(): string {
 
 export default function Forecast() {
   const navigate = useNavigate();
-  const { subscription, isLoading: isSubscriptionLoading } =
-    useBillingContext();
+  const { isPro, isLoading: isSubscriptionLoading } = useBillingContext();
   const { showError } = useToast();
 
   const [currentBalance, setCurrentBalance] = useState("");
@@ -66,7 +65,6 @@ export default function Forecast() {
   const [result, setResult] = useState<FinancialForecast | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
 
-  const isPro = subscription?.plan === "PRO";
   const minCustomDate = tomorrowDateInputValue();
 
   async function handleCalculate(event: FormEvent) {

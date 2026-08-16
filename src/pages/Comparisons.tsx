@@ -123,8 +123,7 @@ function monthToIsoDate(monthValue: string): string {
 
 export default function Comparisons() {
   const navigate = useNavigate();
-  const { subscription, isLoading: isSubscriptionLoading } =
-    useBillingContext();
+  const { isPro, isLoading: isSubscriptionLoading } = useBillingContext();
   const { showError } = useToast();
 
   const [periodType, setPeriodType] = useState<PeriodType>("MONTH");
@@ -138,7 +137,6 @@ export default function Comparisons() {
   const [queriedPeriodType, setQueriedPeriodType] =
     useState<PeriodType>("MONTH");
 
-  const isPro = subscription?.plan === "PRO";
   const monthLabel = result
     ? formatPeriodLabel(
         queriedPeriodType,

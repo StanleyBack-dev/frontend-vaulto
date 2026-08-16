@@ -78,8 +78,7 @@ function buildMonthCells(monthValue: string): (DayCell | null)[] {
 
 export default function CalendarPage() {
   const navigate = useNavigate();
-  const { subscription, isLoading: isSubscriptionLoading } =
-    useBillingContext();
+  const { isPro, isLoading: isSubscriptionLoading } = useBillingContext();
   const { showError } = useToast();
 
   const [month, setMonth] = useState(currentMonthValue);
@@ -89,7 +88,6 @@ export default function CalendarPage() {
   >(new Map());
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
 
-  const isPro = subscription?.plan === "PRO";
   const cells = useMemo(() => buildMonthCells(month), [month]);
   const monthLabel = useMemo(() => formatMonthLabel(month), [month]);
 

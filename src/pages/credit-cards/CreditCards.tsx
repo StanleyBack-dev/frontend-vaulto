@@ -33,7 +33,7 @@ export default function CreditCards() {
     prevPage,
     load,
   } = useCreditCardsContext();
-  const { subscription } = useBillingContext();
+  const { isPro } = useBillingContext();
 
   useEffect(() => {
     void load();
@@ -45,8 +45,7 @@ export default function CreditCards() {
   const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
 
   const isAtCreditCardLimit =
-    subscription?.plan === "FREE" &&
-    pagination.total >= FREE_PLAN_LIMITS.CREDIT_CARDS;
+    !isPro && pagination.total >= FREE_PLAN_LIMITS.CREDIT_CARDS;
 
   const filteredCreditCards = useMemo(() => {
     let result = filterCreditCardsBySearch(creditCards, search);
@@ -68,7 +67,7 @@ export default function CreditCards() {
 
   return (
     <div className="space-y-4">
-      {subscription?.plan === "FREE" && (
+      {!isPro && (
         <UpgradeBanner
           used={pagination.total}
           limit={FREE_PLAN_LIMITS.CREDIT_CARDS}

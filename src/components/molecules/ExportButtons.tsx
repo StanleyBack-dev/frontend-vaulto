@@ -28,11 +28,8 @@ export default function ExportButtons({
 }: ExportButtonsProps) {
   const navigate = useNavigate();
   const { showError, showSuccess } = useToast();
-  const { subscription, isLoading: isSubscriptionLoading } =
-    useBillingContext();
+  const { isPro, isLoading: isSubscriptionLoading } = useBillingContext();
   const [loadingFormat, setLoadingFormat] = useState<ExportFormat | null>(null);
-
-  const isPro = subscription?.plan === "PRO";
 
   async function handleDownload(format: ExportFormat) {
     if (disabled || loadingFormat) {

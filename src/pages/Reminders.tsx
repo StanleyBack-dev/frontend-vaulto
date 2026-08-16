@@ -69,14 +69,12 @@ function toDateOnly(value: string): string {
 
 export default function Reminders() {
   const navigate = useNavigate();
-  const { subscription, isLoading: isSubscriptionLoading } =
-    useBillingContext();
+  const { isPro, isLoading: isSubscriptionLoading } = useBillingContext();
   const { showError } = useToast();
 
   const [loading, setLoading] = useState(false);
   const [entries, setEntries] = useState<ReminderEntry[]>([]);
 
-  const isPro = subscription?.plan === "PRO";
   const tomorrow = tomorrowDateValue();
 
   async function loadDueTomorrow() {

@@ -11,6 +11,7 @@ import { fetchMySubscription } from "../services/billing.service";
 
 interface BillingContextValue {
   subscription: Subscription | null;
+  isPro: boolean;
   isLoading: boolean;
   refresh: () => Promise<void>;
 }
@@ -49,8 +50,16 @@ export function BillingProvider({ children }: BillingProviderProps) {
     void refresh();
   }, [session?.user.idUsers, refresh]);
 
+  // ADMIN_MASTER runs the whole system and isn't a subscriber — it always
+  // has Pro-level access regardless of what its own subscription record
+  // says, mirroring the same bypass on the backend (PlanLimitsService).
+  const isPro =
+    subscription?.plan === "PRO" || session?.user.group === "ADMIN_MASTER";
+
   return (
-    <BillingContext.Provider value={{ subscription, isLoading, refresh }}>
+    <BillingContext.Provider
+      value={{ subscription, isPro, isLoading, refresh }}
+    >
       {children}
     </BillingContext.Provider>
   );
