@@ -41,9 +41,6 @@ export const PLAN_FEATURE_ROWS: PlanFeatureRow[] = [
   { label: "Calendário financeiro", free: "—", pro: "✓" },
   { label: "Previsão financeira", free: "—", pro: "✓" },
   { label: "Metas financeiras", free: "—", pro: "✓" },
-  { label: "Importação de extrato", free: "—", pro: "✓" },
-  { label: "Vaulto Insights (IA)", free: "—", pro: "✓" },
-  { label: "Backup", free: "básico", pro: "completo" },
 ];
 
 export const PAYMENT_METHODS_DESCRIPTION =
