@@ -64,6 +64,24 @@ export const CREATE_USER_MUTATION = `
   }
 `;
 
+export const UPDATE_MY_PROFILE_MUTATION = `
+  mutation UpdateUser($input: UpdateUserInputDto!) {
+    updateUser(input: $input) {
+      success
+      message
+      code
+      data {
+        idUsers
+        name
+        email
+        urlAvatar
+        status
+        updatedAt
+      }
+    }
+  }
+`;
+
 export const ADMIN_UPDATE_USER_ACCESS_MUTATION = `
   mutation AdminUpdateUserAccess($input: AdminUpdateUserAccessInputDto!) {
     adminUpdateUserAccess(input: $input) {
