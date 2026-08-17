@@ -4,6 +4,7 @@ import { getMe } from "../../../api/users/methods/getMe";
 import { getUserFilterOptions } from "../../../api/users/methods/get-filter-options";
 import { getUserPagePermissions } from "../../../api/users/methods/get-page-permissions";
 import { updateUser } from "../../../api/users/methods/update";
+import { updateMyProfile as updateMyProfileRequest } from "../../../api/users/methods/updateMe";
 import { unlockUser } from "../../../api/users/methods/unlock";
 import type { PaginationMeta } from "../../../api/shared/contracts";
 import {
@@ -11,6 +12,7 @@ import {
   CreateUserPayloadSchema,
   CreateUserResponseSchema,
   UnlockUserResponseSchema,
+  UpdateMyProfileResponseSchema,
   UpdateUserPayloadSchema,
   UserFilterOptionSchema,
   UserPagePermissionsResponseSchema,
@@ -43,6 +45,20 @@ export async function fetchMyProfile(): Promise<User> {
   }
 
   return parsed.data;
+}
+
+export async function updateMyProfile(name: string): Promise<{
+  name: string;
+  updatedAt: string;
+}> {
+  const response = await updateMyProfileRequest({ name });
+  const parsed = UpdateMyProfileResponseSchema.safeParse(response);
+
+  if (!parsed.success) {
+    throw new Error(userUiCopy.errors.invalidUpdateUserResponse);
+  }
+
+  return { name: parsed.data.name, updatedAt: parsed.data.updatedAt };
 }
 
 export async function fetchUsers(

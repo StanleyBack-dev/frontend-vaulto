@@ -47,7 +47,7 @@ function formatScheduledDeletionDate(deletionRequestedAt: string): string {
 
 export default function Profile() {
   const navigate = useNavigate();
-  const { clearSession } = useAuthSession();
+  const { clearSession, updateSessionUserName } = useAuthSession();
   const {
     subscription,
     isLoading: isSubscriptionLoading,
@@ -283,7 +283,14 @@ export default function Profile() {
         {isLoadingUser || !user ? (
           <Loading label="Carregando seus dados..." />
         ) : (
-          <ProfileSummaryCard user={user} subscription={subscription} />
+          <ProfileSummaryCard
+            user={user}
+            subscription={subscription}
+            onNameUpdated={(name) => {
+              setUser((current) => (current ? { ...current, name } : current));
+              updateSessionUserName(name);
+            }}
+          />
         )}
       </SectionCard>
 

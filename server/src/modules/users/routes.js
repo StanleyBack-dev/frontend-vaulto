@@ -9,6 +9,7 @@ import {
   getUserPagePermissions,
   listUsers,
   unlockUser,
+  updateMyProfile,
   updateUser,
 } from "./service.js";
 
@@ -22,6 +23,19 @@ function sendError(res, error) {
 router.get("/me", async (req, res) => {
   try {
     const profile = await getMyProfile(getAuthContext(req), req.requestId);
+    res.json(profile);
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
+router.patch("/me", async (req, res) => {
+  try {
+    const profile = await updateMyProfile(
+      req.body,
+      getAuthContext(req),
+      req.requestId,
+    );
     res.json(profile);
   } catch (error) {
     sendError(res, error);

@@ -8,6 +8,7 @@ import {
   GET_USER_PAGE_PERMISSIONS_QUERY,
   ME_QUERY,
   UNLOCK_USER_CREDENTIAL_MUTATION,
+  UPDATE_MY_PROFILE_MUTATION,
 } from "./queries.js";
 
 function requireData(value, message) {
@@ -26,6 +27,17 @@ export async function getMyProfile(authContext, requestId) {
   });
 
   return requireData(data.me, "Invalid profile response.");
+}
+
+export async function updateMyProfile(input, authContext, requestId) {
+  const data = await executeGraphql({
+    query: UPDATE_MY_PROFILE_MUTATION,
+    variables: { input },
+    requestId,
+    ...authContext,
+  });
+
+  return requireData(data.updateUser?.data, "Invalid update profile response.");
 }
 
 export async function listUsers(input, authContext, requestId) {

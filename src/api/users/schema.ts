@@ -50,6 +50,14 @@ export const UpdateUserPayloadSchema = z.object({
 });
 
 export const CreateUserResponseSchema = UserSchema;
+export const UpdateMyProfileResponseSchema = z.object({
+  idUsers: z.string(),
+  name: z.string(),
+  email: z.string(),
+  urlAvatar: z.string().nullable().optional(),
+  status: z.boolean(),
+  updatedAt: z.string(),
+});
 export const AdminUpdateUserAccessResponseSchema = z.object({
   idUsers: z.string(),
   group: UserGroupSchema,
