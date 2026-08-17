@@ -10,6 +10,10 @@ app.use(express.json());
 app.use(requestLoggingMiddleware);
 app.use(rateLimitMiddleware);
 
+app.use("/api", (_req, res, next) => {
+  res.setHeader("Cache-Control", "no-store");
+  next();
+});
 app.use("/api", routes);
 
 app.get("/", (_req, res) => {
