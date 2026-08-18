@@ -1,4 +1,4 @@
-export const LEGAL_CONTENT_VERSION_LABEL = "13 de agosto de 2026";
+export const LEGAL_CONTENT_VERSION_LABEL = "18 de agosto de 2026";
 
 export interface LegalSection {
   id: string;
@@ -92,8 +92,42 @@ export const TERMS_OF_USE_SECTIONS: LegalSection[] = [
     ),
   },
   {
+    id: "programa-indicacoes",
+    title: "5. Programa de Indicações",
+    content: (
+      <>
+        <p>
+          A Vaulto pode oferecer um programa de indicações: ao compartilhar seu
+          código pessoal, você pode acumular créditos em dinheiro quando amigos
+          indicados assinam e pagam o plano Pro. Os valores de crédito por
+          indicação, o valor mínimo para saque e o prazo de confirmação vigentes
+          são sempre exibidos na tela de Indicações dentro da plataforma.
+        </p>
+        <p>
+          Um crédito só é gerado após a primeira cobrança do indicado ser
+          efetivamente confirmada, e fica em confirmação por um período antes de
+          se tornar disponível para saque. Se o pagamento do indicado for
+          reembolsado ou estornado dentro desse período, o crédito
+          correspondente é cancelado.
+        </p>
+        <p>
+          Os saques são solicitados por você e pagos via Pix, na chave informada
+          no momento da solicitação — você é responsável por garantir que a
+          chave Pix fornecida é válida e pertence a você. A Vaulto pode recusar,
+          reverter ou cancelar créditos obtidos por meio de fraude, contas
+          duplicadas, indicações fictícias ou qualquer uso indevido do programa.
+        </p>
+        <p>
+          A Vaulto pode alterar as regras, os valores ou encerrar o programa de
+          indicações a qualquer momento, respeitando os saldos já disponíveis
+          para saque no momento da alteração.
+        </p>
+      </>
+    ),
+  },
+  {
     id: "uso-adequado",
-    title: "5. Uso Adequado da Plataforma",
+    title: "6. Uso Adequado da Plataforma",
     content: (
       <p>
         Você concorda em não utilizar a Vaulto para fins ilícitos, em não tentar
@@ -106,7 +140,7 @@ export const TERMS_OF_USE_SECTIONS: LegalSection[] = [
   },
   {
     id: "propriedade-intelectual",
-    title: "6. Propriedade Intelectual",
+    title: "7. Propriedade Intelectual",
     content: (
       <p>
         A marca Vaulto, o layout, o código-fonte, os textos e os demais
@@ -119,7 +153,7 @@ export const TERMS_OF_USE_SECTIONS: LegalSection[] = [
   },
   {
     id: "responsabilidade",
-    title: "7. Limitação de Responsabilidade",
+    title: "8. Limitação de Responsabilidade",
     content: (
       <p>
         A Vaulto se esforça para manter a plataforma disponível e os cálculos
@@ -133,7 +167,7 @@ export const TERMS_OF_USE_SECTIONS: LegalSection[] = [
   },
   {
     id: "alteracoes-servico",
-    title: "8. Alterações e Interrupção do Serviço",
+    title: "9. Alterações e Interrupção do Serviço",
     content: (
       <p>
         A Vaulto pode adicionar, alterar ou remover funcionalidades a qualquer
@@ -145,7 +179,7 @@ export const TERMS_OF_USE_SECTIONS: LegalSection[] = [
   },
   {
     id: "encerramento",
-    title: "9. Encerramento de Conta",
+    title: "10. Encerramento de Conta",
     content: (
       <p>
         Você pode solicitar o encerramento da sua conta a qualquer momento
@@ -157,7 +191,7 @@ export const TERMS_OF_USE_SECTIONS: LegalSection[] = [
   },
   {
     id: "alteracoes-termos",
-    title: "10. Alterações nestes Termos",
+    title: "11. Alterações nestes Termos",
     content: (
       <p>
         Estes Termos podem ser atualizados periodicamente. Alterações materiais
@@ -169,7 +203,7 @@ export const TERMS_OF_USE_SECTIONS: LegalSection[] = [
   },
   {
     id: "lei-aplicavel",
-    title: "11. Lei Aplicável e Foro",
+    title: "12. Lei Aplicável e Foro",
     content: (
       <p>
         Estes Termos são regidos pelas leis da República Federativa do Brasil.
@@ -180,7 +214,7 @@ export const TERMS_OF_USE_SECTIONS: LegalSection[] = [
   },
   {
     id: "contato-termos",
-    title: "12. Contato",
+    title: "13. Contato",
     content: (
       <p>
         Dúvidas sobre estes Termos de Uso podem ser enviadas para{" "}
@@ -228,6 +262,12 @@ export const PRIVACY_POLICY_SECTIONS: LegalSection[] = [
           e o status da assinatura, nunca o número completo do cartão.
         </p>
         <p>
+          <strong>Dados de indicação e saque:</strong> seu código de indicação
+          e, quando você solicita o saque do saldo do programa de indicações, a
+          chave Pix informada por você, usada exclusivamente para processar essa
+          transferência.
+        </p>
+        <p>
           <strong>Dados técnicos e de auditoria:</strong> endereço IP,
           identificador do navegador (user agent) e data/hora, coletados
           automaticamente em eventos como login e aceite destes Termos, para
@@ -267,7 +307,8 @@ export const PRIVACY_POLICY_SECTIONS: LegalSection[] = [
         <ul className="list-disc space-y-1 pl-5">
           <li>
             <strong>Asaas</strong> — processamento de pagamentos e cobranças do
-            plano Pro.
+            plano Pro, e transferências via Pix para saques do programa de
+            indicações.
           </li>
           <li>
             <strong>Google</strong> — autenticação, quando você opta por entrar

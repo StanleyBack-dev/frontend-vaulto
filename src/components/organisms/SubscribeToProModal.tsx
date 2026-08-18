@@ -1,7 +1,12 @@
 import { useState, type FormEvent } from "react";
 import { Check, Copy, Crown } from "lucide-react";
 import type { SubscriptionBillingCycle } from "@/api/billing/schema";
-import { PRO_PLAN_PRICES, requestSubscribeToPro } from "@/features/billing";
+import {
+  PRO_PLAN_FIRST_MONTH_PRICE,
+  PRO_PLAN_MONTHLY_EQUIVALENT_WHEN_YEARLY,
+  PRO_PLAN_PRICES,
+  requestSubscribeToPro,
+} from "@/features/billing";
 import Button from "@atoms/Button";
 import Input from "@atoms/Input";
 import Label from "@atoms/Label";
@@ -30,13 +35,14 @@ const CYCLE_OPTIONS: {
   {
     value: "MONTHLY",
     label: "Mensal",
-    price: `R$ ${PRO_PLAN_PRICES.MONTHLY.toFixed(2).replace(".", ",")}/mês`,
+    price: `R$ ${PRO_PLAN_FIRST_MONTH_PRICE.toFixed(2).replace(".", ",")} no 1º mês`,
+    hint: `depois R$ ${PRO_PLAN_PRICES.MONTHLY.toFixed(2).replace(".", ",")}/mês`,
   },
   {
     value: "YEARLY",
     label: "Anual",
     price: `R$ ${PRO_PLAN_PRICES.YEARLY.toFixed(2).replace(".", ",")}/ano`,
-    hint: "equivale a R$ 12,49/mês",
+    hint: `equivale a R$ ${PRO_PLAN_MONTHLY_EQUIVALENT_WHEN_YEARLY.toFixed(2).replace(".", ",")}/mês`,
   },
 ];
 

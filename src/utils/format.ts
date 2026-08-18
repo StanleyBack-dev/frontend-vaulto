@@ -1,3 +1,12 @@
+const brlCentsFormatter = new Intl.NumberFormat("pt-BR", {
+  style: "currency",
+  currency: "BRL",
+});
+
+export function formatCurrencyFromCents(cents: number): string {
+  return brlCentsFormatter.format(cents / 100);
+}
+
 // Formata número de celular brasileiro (ex: (11) 91234-5678)
 export function formatPhone(value: string): string {
   const digits = value.replace(/\D/g, "").slice(0, 11);
@@ -225,6 +234,28 @@ export function formatDateTimeDisplay(value?: string): string {
     dateStyle: "short",
     timeStyle: "short",
   }).format(parsedDate);
+}
+
+// Groups typed hex characters into UUID shape (8-4-4-4-12) as the user types.
+export function formatPixEvpKey(value: string): string {
+  const chars = value
+    .toLowerCase()
+    .replace(/[^0-9a-f]/g, "")
+    .slice(0, 32);
+
+  return [
+    chars.slice(0, 8),
+    chars.slice(8, 12),
+    chars.slice(12, 16),
+    chars.slice(16, 20),
+    chars.slice(20, 32),
+  ]
+    .filter(Boolean)
+    .join("-");
+}
+
+export function sanitizeEmailInput(value: string): string {
+  return value.replace(/\s/g, "");
 }
 
 export function onlyDigits(value: string, maxLength?: number): string {

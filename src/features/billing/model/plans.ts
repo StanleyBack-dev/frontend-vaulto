@@ -1,7 +1,9 @@
 export const PRO_PLAN_PRICES = {
-  MONTHLY: 14.9,
-  YEARLY: 149.9,
+  MONTHLY: 29.9,
+  YEARLY: 299.9,
 } as const;
+
+export const PRO_PLAN_FIRST_MONTH_PRICE = 19.9;
 
 export const FREE_PLAN_LIMITS = {
   DEBTS: 5,
@@ -16,7 +18,7 @@ export function buildPlanLimitMessage(
   return `Limite do plano Free atingido (${limit}) para ${resourceLabel}. Assine o Vaulto Pro para continuar sem limites.`;
 }
 
-export const PRO_PLAN_MONTHLY_EQUIVALENT_WHEN_YEARLY = 12.49;
+export const PRO_PLAN_MONTHLY_EQUIVALENT_WHEN_YEARLY = 24.99;
 
 export interface PlanFeatureRow {
   label: string;

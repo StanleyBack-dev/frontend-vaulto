@@ -10,6 +10,7 @@ import PlanBadge from "@atoms/PlanBadge";
 import { useToast } from "../shared/toast/useToast";
 import {
   PAYMENT_METHODS_DESCRIPTION,
+  PRO_PLAN_FIRST_MONTH_PRICE,
   PRO_PLAN_MONTHLY_EQUIVALENT_WHEN_YEARLY,
   PRO_PLAN_PRICES,
   useBillingContext,
@@ -108,9 +109,9 @@ export default function Plans() {
 
           <PlanPriceCard
             title="Vaulto Pro"
-            price={`R$ ${PRO_PLAN_PRICES.MONTHLY.toFixed(2).replace(".", ",")}`}
-            priceSuffix="/mês"
-            hint={`ou R$ ${PRO_PLAN_PRICES.YEARLY.toFixed(2).replace(".", ",")}/ano (equivale a R$ ${PRO_PLAN_MONTHLY_EQUIVALENT_WHEN_YEARLY.toFixed(2).replace(".", ",")}/mês)`}
+            price={`R$ ${PRO_PLAN_FIRST_MONTH_PRICE.toFixed(2).replace(".", ",")}`}
+            priceSuffix="no 1º mês"
+            hint={`depois R$ ${PRO_PLAN_PRICES.MONTHLY.toFixed(2).replace(".", ",")}/mês · ou R$ ${PRO_PLAN_PRICES.YEARLY.toFixed(2).replace(".", ",")}/ano (equivale a R$ ${PRO_PLAN_MONTHLY_EQUIVALENT_WHEN_YEARLY.toFixed(2).replace(".", ",")}/mês)`}
             highlighted
             features={[
               "Dívidas, receitas e cartões ilimitados",

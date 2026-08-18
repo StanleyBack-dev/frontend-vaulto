@@ -198,6 +198,7 @@ export function AuthSessionProvider({ children }: AuthSessionProviderProps) {
       return {
         ...current,
         termsAccepted: true,
+        isTermsReacceptance: false,
       };
     });
   }, []);
