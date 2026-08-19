@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Banknote, Check, Copy, Gift } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import SectionCard from "@/components/organisms/SectionCard";
@@ -65,6 +65,13 @@ const PIX_KEY_INPUT_PROPS: Record<
     maxLength: 36,
   },
 };
+
+const ACTIVE_WITHDRAWAL_STATUSES: ReferralWithdrawalStatus[] = [
+  "REQUESTED",
+  "PROCESSING",
+];
+const WITHDRAWAL_POLL_INTERVAL_MS = 5000;
+const WITHDRAWAL_POLL_TIMEOUT_MS = 2 * 60 * 1000;
 
 const WITHDRAWAL_STATUS_STYLES: Record<
   ReferralWithdrawalStatus,
@@ -159,6 +166,57 @@ export default function Referrals() {
       cancelled = true;
     };
   }, [showError]);
+
+  // Keeps the withdrawal history and wallet balance fresh while a payout is
+  // still settling with the gateway (a few seconds, typically), so the user
+  // sees "Concluído" without having to manually reload the page. Stops as
+  // soon as no withdrawal is left in an active state, or after the timeout.
+  const pollingStartedAtRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    const hasActiveWithdrawal = withdrawals.some((withdrawal) =>
+      ACTIVE_WITHDRAWAL_STATUSES.includes(withdrawal.status),
+    );
+
+    if (!hasActiveWithdrawal) {
+      pollingStartedAtRef.current = null;
+      return;
+    }
+
+    if (pollingStartedAtRef.current === null) {
+      pollingStartedAtRef.current = Date.now();
+    }
+
+    if (
+      Date.now() - pollingStartedAtRef.current >=
+      WITHDRAWAL_POLL_TIMEOUT_MS
+    ) {
+      return;
+    }
+
+    let cancelled = false;
+
+    const timeoutId = setTimeout(() => {
+      if (cancelled) return;
+
+      loadData()
+        .then(([statsResult, withdrawalsResult]) => {
+          if (cancelled) return;
+          setStats(statsResult);
+          setWithdrawals(withdrawalsResult);
+          emitReferralBalanceChanged(statsResult.availableBalanceCents);
+        })
+        .catch(() => {
+          // Transient failure — the next visit/refresh still shows the
+          // correct final status, so this just skips the auto-update.
+        });
+    }, WITHDRAWAL_POLL_INTERVAL_MS);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timeoutId);
+    };
+  }, [withdrawals]);
 
   async function handleCopyLink() {
     if (!stats) return;
