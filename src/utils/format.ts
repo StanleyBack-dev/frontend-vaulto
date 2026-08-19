@@ -176,25 +176,23 @@ export function formatCurrencyExtended(value: number): string {
 }
 
 const ISO_DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/;
-const ISO_DATETIME_PATTERN =
-  /^(\d{4})-(\d{2})-(\d{2})[T\s](\d{2}):(\d{2})(?::\d{2}(?:\.\d{1,6})?)?(?:Z|[+-]\d{2}:\d{2})?$/;
+const DISPLAY_TIME_ZONE = "America/Sao_Paulo";
 
 function formatDateParts(day: string, month: string, year: string): string {
   return `${day}/${month}/${year}`;
 }
 
+// A bare "YYYY-MM-DD" is a calendar date with no instant to convert (e.g. a
+// due date), so it's formatted as literal digits — no timezone involved.
+// Anything with a time component is a real instant (almost always UTC-Z from
+// the API) and must go through Intl with an explicit timeZone, otherwise the
+// UTC digits get shown as if they were already Brasília time.
 export function formatDateDisplay(value?: string): string {
   if (!value) return "";
 
   const dateMatch = value.match(ISO_DATE_PATTERN);
   if (dateMatch) {
     const [, year, month, day] = dateMatch;
-    return formatDateParts(day, month, year);
-  }
-
-  const dateTimeMatch = value.match(ISO_DATETIME_PATTERN);
-  if (dateTimeMatch) {
-    const [, year, month, day] = dateTimeMatch;
     return formatDateParts(day, month, year);
   }
 
@@ -206,17 +204,12 @@ export function formatDateDisplay(value?: string): string {
 
   return new Intl.DateTimeFormat("pt-BR", {
     dateStyle: "short",
+    timeZone: DISPLAY_TIME_ZONE,
   }).format(parsedDate);
 }
 
 export function formatDateTimeDisplay(value?: string): string {
   if (!value) return "";
-
-  const dateTimeMatch = value.match(ISO_DATETIME_PATTERN);
-  if (dateTimeMatch) {
-    const [, year, month, day, hour, minute] = dateTimeMatch;
-    return `${formatDateParts(day, month, year)}, ${hour}:${minute}`;
-  }
 
   const dateMatch = value.match(ISO_DATE_PATTERN);
   if (dateMatch) {
@@ -233,6 +226,7 @@ export function formatDateTimeDisplay(value?: string): string {
   return new Intl.DateTimeFormat("pt-BR", {
     dateStyle: "short",
     timeStyle: "short",
+    timeZone: DISPLAY_TIME_ZONE,
   }).format(parsedDate);
 }
 
