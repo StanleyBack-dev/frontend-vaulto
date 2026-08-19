@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { brand, colors, typography } from "../../config";
-import { ChevronDown, ChevronRight, Crown, LogOut } from "lucide-react";
+import { ChevronDown, ChevronRight, Crown, Gift, LogOut } from "lucide-react";
 import type { ActiveView } from "../../types/views";
 import { logoutCurrentSession, useAuthSession } from "../../features/auth";
 import { useBillingContext } from "../../features/billing";
+import {
+  fetchMyReferralStats,
+  subscribeReferralBalanceEvents,
+} from "../../features/referrals";
 import { authRoutePaths } from "../../router";
+import { formatCurrencyFromCents } from "../../utils/format";
 import {
   isNavigationGroup,
   primaryNavigationLayout,
@@ -96,11 +101,44 @@ export default function Sidebar({
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
   const [isAccountSectionOpen, setIsAccountSectionOpen] = useState(false);
   const [avatarLoadFailed, setAvatarLoadFailed] = useState(false);
+  const [referralBalanceCents, setReferralBalanceCents] = useState<
+    number | null
+  >(null);
   const [openGroupIds, setOpenGroupIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     setAvatarLoadFailed(false);
   }, [session?.user?.urlAvatar]);
+
+  useEffect(() => {
+    if (!session?.user?.idUsers) {
+      setReferralBalanceCents(null);
+      return;
+    }
+
+    let cancelled = false;
+
+    // Silent by design — this is a decorative shortcut, not a data view of
+    // its own, so a failed fetch just hides the balance row instead of
+    // showing an error toast.
+    fetchMyReferralStats()
+      .then((stats) => {
+        if (!cancelled) setReferralBalanceCents(stats.availableBalanceCents);
+      })
+      .catch(() => {
+        if (!cancelled) setReferralBalanceCents(null);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [session?.user?.idUsers]);
+
+  useEffect(() => {
+    return subscribeReferralBalanceEvents((availableBalanceCents) => {
+      setReferralBalanceCents(availableBalanceCents);
+    });
+  }, []);
 
   const visiblePrimaryLayout = primaryNavigationLayout
     .map((entry) => {
@@ -172,61 +210,80 @@ export default function Sidebar({
         style={{ background: colors.brown[800] }}
       >
         <div
-          className="flex items-center justify-between border-b px-5 py-6 lg:px-6 lg:py-8"
+          className="border-b px-5 py-6 lg:px-6 lg:py-8"
           style={{ borderColor: colors.brown[100] }}
         >
-          <button
-            type="button"
-            onClick={() => {
-              onNavigate("profile");
-              onClose?.();
-            }}
-            className="flex min-w-0 items-center gap-3 text-left"
-            aria-label="Ir para o perfil"
-          >
-            {session?.user?.urlAvatar && !avatarLoadFailed ? (
-              <img
-                src={session.user.urlAvatar}
-                alt={session.user.name || brand.name}
-                className="h-10 w-10 shrink-0 rounded-full object-cover"
-                onError={() => setAvatarLoadFailed(true)}
-              />
-            ) : (
-              <div
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
-                style={{
-                  background: `linear-gradient(135deg, ${colors.purple[700]}, ${colors.gold[500]})`,
-                }}
-              >
-                {session?.user?.name?.slice(0, 2).toUpperCase() ||
-                  brand.initials}
+          <div className="flex items-center justify-between">
+            <button
+              type="button"
+              onClick={() => {
+                onNavigate("profile");
+                onClose?.();
+              }}
+              className="flex min-w-0 items-center gap-3 text-left"
+              aria-label="Ir para o perfil"
+            >
+              {session?.user?.urlAvatar && !avatarLoadFailed ? (
+                <img
+                  src={session.user.urlAvatar}
+                  alt={session.user.name || brand.name}
+                  className="h-10 w-10 shrink-0 rounded-full object-cover"
+                  onError={() => setAvatarLoadFailed(true)}
+                />
+              ) : (
+                <div
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
+                  style={{
+                    background: `linear-gradient(135deg, ${colors.purple[700]}, ${colors.gold[500]})`,
+                  }}
+                >
+                  {session?.user?.name?.slice(0, 2).toUpperCase() ||
+                    brand.initials}
+                </div>
+              )}
+              <div className="min-w-0">
+                <h1
+                  className="text-sm font-bold leading-tight tracking-wide text-white"
+                  style={{ fontFamily: typography.fontFamily }}
+                >
+                  {brand.name}
+                </h1>
+                <p
+                  className="truncate text-xs tracking-widest"
+                  style={{
+                    color: colors.gold[500],
+                    fontFamily: typography.fontFamily,
+                  }}
+                >
+                  {session?.user?.name || brand.subtitle.toUpperCase()}
+                </p>
               </div>
-            )}
-            <div className="min-w-0">
-              <h1
-                className="text-sm font-bold leading-tight tracking-wide text-white"
-                style={{ fontFamily: typography.fontFamily }}
-              >
-                {brand.name}
-              </h1>
-              <p
-                className="truncate text-xs tracking-widest"
-                style={{
-                  color: colors.gold[500],
-                  fontFamily: typography.fontFamily,
-                }}
-              >
-                {session?.user?.name || brand.subtitle.toUpperCase()}
-              </p>
-            </div>
-          </button>
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-md px-2 py-1 text-xs font-semibold text-[#c5bbeb] lg:hidden"
-          >
-            Fechar
-          </button>
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-md px-2 py-1 text-xs font-semibold text-[#c5bbeb] lg:hidden"
+            >
+              Fechar
+            </button>
+          </div>
+
+          {referralBalanceCents !== null && (
+            <button
+              type="button"
+              onClick={() => {
+                onNavigate("referrals");
+                onClose?.();
+              }}
+              className="mt-3 flex items-center gap-2 rounded-lg px-2 py-1.5 text-xs font-semibold transition-colors hover:bg-white/5"
+              aria-label="Ver saldo de indicações"
+            >
+              <Gift size={16} style={{ color: colors.gold[500] }} />
+              <span style={{ color: "#c5bbeb" }}>
+                {formatCurrencyFromCents(referralBalanceCents)}
+              </span>
+            </button>
+          )}
         </div>
 
         <nav className="sidebar-scrollbar min-h-0 flex-1 space-y-1 overflow-y-auto px-3 py-5 lg:py-6">

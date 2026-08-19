@@ -370,13 +370,19 @@ const topics: ManualTopic[] = [
           metas). A cobrança do Vaulto Pro acontece assim que você assina, e o
           Pro é ativado na hora após a confirmação do pagamento.
         </p>
+        <p>
+          Quem ainda nunca assinou o Pro paga um valor promocional no{" "}
+          <strong>primeiro mês</strong> na assinatura mensal — o valor cheio
+          passa a valer a partir do segundo mês. Os valores vigentes são sempre
+          exibidos na tela de Planos antes de você confirmar a assinatura.
+        </p>
       </>
     ),
   },
   {
     id: "indique-e-ganhe",
     title: "Indique e Ganhe",
-    description: "Indique amigos e ganhe 1 mês grátis de Vaulto Pro.",
+    description: "Indique amigos e ganhe dinheiro de verdade, via Pix.",
     content: (
       <>
         <p>
@@ -387,10 +393,23 @@ const topics: ManualTopic[] = [
           cancelar antes de pagar não conta.
         </p>
         <p>
-          A cada <strong>3 amigos</strong> que assinarem o Pro dessa forma, você
-          ganha <strong>1 mês grátis</strong> de Vaulto Pro. Se você já é Pro, o
-          mês grátis entra automaticamente quando o seu ciclo atual terminar.
-          Essa recompensa é única — não se acumula além do primeiro mês grátis.
+          A cada indicação confirmada, você ganha um{" "}
+          <strong>crédito em dinheiro</strong> na sua carteira de indicações (o
+          valor vigente é exibido na própria tela). O crédito fica em
+          confirmação por alguns dias antes de virar disponível para saque —
+          isso cobre o prazo legal em que o seu amigo ainda pode pedir reembolso
+          da assinatura dele.
+        </p>
+        <p>
+          Assim que o saldo disponível atingir o valor mínimo de saque (também
+          exibido na tela), você pode solicitar o saque a qualquer momento
+          informando sua chave Pix. O valor é transferido automaticamente, na
+          hora, e você recebe o valor cheio — sem nenhum desconto de taxa.
+        </p>
+        <p>
+          O saldo e o histórico de indicações e saques ficam disponíveis na
+          página <strong>Indique e Ganhe</strong>, tanto no menu lateral quanto
+          em Configurações.
         </p>
       </>
     ),

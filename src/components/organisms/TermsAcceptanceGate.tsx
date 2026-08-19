@@ -22,6 +22,8 @@ export default function TermsAcceptanceGate() {
     return null;
   }
 
+  const isReacceptance = Boolean(session.isTermsReacceptance);
+
   async function handleContinue() {
     setIsSubmitting(true);
 
@@ -64,7 +66,9 @@ export default function TermsAcceptanceGate() {
                 fontFamily: typography.fontFamily,
               }}
             >
-              Termos de Uso e Política de Privacidade
+              {isReacceptance
+                ? "Atualizamos nossos Termos de Uso e Política de Privacidade"
+                : "Termos de Uso e Política de Privacidade"}
             </h2>
             <p
               className="mt-1 text-sm leading-relaxed"
@@ -73,8 +77,9 @@ export default function TermsAcceptanceGate() {
                 fontFamily: typography.fontFamily,
               }}
             >
-              Antes de continuar, leia e confirme que concorda com os termos
-              abaixo. Versão de {LEGAL_CONTENT_VERSION_LABEL}.
+              {isReacceptance
+                ? `Algumas cláusulas foram alteradas desde o seu último aceite. Leia o conteúdo atualizado abaixo e confirme que concorda para continuar usando o Vaulto. Versão de ${LEGAL_CONTENT_VERSION_LABEL}.`
+                : `Antes de continuar, leia e confirme que concorda com os termos abaixo. Versão de ${LEGAL_CONTENT_VERSION_LABEL}.`}
             </p>
           </div>
         </div>
@@ -116,7 +121,11 @@ export default function TermsAcceptanceGate() {
 
         <div className="space-y-4 p-6">
           <Checkbox
-            label="Li e concordo com os Termos de Uso e a Política de Privacidade."
+            label={
+              isReacceptance
+                ? "Li e concordo com os Termos de Uso e a Política de Privacidade atualizados."
+                : "Li e concordo com os Termos de Uso e a Política de Privacidade."
+            }
             checked={agreed}
             onChange={(event) => setAgreed(event.target.checked)}
           />

@@ -1,6 +1,11 @@
 import { HttpError } from "../../shared/http/http-error.js";
 import { executeGraphql } from "../../shared/http/graphql-client.js";
-import { MY_REFERRAL_STATS_QUERY } from "./queries.js";
+import {
+  LOOKUP_REFERRAL_WITHDRAWAL_PIX_KEY_QUERY,
+  MY_REFERRAL_STATS_QUERY,
+  MY_REFERRAL_WITHDRAWALS_QUERY,
+  REQUEST_REFERRAL_WITHDRAWAL_MUTATION,
+} from "./queries.js";
 
 function requireData(value, message) {
   if (!value) {
@@ -18,4 +23,49 @@ export async function getMyReferralStats(authContext, requestId) {
   });
 
   return requireData(data.myReferralStats, "Invalid referral stats response.");
+}
+
+export async function getMyReferralWithdrawals(authContext, requestId) {
+  const data = await executeGraphql({
+    query: MY_REFERRAL_WITHDRAWALS_QUERY,
+    requestId,
+    ...authContext,
+  });
+
+  return requireData(
+    data.myReferralWithdrawals,
+    "Invalid referral withdrawals response.",
+  );
+}
+
+export async function lookupReferralWithdrawalPixKey(
+  input,
+  authContext,
+  requestId,
+) {
+  const data = await executeGraphql({
+    query: LOOKUP_REFERRAL_WITHDRAWAL_PIX_KEY_QUERY,
+    variables: { input },
+    requestId,
+    ...authContext,
+  });
+
+  return requireData(
+    data.lookupReferralWithdrawalPixKey,
+    "Invalid pix key lookup response.",
+  );
+}
+
+export async function requestReferralWithdrawal(input, authContext, requestId) {
+  const data = await executeGraphql({
+    query: REQUEST_REFERRAL_WITHDRAWAL_MUTATION,
+    variables: { input },
+    requestId,
+    ...authContext,
+  });
+
+  return requireData(
+    data.requestReferralWithdrawal,
+    "Invalid withdrawal response.",
+  );
 }

@@ -63,7 +63,7 @@ export function getUserTableColumns(actions: {
       key: "username",
       label: userUiCopy.listing.columns.username,
       render: (user) => (
-        <span className="text-sm text-[#5a4e7a]">{user.username}</span>
+        <span className="text-sm text-[#5a4e7a]">{user.username || "-"}</span>
       ),
     },
     {

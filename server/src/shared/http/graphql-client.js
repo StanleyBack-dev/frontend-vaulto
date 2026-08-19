@@ -190,6 +190,9 @@ export async function executeGraphql({
     const forwardHeaders = {
       ...(userId ? { "x-user-id": userId } : {}),
       ...resolvedAuthHeaders,
+      ...(config.backendProtectionBypassSecret
+        ? { "x-vercel-protection-bypass": config.backendProtectionBypassSecret }
+        : {}),
     };
 
     const response = await postGraphqlWithRetry(

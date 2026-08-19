@@ -12,7 +12,7 @@ export function mapUserToFormValues(user: User): UserFormValues {
   return {
     name: user.name,
     email: user.email,
-    username: user.username,
+    username: user.username || "",
     group: user.group,
     urlAvatar: user.urlAvatar || "",
     status: user.status,
