@@ -29,6 +29,8 @@ export const config = {
   port: toNumber(process.env.BFF_PORT, 5000),
   backendGraphqlUrl:
     process.env.BACKEND_GRAPHQL_URL || "http://localhost:4000/graphql",
+  backendProtectionBypassSecret:
+    process.env.BACKEND_PROTECTION_BYPASS_SECRET || undefined,
   graphqlRequestTimeoutMs: toNumber(process.env.BFF_GRAPHQL_TIMEOUT_MS, 10000),
   graphqlMaxRetries: toNumber(process.env.BFF_GRAPHQL_MAX_RETRIES, 2),
   graphqlRetryBaseDelayMs: toNumber(

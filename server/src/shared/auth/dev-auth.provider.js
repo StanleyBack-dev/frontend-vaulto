@@ -92,6 +92,12 @@ async function loginAndBuildHeaders(username, password) {
     {
       headers: {
         "Content-Type": "application/json",
+        ...(config.backendProtectionBypassSecret
+          ? {
+              "x-vercel-protection-bypass":
+                config.backendProtectionBypassSecret,
+            }
+          : {}),
       },
     },
   );
