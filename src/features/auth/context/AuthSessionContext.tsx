@@ -6,7 +6,10 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { registerAuthRefreshHandler } from "../../../api/shared/http-client";
+import {
+  registerAuthRefreshHandler,
+  setTermsGateOpen,
+} from "../../../api/shared/http-client";
 import type { AuthSessionResponse } from "../../../api/auth/schema";
 import type { PageAccessKey } from "../../../api/users/schema";
 import type { ActiveView } from "../../../types/views";
@@ -161,6 +164,10 @@ export function AuthSessionProvider({ children }: AuthSessionProviderProps) {
   }, [applySessionSilently, clearSession]);
 
   useEffect(() => {}, [pagePermissions]);
+
+  useEffect(() => {
+    setTermsGateOpen(!session || Boolean(session.termsAccepted));
+  }, [session]);
 
   const setSession = useCallback(
     (nextSession: AuthSessionResponse) => {
