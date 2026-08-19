@@ -18,11 +18,14 @@ export const UserSchema = z.object({
   idUsers: z.string(),
   name: z.string(),
   email: z.string(),
-  username: z.string(),
+  // Nullable, not just optional: a user with no auth credentials row (e.g.
+  // a referral-only placeholder that never logs in) genuinely has no
+  // username — the backend sends `null` for it, not just omits the field.
+  username: z.string().nullable().optional(),
   group: UserGroupSchema,
   urlAvatar: z.string().nullable().optional(),
   status: z.boolean(),
-  mustChangePassword: z.boolean().optional(),
+  mustChangePassword: z.boolean().nullable().optional(),
   lastLoginAt: z.string().nullable().optional(),
   failedLoginAttempts: z.number().nullable().optional(),
   lockedUntil: z.string().nullable().optional(),

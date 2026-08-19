@@ -176,17 +176,42 @@ export function formatCurrencyExtended(value: number): string {
 }
 
 const ISO_DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/;
+const NAIVE_DATETIME_PATTERN =
+  /^(\d{4})-(\d{2})-(\d{2})[T\s](\d{2}):(\d{2})(?::\d{2}(?:\.\d{1,6})?)?$/;
 const DISPLAY_TIME_ZONE = "America/Sao_Paulo";
 
 function formatDateParts(day: string, month: string, year: string): string {
   return `${day}/${month}/${year}`;
 }
 
-// A bare "YYYY-MM-DD" is a calendar date with no instant to convert (e.g. a
-// due date), so it's formatted as literal digits — no timezone involved.
-// Anything with a time component is a real instant (almost always UTC-Z from
-// the API) and must go through Intl with an explicit timeZone, otherwise the
-// UTC digits get shown as if they were already Brasília time.
+function hasExplicitOffset(value: string): boolean {
+  return /(?:Z|[+-]\d{2}:\d{2})$/.test(value);
+}
+
+// The API mixes two date-time conventions: most endpoints pre-convert to
+// Brasília wall-clock server-side and send a naive string with no Z/offset
+// (see toLocalNaiveIsoString on the backend) — that string IS the value to
+// show, verbatim, and must never be re-parsed as a Date (the browser would
+// interpret a naive string as ITS OWN local time, not necessarily Brasília).
+// A few endpoints (e.g. referral withdrawals) send a real Date field, which
+// GraphQL serializes as a genuine UTC-Z instant — those need real timeZone
+// conversion. Distinguish by the presence of a trailing Z/offset.
+function formatNaiveDateTimeParts(
+  value: string,
+): {
+  year: string;
+  month: string;
+  day: string;
+  hour: string;
+  minute: string;
+} | null {
+  const match = value.match(NAIVE_DATETIME_PATTERN);
+  if (!match) return null;
+
+  const [, year, month, day, hour, minute] = match;
+  return { year, month, day, hour, minute };
+}
+
 export function formatDateDisplay(value?: string): string {
   if (!value) return "";
 
@@ -194,6 +219,13 @@ export function formatDateDisplay(value?: string): string {
   if (dateMatch) {
     const [, year, month, day] = dateMatch;
     return formatDateParts(day, month, year);
+  }
+
+  if (!hasExplicitOffset(value)) {
+    const naive = formatNaiveDateTimeParts(value);
+    if (naive) {
+      return formatDateParts(naive.day, naive.month, naive.year);
+    }
   }
 
   const parsedDate = new Date(value);
@@ -215,6 +247,13 @@ export function formatDateTimeDisplay(value?: string): string {
   if (dateMatch) {
     const [, year, month, day] = dateMatch;
     return formatDateParts(day, month, year);
+  }
+
+  if (!hasExplicitOffset(value)) {
+    const naive = formatNaiveDateTimeParts(value);
+    if (naive) {
+      return `${formatDateParts(naive.day, naive.month, naive.year)}, ${naive.hour}:${naive.minute}`;
+    }
   }
 
   const parsedDate = new Date(value);
