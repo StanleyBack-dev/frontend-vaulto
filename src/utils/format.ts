@@ -196,9 +196,7 @@ function hasExplicitOffset(value: string): boolean {
 // A few endpoints (e.g. referral withdrawals) send a real Date field, which
 // GraphQL serializes as a genuine UTC-Z instant — those need real timeZone
 // conversion. Distinguish by the presence of a trailing Z/offset.
-function formatNaiveDateTimeParts(
-  value: string,
-): {
+function formatNaiveDateTimeParts(value: string): {
   year: string;
   month: string;
   day: string;
