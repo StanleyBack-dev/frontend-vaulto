@@ -5,7 +5,10 @@ import { ChevronDown, ChevronRight, Crown, Gift, LogOut } from "lucide-react";
 import type { ActiveView } from "../../types/views";
 import { logoutCurrentSession, useAuthSession } from "../../features/auth";
 import { useBillingContext } from "../../features/billing";
-import { fetchMyReferralStats } from "../../features/referrals";
+import {
+  fetchMyReferralStats,
+  subscribeReferralBalanceEvents,
+} from "../../features/referrals";
 import { authRoutePaths } from "../../router";
 import { formatCurrencyFromCents } from "../../utils/format";
 import {
@@ -130,6 +133,12 @@ export default function Sidebar({
       cancelled = true;
     };
   }, [session?.user?.idUsers]);
+
+  useEffect(() => {
+    return subscribeReferralBalanceEvents((availableBalanceCents) => {
+      setReferralBalanceCents(availableBalanceCents);
+    });
+  }, []);
 
   const visiblePrimaryLayout = primaryNavigationLayout
     .map((entry) => {

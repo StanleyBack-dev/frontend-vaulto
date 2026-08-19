@@ -15,6 +15,7 @@ import type {
   ReferralWithdrawalStatus,
 } from "@/api/referrals/schema";
 import {
+  emitReferralBalanceChanged,
   fetchMyReferralStats,
   fetchMyReferralWithdrawals,
   lookupMyReferralWithdrawalPixKey,
@@ -115,6 +116,7 @@ export default function Referrals() {
         const [statsResult, withdrawalsResult] = await loadData();
         setStats(statsResult);
         setWithdrawals(withdrawalsResult);
+        emitReferralBalanceChanged(statsResult.availableBalanceCents);
       } catch (error) {
         showError(
           "Não foi possível sacar",
