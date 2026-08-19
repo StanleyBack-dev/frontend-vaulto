@@ -44,6 +44,46 @@ function isRefreshExemptUrl(url?: string): boolean {
   return REFRESH_EXEMPT_PATHS.some((path) => url.includes(path));
 }
 
+let termsGateOpen = true;
+let termsGateWaiters: Array<() => void> = [];
+
+const TERMS_GATE_EXEMPT_PATHS = [
+  "/auth/session",
+  "/auth/login",
+  "/legal/accept-terms",
+];
+
+export function setTermsGateOpen(open: boolean): void {
+  termsGateOpen = open;
+
+  if (open && termsGateWaiters.length > 0) {
+    const waiters = termsGateWaiters;
+    termsGateWaiters = [];
+    waiters.forEach((resolve) => resolve());
+  }
+}
+
+function isTermsGateExemptUrl(url?: string): boolean {
+  if (!url) return false;
+  return TERMS_GATE_EXEMPT_PATHS.some((path) => url.includes(path));
+}
+
+function waitForTermsGate(): Promise<void> {
+  if (termsGateOpen) return Promise.resolve();
+
+  return new Promise((resolve) => {
+    termsGateWaiters.push(resolve);
+  });
+}
+
+apiHttp.interceptors.request.use(async (config) => {
+  if (!isTermsGateExemptUrl(config.url)) {
+    await waitForTermsGate();
+  }
+
+  return config;
+});
+
 apiHttp.interceptors.response.use(
   (response) => response,
   async (error: unknown) => {
