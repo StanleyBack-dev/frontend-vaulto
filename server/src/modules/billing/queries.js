@@ -35,6 +35,12 @@ export const CANCEL_SUBSCRIPTION_MUTATION = `
   }
 `;
 
+export const TRACK_PRO_LEAD_CLICK_MUTATION = `
+  mutation TrackProLeadClick {
+    trackProLeadClick
+  }
+`;
+
 export const MY_BILLING_PAYMENTS_QUERY = `
   query MyBillingPayments($input: ListBillingPaymentsInputDto) {
     myBillingPayments(input: $input) {

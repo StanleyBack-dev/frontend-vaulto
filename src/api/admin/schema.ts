@@ -1,5 +1,10 @@
 import { z } from "zod";
-import { SubscriptionStatusSchema } from "../billing/schema";
+import {
+  SubscriptionBillingCycleSchema,
+  SubscriptionPlanSchema,
+  SubscriptionStatusSchema,
+} from "../billing/schema";
+import type { ListQueryParams, PaginatedResponse } from "../shared/contracts";
 import { UserGroupSchema } from "../users/schema";
 
 export const UsersByGroupCountSchema = z.object({
@@ -66,3 +71,39 @@ export interface AdminReferralTrendQueryParams {
   dateFrom: string;
   dateTo: string;
 }
+
+export const AdminProLeadEventTypeSchema = z.enum([
+  "PLAN_CLICKED",
+  "CHECKOUT_REACHED",
+]);
+
+export const AdminProLeadStatsSchema = z.object({
+  totalPlanClicks: z.number(),
+  totalCheckoutReached: z.number(),
+  uniqueUsersClicked: z.number(),
+  uniqueUsersReachedCheckout: z.number(),
+  convertedToProCount: z.number(),
+});
+
+export const AdminProLeadRowSchema = z.object({
+  idProLeadEvent: z.string(),
+  idUsers: z.string(),
+  name: z.string(),
+  email: z.string(),
+  eventType: AdminProLeadEventTypeSchema,
+  billingCycle: SubscriptionBillingCycleSchema.nullable().optional(),
+  checkoutUrl: z.string().nullable().optional(),
+  createdAt: z.string(),
+  currentPlan: SubscriptionPlanSchema,
+  currentSubscriptionStatus: SubscriptionStatusSchema.nullable().optional(),
+});
+
+export type AdminProLeadEventType = z.infer<typeof AdminProLeadEventTypeSchema>;
+export type AdminProLeadStats = z.infer<typeof AdminProLeadStatsSchema>;
+export type AdminProLeadRow = z.infer<typeof AdminProLeadRowSchema>;
+
+export interface AdminProLeadsQueryParams extends ListQueryParams {
+  eventType?: AdminProLeadEventType;
+}
+
+export type AdminProLeadsResponse = PaginatedResponse<AdminProLeadRow>;

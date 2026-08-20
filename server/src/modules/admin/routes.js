@@ -4,6 +4,8 @@ import { buildErrorResponse } from "../../shared/http/error-response.js";
 import { buildListInput } from "../../shared/http/parse-pagination.js";
 import {
   getAdminDashboardStats,
+  getAdminProLeadStats,
+  getAdminProLeads,
   getAdminReferralLeaderboard,
   getAdminReferralStats,
   getAdminReferralTrend,
@@ -57,6 +59,32 @@ router.get("/referrals/trend", async (req, res) => {
 router.get("/referrals/leaderboard", async (req, res) => {
   try {
     const result = await getAdminReferralLeaderboard(
+      getAuthContext(req),
+      req.requestId,
+    );
+    res.json(result);
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
+router.get("/pro-leads/stats", async (req, res) => {
+  try {
+    const result = await getAdminProLeadStats(
+      getAuthContext(req),
+      req.requestId,
+    );
+    res.json(result);
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
+router.get("/pro-leads", async (req, res) => {
+  try {
+    const input = buildListInput(req.query, ["eventType"]);
+    const result = await getAdminProLeads(
+      input,
       getAuthContext(req),
       req.requestId,
     );

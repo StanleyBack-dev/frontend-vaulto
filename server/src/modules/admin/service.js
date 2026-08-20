@@ -2,6 +2,8 @@ import { HttpError } from "../../shared/http/http-error.js";
 import { executeGraphql } from "../../shared/http/graphql-client.js";
 import {
   ADMIN_DASHBOARD_STATS_QUERY,
+  ADMIN_PRO_LEAD_STATS_QUERY,
+  ADMIN_PRO_LEADS_QUERY,
   ADMIN_REFERRAL_LEADERBOARD_QUERY,
   ADMIN_REFERRAL_STATS_QUERY,
   ADMIN_REFERRAL_TREND_QUERY,
@@ -66,4 +68,28 @@ export async function getAdminReferralLeaderboard(authContext, requestId) {
     data.adminReferralLeaderboard,
     "Invalid admin referral leaderboard response.",
   );
+}
+
+export async function getAdminProLeadStats(authContext, requestId) {
+  const data = await executeGraphql({
+    query: ADMIN_PRO_LEAD_STATS_QUERY,
+    requestId,
+    ...authContext,
+  });
+
+  return requireData(
+    data.adminProLeadStats,
+    "Invalid admin pro lead stats response.",
+  );
+}
+
+export async function getAdminProLeads(input, authContext, requestId) {
+  const data = await executeGraphql({
+    query: ADMIN_PRO_LEADS_QUERY,
+    variables: { input },
+    requestId,
+    ...authContext,
+  });
+
+  return requireData(data.adminProLeads, "Invalid admin pro leads response.");
 }

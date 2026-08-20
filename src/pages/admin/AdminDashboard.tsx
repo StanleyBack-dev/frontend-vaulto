@@ -4,22 +4,25 @@ import {
   Gift,
   Headset,
   LayoutDashboard,
+  MousePointerClick,
   Users as UsersIcon,
 } from "lucide-react";
 import SectionCard from "@/components/organisms/SectionCard";
 import { UsersProvider } from "@/features/users";
 import Users from "@/pages/users/Users";
 import { colors, typography } from "@/config";
+import AdminLeadsTab from "./AdminLeadsTab";
 import AdminOverviewTab from "./AdminOverviewTab";
 import AdminReferralsTab from "./AdminReferralsTab";
 import AdminSupportTicketsTab from "./AdminSupportTicketsTab";
 
-type AdminTab = "overview" | "users" | "referrals" | "tickets";
+type AdminTab = "overview" | "users" | "referrals" | "leads" | "tickets";
 
 const TABS: Array<{ id: AdminTab; label: string; icon: React.ReactNode }> = [
   { id: "overview", label: "Visão Geral", icon: <LayoutDashboard size={16} /> },
   { id: "users", label: "Usuários", icon: <UsersIcon size={16} /> },
   { id: "referrals", label: "Indicações", icon: <Gift size={16} /> },
+  { id: "leads", label: "Leads", icon: <MousePointerClick size={16} /> },
   { id: "tickets", label: "Chamados de Suporte", icon: <Headset size={16} /> },
 ];
 
@@ -28,6 +31,7 @@ function isAdminTab(value: unknown): value is AdminTab {
     value === "overview" ||
     value === "users" ||
     value === "referrals" ||
+    value === "leads" ||
     value === "tickets"
   );
 }
@@ -76,6 +80,7 @@ export default function AdminDashboard() {
             </UsersProvider>
           )}
           {activeTab === "referrals" && <AdminReferralsTab />}
+          {activeTab === "leads" && <AdminLeadsTab />}
           {activeTab === "tickets" && <AdminSupportTicketsTab />}
         </div>
       </SectionCard>

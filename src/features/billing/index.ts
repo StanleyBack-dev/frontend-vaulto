@@ -4,6 +4,7 @@ export {
   fetchMyBillingPayments,
   requestCancelSubscription,
   requestSubscribeToPro,
+  trackProLeadClick,
 } from "./services/billing.service";
 export {
   buildPlanLimitMessage,
