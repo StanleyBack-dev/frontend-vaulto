@@ -24,4 +24,5 @@ export const manualTopicByView: Partial<Record<ActiveView, string>> = {
   support: "suporte",
   termsOfUse: "termos-de-uso",
   referrals: "indique-e-ganhe",
+  referralWallet: "indique-e-ganhe",
 };

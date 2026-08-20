@@ -44,6 +44,16 @@ export const PixKeyLookupSchema = z.object({
   ownerDocument: z.string(),
 });
 
+export const ReferredUserSchema = z.object({
+  name: z.string(),
+  email: z.string(),
+  qualifiedAt: z.string().nullable().optional(),
+});
+
+export const SendReferralInvitePayloadSchema = z.object({
+  email: z.string().min(1, "Informe um email.").email("Email inválido."),
+});
+
 export type PixKeyType = z.infer<typeof PixKeyTypeSchema>;
 export type ReferralWithdrawalStatus = z.infer<
   typeof ReferralWithdrawalStatusSchema
@@ -54,3 +64,7 @@ export type RequestReferralWithdrawalPayload = z.infer<
   typeof RequestReferralWithdrawalPayloadSchema
 >;
 export type PixKeyLookup = z.infer<typeof PixKeyLookupSchema>;
+export type ReferredUser = z.infer<typeof ReferredUserSchema>;
+export type SendReferralInvitePayload = z.infer<
+  typeof SendReferralInvitePayloadSchema
+>;

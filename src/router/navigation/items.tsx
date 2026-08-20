@@ -83,6 +83,7 @@ export const primaryNavigationLayout: PrimaryNavigationEntry[] = [
   },
   { id: "debtsStatement", label: "Extratos", icon: <Receipt size={20} /> },
   { id: "categories", label: "Categorias", icon: <Tags size={20} /> },
+  { id: "referrals", label: "Indique e Ganhe", icon: <Gift size={20} /> },
   {
     id: "charts",
     label: "Gráficos",
@@ -132,7 +133,6 @@ export const primaryNavigationLayout: PrimaryNavigationEntry[] = [
     icon: <HeartPulse size={20} />,
     proOnly: true,
   },
-  { id: "referrals", label: "Indique e Ganhe", icon: <Gift size={20} /> },
 ];
 
 // Flat view of every primary destination, regardless of grouping — used

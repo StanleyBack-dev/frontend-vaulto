@@ -4,7 +4,9 @@ import {
   LOOKUP_REFERRAL_WITHDRAWAL_PIX_KEY_QUERY,
   MY_REFERRAL_STATS_QUERY,
   MY_REFERRAL_WITHDRAWALS_QUERY,
+  MY_REFERRALS_QUERY,
   REQUEST_REFERRAL_WITHDRAWAL_MUTATION,
+  SEND_REFERRAL_INVITE_MUTATION,
 } from "./queries.js";
 
 function requireData(value, message) {
@@ -68,4 +70,25 @@ export async function requestReferralWithdrawal(input, authContext, requestId) {
     data.requestReferralWithdrawal,
     "Invalid withdrawal response.",
   );
+}
+
+export async function getMyReferrals(authContext, requestId) {
+  const data = await executeGraphql({
+    query: MY_REFERRALS_QUERY,
+    requestId,
+    ...authContext,
+  });
+
+  return requireData(data.myReferrals, "Invalid referrals response.");
+}
+
+export async function sendReferralInvite(input, authContext, requestId) {
+  const data = await executeGraphql({
+    query: SEND_REFERRAL_INVITE_MUTATION,
+    variables: { input },
+    requestId,
+    ...authContext,
+  });
+
+  return Boolean(data.sendReferralInvite);
 }
