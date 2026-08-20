@@ -26,3 +26,43 @@ export const AdminDashboardStatsSchema = z.object({
 });
 
 export type AdminDashboardStats = z.infer<typeof AdminDashboardStatsSchema>;
+
+export const AdminReferralStatsSchema = z.object({
+  totalReferredUsers: z.number(),
+  totalQualifiedReferrals: z.number(),
+  creditAmountCents: z.number(),
+  totalCreditsGrantedCents: z.number(),
+  totalClawedBackCents: z.number(),
+  totalWithdrawnCents: z.number(),
+  totalPendingWithdrawalCents: z.number(),
+  totalFailedWithdrawalCents: z.number(),
+  totalOutstandingLiabilityCents: z.number(),
+});
+
+export const AdminReferralMonthlyPointSchema = z.object({
+  month: z.string(),
+  qualifiedReferrals: z.number(),
+  creditsGrantedCents: z.number(),
+});
+
+export const AdminReferralLeaderboardRowSchema = z.object({
+  idUsers: z.string(),
+  name: z.string(),
+  email: z.string(),
+  qualifiedReferralsCount: z.number(),
+  totalCreditsGrantedCents: z.number(),
+  availableBalanceCents: z.number(),
+});
+
+export type AdminReferralStats = z.infer<typeof AdminReferralStatsSchema>;
+export type AdminReferralMonthlyPoint = z.infer<
+  typeof AdminReferralMonthlyPointSchema
+>;
+export type AdminReferralLeaderboardRow = z.infer<
+  typeof AdminReferralLeaderboardRowSchema
+>;
+
+export interface AdminReferralTrendQueryParams {
+  dateFrom: string;
+  dateTo: string;
+}
