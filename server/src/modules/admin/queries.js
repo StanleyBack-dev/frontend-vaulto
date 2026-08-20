@@ -59,3 +59,39 @@ export const ADMIN_REFERRAL_LEADERBOARD_QUERY = `
     }
   }
 `;
+
+export const ADMIN_PRO_LEAD_STATS_QUERY = `
+  query AdminProLeadStats {
+    adminProLeadStats {
+      totalPlanClicks
+      totalCheckoutReached
+      uniqueUsersClicked
+      uniqueUsersReachedCheckout
+      convertedToProCount
+    }
+  }
+`;
+
+export const ADMIN_PRO_LEADS_QUERY = `
+  query AdminProLeads($input: AdminProLeadsInputDto) {
+    adminProLeads(input: $input) {
+      items {
+        idProLeadEvent
+        idUsers
+        name
+        email
+        eventType
+        billingCycle
+        checkoutUrl
+        createdAt
+        currentPlan
+        currentSubscriptionStatus
+      }
+      total
+      currentPage
+      limit
+      totalPages
+      hasNextPage
+    }
+  }
+`;
