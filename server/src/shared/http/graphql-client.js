@@ -276,6 +276,7 @@ export async function executeGraphql({
     }
 
     if (axios.isAxiosError(error)) {
+      const isNetworkFailure = !error.response;
       const status = error.response?.status ?? 502;
       const metadata = extractGraphqlError(
         error.response?.data,
@@ -283,6 +284,7 @@ export async function executeGraphql({
       );
       const statusCode = metadata.statusCode ?? status;
       const upstreamMessage = metadata.message;
+      const code = isNetworkFailure ? "BACKEND_UNREACHABLE" : metadata.code;
 
       logEvent("error", "graphql.request.error", {
         requestId,
@@ -294,7 +296,7 @@ export async function executeGraphql({
       });
 
       throw new HttpError(statusCode, upstreamMessage, {
-        code: metadata.code,
+        code,
         details: metadata.details,
       });
     }
