@@ -62,6 +62,7 @@ const Profile = lazy(() => import("../../pages/Profile"));
 const Settings = lazy(() => import("../../pages/Settings"));
 const Plans = lazy(() => import("../../pages/Plans"));
 const Referrals = lazy(() => import("../../pages/Referrals"));
+const ReferralWallet = lazy(() => import("../../pages/ReferralWallet"));
 const Forecast = lazy(() => import("../../pages/Forecast"));
 const CalendarPage = lazy(() => import("../../pages/Calendar"));
 const Reminders = lazy(() => import("../../pages/Reminders"));
@@ -307,6 +308,12 @@ export function AppShellRoutes({ userId }: AppShellRoutesProps) {
       <Route
         path={referralsRoutePaths.list}
         element={withPageSuspense(<Referrals />)}
+      />
+      {/* Carteira de indicações - saldo, saque via Pix e histórico, separado
+          da página de indicações pra não sobrecarregá-la */}
+      <Route
+        path={referralsRoutePaths.wallet}
+        element={withPageSuspense(<ReferralWallet />)}
       />
       {/* Previsão financeira - "quanto posso gastar" (recurso Pro) */}
       <Route

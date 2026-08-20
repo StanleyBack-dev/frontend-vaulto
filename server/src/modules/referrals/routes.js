@@ -4,8 +4,10 @@ import { buildErrorResponse } from "../../shared/http/error-response.js";
 import {
   getMyReferralStats,
   getMyReferralWithdrawals,
+  getMyReferrals,
   lookupReferralWithdrawalPixKey,
   requestReferralWithdrawal,
+  sendReferralInvite,
 } from "./service.js";
 
 const router = Router();
@@ -14,6 +16,28 @@ function sendError(res, error) {
   const { statusCode, body } = buildErrorResponse(error);
   res.status(statusCode).json(body);
 }
+
+router.get("/", async (req, res) => {
+  try {
+    const referrals = await getMyReferrals(getAuthContext(req), req.requestId);
+    res.json(referrals);
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
+router.post("/invite", async (req, res) => {
+  try {
+    const sent = await sendReferralInvite(
+      req.body,
+      getAuthContext(req),
+      req.requestId,
+    );
+    res.status(201).json({ sent });
+  } catch (error) {
+    sendError(res, error);
+  }
+});
 
 router.get("/stats", async (req, res) => {
   try {

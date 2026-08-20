@@ -25,6 +25,7 @@ export const routePaths: Record<ActiveView, string> = {
   faq: "/manual",
   support: "/suporte",
   termsOfUse: "/termos-e-privacidade",
+  referralWallet: "/indique-e-ganhe/carteira",
 };
 
 export const dashboardRoutePaths = {
@@ -153,6 +154,7 @@ export const utilityRoutePaths = {
 
 export const referralsRoutePaths = {
   list: "/indique-e-ganhe",
+  wallet: "/indique-e-ganhe/carteira",
 };
 
 export const settingsRoutePaths = {

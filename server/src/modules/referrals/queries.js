@@ -45,3 +45,19 @@ export const REQUEST_REFERRAL_WITHDRAWAL_MUTATION = `
     }
   }
 `;
+
+export const MY_REFERRALS_QUERY = `
+  query MyReferrals {
+    myReferrals {
+      name
+      email
+      qualifiedAt
+    }
+  }
+`;
+
+export const SEND_REFERRAL_INVITE_MUTATION = `
+  mutation SendReferralInvite($input: SendReferralInviteInputDto!) {
+    sendReferralInvite(input: $input)
+  }
+`;
