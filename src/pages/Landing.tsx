@@ -201,7 +201,8 @@ const faqs = [
       "Sim. Você acessa com senha ou sua conta Google, e as informações ficam organizadas em um painel pessoal, visível só para você.",
   },
   {
-    question: "O Vaulto substitui meu banco ou acessa minha conta automaticamente?",
+    question:
+      "O Vaulto substitui meu banco ou acessa minha conta automaticamente?",
     answer:
       "Não. O Vaulto não é uma instituição financeira e não realiza transações bancárias. É uma ferramenta de organização: você cadastra os dados e o painel cuida de mostrar tudo de forma clara.",
   },
@@ -415,7 +416,12 @@ export default function Landing() {
                 Entrar no Vaulto
               </Button>
               <a href="#funcionalidades">
-                <Button type="button" variant="outline" size="lg" className="w-full">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="lg"
+                  className="w-full"
+                >
                   Ver funcionalidades
                 </Button>
               </a>
@@ -561,7 +567,10 @@ export default function Landing() {
                     <li key={item} className="flex items-start gap-3">
                       <span
                         className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full"
-                        style={{ background: "rgba(229,62,62,0.16)", color: "#e53e3e" }}
+                        style={{
+                          background: "rgba(229,62,62,0.16)",
+                          color: "#e53e3e",
+                        }}
                       >
                         <X size={12} />
                       </span>
@@ -594,7 +603,10 @@ export default function Landing() {
                     <li key={item} className="flex items-start gap-3">
                       <span
                         className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full"
-                        style={{ background: "rgba(212,175,55,0.18)", color: colors.gold[500] }}
+                        style={{
+                          background: "rgba(212,175,55,0.18)",
+                          color: colors.gold[500],
+                        }}
                       >
                         <Check size={12} />
                       </span>
@@ -625,8 +637,8 @@ export default function Landing() {
               As dores do dia a dia financeiro, resolvidas
             </h2>
             <p className="mt-4 text-base" style={{ color: colors.brown[300] }}>
-              Cada funcionalidade do Vaulto nasceu de um problema real de
-              quem tenta organizar as próprias finanças sozinho.
+              Cada funcionalidade do Vaulto nasceu de um problema real de quem
+              tenta organizar as próprias finanças sozinho.
             </p>
           </Reveal>
 
@@ -723,7 +735,10 @@ export default function Landing() {
           </div>
         </section>
 
-        <section id="funcionalidades" className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+        <section
+          id="funcionalidades"
+          className="mx-auto max-w-6xl px-4 py-20 sm:px-6"
+        >
           <Reveal className="mx-auto max-w-2xl text-center">
             <SectionLabel>Funcionalidades</SectionLabel>
             <h2
@@ -899,10 +914,7 @@ export default function Landing() {
         </section>
       </main>
 
-      <footer
-        className="border-t"
-        style={{ borderColor: colors.brown[100] }}
-      >
+      <footer className="border-t" style={{ borderColor: colors.brown[100] }}>
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-4 py-10 text-center sm:px-6">
           <div className="flex items-center gap-2 select-none">
             <img
@@ -934,7 +946,8 @@ export default function Landing() {
             : "pointer-events-none translate-y-3 opacity-0"
         }`}
         style={{
-          background: "linear-gradient(to top right, #4F2D9B, #7B3FF2, #D4AF37)",
+          background:
+            "linear-gradient(to top right, #4F2D9B, #7B3FF2, #D4AF37)",
           color: colors.white,
         }}
       >
