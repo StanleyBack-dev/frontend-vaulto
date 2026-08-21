@@ -15,8 +15,16 @@ interface AxiosLikeError {
   };
 }
 
+// Without an explicit timeout, axios waits indefinitely — a slow or hung
+// backend leaves the user staring at a spinner forever instead of seeing a
+// clear error. 20s comfortably covers the BFF's own 10s upstream GraphQL
+// timeout plus request/response overhead, while still failing well short of
+// "indefinite".
+const REQUEST_TIMEOUT_MS = 20000;
+
 export const apiHttp = axios.create({
   baseURL: "/api",
+  timeout: REQUEST_TIMEOUT_MS,
   headers: {
     "Content-Type": "application/json",
   },
@@ -130,10 +138,17 @@ apiHttp.interceptors.response.use(
   },
 );
 
+const TIMEOUT_MESSAGE =
+  "A operação demorou mais do que o esperado para responder. Tente novamente em instantes.";
+
 export function getApiErrorMessage(error: unknown, fallback: string): string {
-  const axiosError = error as AxiosLikeError;
+  const axiosError = error as AxiosLikeError & { code?: string };
 
   if (axiosError?.isAxiosError) {
+    if (axiosError.code === "ECONNABORTED") {
+      return TIMEOUT_MESSAGE;
+    }
+
     return (
       axiosError.response?.data?.message ||
       axiosError.response?.data?.error ||
