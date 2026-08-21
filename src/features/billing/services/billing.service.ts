@@ -2,6 +2,7 @@ import { cancelSubscription } from "../../../api/billing/methods/cancelSubscript
 import { getMyBillingPayments } from "../../../api/billing/methods/getMyBillingPayments";
 import { getMySubscription } from "../../../api/billing/methods/getMySubscription";
 import { subscribeToPro } from "../../../api/billing/methods/subscribeToPro";
+import { trackProLeadClick as trackProLeadClickRequest } from "../../../api/billing/methods/trackProLeadClick";
 import {
   BillingPaymentsResponseSchema,
   SubscribeToProResponseSchema,
@@ -49,6 +50,12 @@ export async function requestCancelSubscription(
   }
 
   return parsed.data;
+}
+
+// Fire-and-forget: a lead-tracking failure should never surface to the
+// user or block the "Assinar Vaulto Pro" click it's attached to.
+export function trackProLeadClick(): void {
+  void trackProLeadClickRequest().catch(() => {});
 }
 
 export async function fetchMyBillingPayments(

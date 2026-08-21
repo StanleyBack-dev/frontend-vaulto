@@ -13,6 +13,7 @@ import {
   PRO_PLAN_FIRST_MONTH_PRICE,
   PRO_PLAN_MONTHLY_EQUIVALENT_WHEN_YEARLY,
   PRO_PLAN_PRICES,
+  trackProLeadClick,
   useBillingContext,
 } from "@/features/billing";
 import { settingsRoutePaths } from "@/router/navigation";
@@ -137,7 +138,10 @@ export default function Plans() {
                   type="button"
                   variant="primary"
                   className="w-full"
-                  onClick={() => setIsModalOpen(true)}
+                  onClick={() => {
+                    trackProLeadClick();
+                    setIsModalOpen(true);
+                  }}
                 >
                   Assinar Vaulto Pro
                 </Button>

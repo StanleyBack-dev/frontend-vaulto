@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { brand, colors, typography } from "../../config";
-import { ChevronDown, ChevronRight, Crown, Gift, LogOut } from "lucide-react";
+import { ChevronDown, ChevronRight, Crown, LogOut, Wallet } from "lucide-react";
 import type { ActiveView } from "../../types/views";
 import { logoutCurrentSession, useAuthSession } from "../../features/auth";
 import { useBillingContext } from "../../features/billing";
@@ -272,13 +272,14 @@ export default function Sidebar({
             <button
               type="button"
               onClick={() => {
-                onNavigate("referrals");
+                onNavigate("referralWallet");
                 onClose?.();
               }}
               className="mt-3 flex items-center gap-2 rounded-lg px-2 py-1.5 text-xs font-semibold transition-colors hover:bg-white/5"
-              aria-label="Ver saldo de indicações"
+              aria-label="Ver carteira de indicações"
             >
-              <Gift size={16} style={{ color: colors.gold[500] }} />
+              <Wallet size={16} style={{ color: colors.gold[500] }} />
+              <span style={{ color: "#9c91c9" }}>Carteira</span>
               <span style={{ color: "#c5bbeb" }}>
                 {formatCurrencyFromCents(referralBalanceCents)}
               </span>

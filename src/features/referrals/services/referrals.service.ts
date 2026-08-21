@@ -1,15 +1,20 @@
+import { getMyReferrals } from "@/api/referrals/methods/get-referrals";
 import { getMyReferralStats } from "@/api/referrals/methods/get-stats";
 import { getMyReferralWithdrawals } from "@/api/referrals/methods/get-withdrawals";
 import { lookupReferralWithdrawalPixKey } from "@/api/referrals/methods/lookup-pix-key";
 import { requestReferralWithdrawal } from "@/api/referrals/methods/request-withdrawal";
+import { sendReferralInvite } from "@/api/referrals/methods/send-invite";
 import {
   PixKeyLookupSchema,
   ReferralStatsSchema,
   ReferralWithdrawalSchema,
+  ReferredUserSchema,
   type PixKeyLookup,
   type ReferralStats,
   type ReferralWithdrawal,
+  type ReferredUser,
   type RequestReferralWithdrawalPayload,
+  type SendReferralInvitePayload,
 } from "@/api/referrals/schema";
 
 export async function fetchMyReferralStats(): Promise<ReferralStats> {
@@ -60,4 +65,21 @@ export async function requestMyReferralWithdrawal(
   }
 
   return parsed.data;
+}
+
+export async function fetchMyReferrals(): Promise<ReferredUser[]> {
+  const response = await getMyReferrals();
+  const parsed = ReferredUserSchema.array().safeParse(response);
+
+  if (!parsed.success) {
+    throw new Error("Não foi possível interpretar a lista de indicações.");
+  }
+
+  return parsed.data;
+}
+
+export async function sendMyReferralInvite(
+  payload: SendReferralInvitePayload,
+): Promise<void> {
+  await sendReferralInvite(payload);
 }

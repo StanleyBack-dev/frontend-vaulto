@@ -22,4 +22,5 @@ export type ActiveView =
   | "faq"
   | "support"
   | "termsOfUse"
-  | "referrals";
+  | "referrals"
+  | "referralWallet";

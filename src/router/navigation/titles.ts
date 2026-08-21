@@ -90,4 +90,8 @@ export const viewTitles: Record<
     title: "Indique e Ganhe",
     subtitle: "Indique amigos e ganhe 1 mês grátis de Vaulto Pro",
   },
+  referralWallet: {
+    title: "Carteira de Indicações",
+    subtitle: "Saldo, saque via Pix e histórico de saques",
+  },
 };

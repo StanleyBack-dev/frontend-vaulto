@@ -90,6 +90,10 @@ export function getActiveView(pathname: string): ActiveView {
     return "plans";
   }
 
+  if (pathname.startsWith(referralsRoutePaths.wallet)) {
+    return "referralWallet";
+  }
+
   if (pathname.startsWith(referralsRoutePaths.list)) {
     return "referrals";
   }
@@ -157,6 +161,8 @@ export function getPathForView(view: ActiveView) {
       return planRoutePaths.list;
     case "referrals":
       return referralsRoutePaths.list;
+    case "referralWallet":
+      return referralsRoutePaths.wallet;
     case "forecast":
       return forecastRoutePaths.list;
     case "calendar":

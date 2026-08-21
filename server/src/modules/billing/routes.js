@@ -7,6 +7,7 @@ import {
   getMyBillingPayments,
   getMySubscription,
   subscribeToPro,
+  trackProLeadClick,
 } from "./service.js";
 
 const router = Router();
@@ -35,6 +36,15 @@ router.post("/subscribe", async (req, res) => {
       getAuthContext(req),
       req.requestId,
     );
+    res.json(result);
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
+router.post("/track-lead-click", async (req, res) => {
+  try {
+    const result = await trackProLeadClick(getAuthContext(req), req.requestId);
     res.json(result);
   } catch (error) {
     sendError(res, error);

@@ -1,4 +1,5 @@
 import axios, { type InternalAxiosRequestConfig } from "axios";
+import { setSystemDown } from "../../shared/system-status/system-status-events";
 
 interface ApiErrorPayload {
   message?: string;
@@ -85,13 +86,21 @@ apiHttp.interceptors.request.use(async (config) => {
 });
 
 apiHttp.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    setSystemDown(false);
+    return response;
+  },
   async (error: unknown) => {
     const axiosError = error as {
-      response?: { status?: number };
+      response?: { status?: number; data?: ApiErrorPayload };
       config?: RetryableRequestConfig;
     };
     const originalRequest = axiosError.config;
+
+    const isBackendUnreachable =
+      !axiosError.response ||
+      axiosError.response.data?.code === "BACKEND_UNREACHABLE";
+    setSystemDown(isBackendUnreachable);
 
     if (
       axiosError.response?.status !== 401 ||

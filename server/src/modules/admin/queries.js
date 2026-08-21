@@ -20,3 +20,78 @@ export const ADMIN_DASHBOARD_STATS_QUERY = `
     }
   }
 `;
+
+export const ADMIN_REFERRAL_STATS_QUERY = `
+  query AdminReferralStats {
+    adminReferralStats {
+      totalReferredUsers
+      totalQualifiedReferrals
+      creditAmountCents
+      totalCreditsGrantedCents
+      totalClawedBackCents
+      totalWithdrawnCents
+      totalPendingWithdrawalCents
+      totalFailedWithdrawalCents
+      totalOutstandingLiabilityCents
+    }
+  }
+`;
+
+export const ADMIN_REFERRAL_TREND_QUERY = `
+  query AdminReferralTrend($input: AdminReferralTrendInputDto!) {
+    adminReferralTrend(input: $input) {
+      month
+      qualifiedReferrals
+      creditsGrantedCents
+    }
+  }
+`;
+
+export const ADMIN_REFERRAL_LEADERBOARD_QUERY = `
+  query AdminReferralLeaderboard {
+    adminReferralLeaderboard {
+      idUsers
+      name
+      email
+      qualifiedReferralsCount
+      totalCreditsGrantedCents
+      availableBalanceCents
+    }
+  }
+`;
+
+export const ADMIN_PRO_LEAD_STATS_QUERY = `
+  query AdminProLeadStats {
+    adminProLeadStats {
+      totalPlanClicks
+      totalCheckoutReached
+      uniqueUsersClicked
+      uniqueUsersReachedCheckout
+      convertedToProCount
+    }
+  }
+`;
+
+export const ADMIN_PRO_LEADS_QUERY = `
+  query AdminProLeads($input: AdminProLeadsInputDto) {
+    adminProLeads(input: $input) {
+      items {
+        idProLeadEvent
+        idUsers
+        name
+        email
+        eventType
+        billingCycle
+        checkoutUrl
+        createdAt
+        currentPlan
+        currentSubscriptionStatus
+      }
+      total
+      currentPage
+      limit
+      totalPages
+      hasNextPage
+    }
+  }
+`;

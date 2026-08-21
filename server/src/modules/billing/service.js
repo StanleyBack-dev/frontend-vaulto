@@ -5,6 +5,7 @@ import {
   MY_BILLING_PAYMENTS_QUERY,
   MY_SUBSCRIPTION_QUERY,
   SUBSCRIBE_TO_PRO_MUTATION,
+  TRACK_PRO_LEAD_CLICK_MUTATION,
 } from "./queries.js";
 
 function requireData(value, message) {
@@ -45,6 +46,16 @@ export async function cancelSubscription(input, authContext, requestId) {
   });
 
   return requireData(data.cancelSubscription, "Invalid cancel response.");
+}
+
+export async function trackProLeadClick(authContext, requestId) {
+  await executeGraphql({
+    query: TRACK_PRO_LEAD_CLICK_MUTATION,
+    requestId,
+    ...authContext,
+  });
+
+  return { success: true };
 }
 
 export async function getMyBillingPayments(input, authContext, requestId) {
