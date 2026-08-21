@@ -96,7 +96,8 @@ export const creditCardRoutePaths = {
 };
 
 export const authRoutePaths = {
-  login: "/",
+  landing: "/",
+  login: "/login",
   firstAccessChangePassword: "/primeiro-acesso/alterar-senha",
   passwordRecovery: "/recuperar-senha",
   passwordRecoveryReset: "/recuperar-senha/nova-senha",
