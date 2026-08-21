@@ -273,7 +273,7 @@ function Reveal({
 
 export default function Landing() {
   const navigate = useNavigate();
-  const { isAuthenticated, isInitializing } = useAuthSession();
+  const { isAuthenticated } = useAuthSession();
   const [showBackToTop, setShowBackToTop] = useState(false);
 
   useEffect(() => {
@@ -287,11 +287,6 @@ export default function Landing() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  useEffect(() => {
-    if (isInitializing || !isAuthenticated) return;
-    navigate(routePaths.dashboard, { replace: true });
-  }, [isAuthenticated, isInitializing, navigate]);
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -315,9 +310,12 @@ export default function Landing() {
     };
   }, []);
 
-  function goToLogin() {
-    navigate(authRoutePaths.login);
+  function goToApp() {
+    navigate(isAuthenticated ? routePaths.dashboard : authRoutePaths.login);
   }
+
+  const ctaLabel = isAuthenticated ? "Ir para o Dashboard" : "Entrar no Vaulto";
+  const headerCtaLabel = isAuthenticated ? "Dashboard" : "Entrar";
 
   function scrollToTop() {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -371,8 +369,8 @@ export default function Landing() {
             </a>
           </nav>
 
-          <Button type="button" variant="outline" size="sm" onClick={goToLogin}>
-            Entrar
+          <Button type="button" variant="outline" size="sm" onClick={goToApp}>
+            {headerCtaLabel}
           </Button>
         </div>
       </header>
@@ -411,9 +409,9 @@ export default function Landing() {
                 variant="primary"
                 size="lg"
                 rightIcon={<ArrowRight size={18} />}
-                onClick={goToLogin}
+                onClick={goToApp}
               >
-                Entrar no Vaulto
+                {ctaLabel}
               </Button>
               <a href="#funcionalidades">
                 <Button
@@ -905,9 +903,9 @@ export default function Landing() {
                 variant="primary"
                 size="lg"
                 rightIcon={<ArrowRight size={18} />}
-                onClick={goToLogin}
+                onClick={goToApp}
               >
-                Entrar no Vaulto
+                {ctaLabel}
               </Button>
             </div>
           </div>
@@ -966,9 +964,9 @@ export default function Landing() {
           variant="primary"
           size="md"
           className="w-full"
-          onClick={goToLogin}
+          onClick={goToApp}
         >
-          Entrar no Vaulto
+          {ctaLabel}
         </Button>
       </div>
     </div>
