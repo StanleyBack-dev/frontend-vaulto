@@ -4,6 +4,7 @@ import RequireAuthenticatedRoute from "../../features/auth/guards/RequireAuthent
 import RequirePasswordChangeRoute from "../../features/auth/guards/RequirePasswordChangeRoute";
 import { authRoutePaths } from "../navigation";
 
+const Landing = lazy(() => import("../../pages/Landing"));
 const Login = lazy(() => import("../../pages/Login"));
 const ForgotPassword = lazy(() => import("../../pages/ForgotPassword"));
 const FirstAccessChangePassword = lazy(
@@ -24,6 +25,10 @@ function withPageSuspense(element: React.ReactNode) {
 export function AuthRoutes() {
   return (
     <>
+      <Route
+        path={authRoutePaths.landing}
+        element={withPageSuspense(<Landing />)}
+      />
       <Route
         path={authRoutePaths.login}
         element={withPageSuspense(<Login />)}
