@@ -12,6 +12,7 @@ import goalsRoutes from "./modules/goals/routes.js";
 import incomesRoutes from "./modules/incomes/routes.js";
 import incomeReceiptsRoutes from "./modules/income-receipts/routes.js";
 import legalRoutes from "./modules/legal/routes.js";
+import marketingEmailsRoutes from "./modules/marketing-emails/routes.js";
 import paymentsRoutes from "./modules/payments/routes.js";
 import referralsRoutes from "./modules/referrals/routes.js";
 import reportsRoutes from "./modules/reports/routes.js";
@@ -26,6 +27,7 @@ router.get("/health", (_req, res) => {
 router.use("/auth", authRoutes);
 router.use("/account", accountLifecycleRoutes);
 router.use("/admin", adminRoutes);
+router.use("/admin/marketing-emails", marketingEmailsRoutes);
 router.use("/billing", billingRoutes);
 router.use("/categories", categoriesRoutes);
 router.use("/credit-cards", creditCardsRoutes);
