@@ -38,7 +38,8 @@ function isLikelyEmail(value: string): boolean {
 export default function AdminMarketingEmailsTab() {
   const { showSuccess, showError } = useToast();
 
-  const [category, setCategory] = useState<MarketingEmailCategory>("INFLUENCER");
+  const [category, setCategory] =
+    useState<MarketingEmailCategory>("INFLUENCER");
   const [recipientName, setRecipientName] = useState("");
   const [recipientEmail, setRecipientEmail] = useState("");
   const [recipientPhone, setRecipientPhone] = useState("");
@@ -226,7 +227,8 @@ export default function AdminMarketingEmailsTab() {
     {
       key: "category",
       label: "Categoria",
-      render: (row) => MARKETING_EMAIL_CATEGORY_LABELS[row.category] ?? row.category,
+      render: (row) =>
+        MARKETING_EMAIL_CATEGORY_LABELS[row.category] ?? row.category,
     },
     { key: "subject", label: "Assunto" },
     {
@@ -311,8 +313,8 @@ export default function AdminMarketingEmailsTab() {
                   color: colors.red[500],
                 }}
               >
-                Já enviamos um e-mail de parceria para esse contato nos
-                últimos 7 dias
+                Já enviamos um e-mail de parceria para esse contato nos últimos
+                7 dias
                 {cooldownNextAllowedAt
                   ? ` — só será possível reenviar a partir de ${formatDateTimeDisplay(cooldownNextAllowedAt)}.`
                   : "."}

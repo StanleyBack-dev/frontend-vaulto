@@ -7,7 +7,10 @@ import {
   MARKETING_EMAIL_CATEGORY_LABELS,
   type MarketingEmailSend,
 } from "@/features/marketing-emails";
-import { PRO_PLAN_FIRST_MONTH_PRICE, PRO_PLAN_PRICES } from "@/features/billing";
+import {
+  PRO_PLAN_FIRST_MONTH_PRICE,
+  PRO_PLAN_PRICES,
+} from "@/features/billing";
 import { colors, radii, typography } from "@/config";
 import { formatDateTimeDisplay } from "@/utils/format";
 
@@ -35,13 +38,7 @@ function DetailSectionTitle({ children }: { children: ReactNode }) {
   );
 }
 
-function DetailField({
-  label,
-  value,
-}: {
-  label: string;
-  value: ReactNode;
-}) {
+function DetailField({ label, value }: { label: string; value: ReactNode }) {
   return (
     <div className="min-w-0">
       <p
@@ -67,7 +64,8 @@ export default function MarketingEmailSendDetailModal({
 }: MarketingEmailSendDetailModalProps) {
   if (!open || !send) return null;
 
-  const percentage = send.partnershipPercentage ?? DEFAULT_PARTNERSHIP_PERCENTAGE;
+  const percentage =
+    send.partnershipPercentage ?? DEFAULT_PARTNERSHIP_PERCENTAGE;
   const commissionRows = buildCommissionTable(percentage);
 
   return (
@@ -129,10 +127,7 @@ export default function MarketingEmailSendDetailModal({
                 }
               />
               <DetailField label="E-mail" value={send.recipientEmail} />
-              <DetailField
-                label="Celular"
-                value={send.recipientPhone || "—"}
-              />
+              <DetailField label="Celular" value={send.recipientPhone || "—"} />
             </div>
           </div>
 
@@ -143,10 +138,7 @@ export default function MarketingEmailSendDetailModal({
                 label="Percentual da parceria"
                 value={`${percentage}%`}
               />
-              <DetailField
-                label="Enviado por"
-                value={send.sentByAdminName}
-              />
+              <DetailField label="Enviado por" value={send.sentByAdminName} />
               <DetailField
                 label="Enviado em"
                 value={formatDateTimeDisplay(send.createdAt)}
@@ -171,7 +163,8 @@ export default function MarketingEmailSendDetailModal({
                 {
                   key: "firstMonthCommission",
                   label: "Comissão no 1º mês",
-                  render: (row) => brlFormatter.format(row.firstMonthCommission),
+                  render: (row) =>
+                    brlFormatter.format(row.firstMonthCommission),
                 },
                 {
                   key: "recurringCommission",
@@ -180,10 +173,7 @@ export default function MarketingEmailSendDetailModal({
                 },
               ]}
             />
-            <p
-              className="mt-2 text-xs"
-              style={{ color: colors.brown[500] }}
-            >
+            <p className="mt-2 text-xs" style={{ color: colors.brown[500] }}>
               Valores ilustrativos considerando {percentage}% sobre o valor da
               assinatura ({brlFormatter.format(PRO_PLAN_FIRST_MONTH_PRICE)} no
               1º mês / {brlFormatter.format(PRO_PLAN_PRICES.MONTHLY)}{" "}

@@ -75,7 +75,10 @@ export async function fetchMarketingEmailSends(
 }
 
 export async function requestMarketingEmailSendsExport(
-  params: Pick<ListMarketingEmailSendsQueryParams, "category" | "recipientEmail"> = {},
+  params: Pick<
+    ListMarketingEmailSendsQueryParams,
+    "category" | "recipientEmail"
+  > = {},
 ): Promise<MarketingEmailExport> {
   const response = await exportMarketingEmailSends(params);
   const parsed = MarketingEmailExportSchema.safeParse(response);

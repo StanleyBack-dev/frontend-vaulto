@@ -5,7 +5,10 @@ import type {
 } from "../schema";
 
 export async function exportMarketingEmailSends(
-  params: Pick<ListMarketingEmailSendsQueryParams, "category" | "recipientEmail"> = {},
+  params: Pick<
+    ListMarketingEmailSendsQueryParams,
+    "category" | "recipientEmail"
+  > = {},
 ): Promise<MarketingEmailExport> {
   try {
     const response = await apiHttp.get<MarketingEmailExport>(

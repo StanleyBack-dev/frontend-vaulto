@@ -81,9 +81,7 @@ export type MarketingEmailDefaultTemplate = z.infer<
 export type MarketingEmailPreviewPayload = z.infer<
   typeof MarketingEmailPreviewPayloadSchema
 >;
-export type MarketingEmailPreview = z.infer<
-  typeof MarketingEmailPreviewSchema
->;
+export type MarketingEmailPreview = z.infer<typeof MarketingEmailPreviewSchema>;
 export type MarketingEmailCooldown = z.infer<
   typeof MarketingEmailCooldownSchema
 >;

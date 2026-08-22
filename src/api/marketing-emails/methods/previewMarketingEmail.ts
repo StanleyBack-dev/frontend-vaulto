@@ -1,5 +1,8 @@
 import { apiHttp, getApiErrorMessage } from "../../shared/http-client";
-import type { MarketingEmailPreview, MarketingEmailPreviewPayload } from "../schema";
+import type {
+  MarketingEmailPreview,
+  MarketingEmailPreviewPayload,
+} from "../schema";
 
 export async function previewMarketingEmail(
   payload: MarketingEmailPreviewPayload,
