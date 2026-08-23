@@ -9,6 +9,7 @@ import {
   listMarketingEmailSends,
   previewMarketingEmail,
   sendMarketingEmail,
+  updateMarketingEmailSendContact,
 } from "./service.js";
 
 const router = Router();
@@ -93,6 +94,25 @@ router.post("/", async (req, res) => {
   try {
     const result = await sendMarketingEmail(
       req.body,
+      getAuthContext(req),
+      req.requestId,
+    );
+    res.json(result);
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
+router.patch("/:idMarketingEmailSend/contact", async (req, res) => {
+  try {
+    const result = await updateMarketingEmailSendContact(
+      {
+        idMarketingEmailSend: req.params.idMarketingEmailSend,
+        recipientName: req.body.recipientName,
+        category: req.body.category,
+        recipientPhone: req.body.recipientPhone,
+        socialMediaLink: req.body.socialMediaLink,
+      },
       getAuthContext(req),
       req.requestId,
     );
