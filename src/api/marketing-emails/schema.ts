@@ -34,6 +34,7 @@ export const MarketingEmailSendSchema = z.object({
   recipientEmail: z.string(),
   recipientName: z.string(),
   recipientPhone: z.string().nullable().optional(),
+  socialMediaLink: z.string().nullable().optional(),
   subject: z.string(),
   partnershipPercentage: z.number().nullable().optional(),
   sentByAdminName: z.string(),
@@ -61,9 +62,18 @@ export const SendMarketingEmailPayloadSchema = z.object({
   recipientEmail: z.string().email(),
   recipientName: z.string().min(1),
   recipientPhone: z.string().optional(),
+  socialMediaLink: z.string().optional(),
   subject: z.string().min(1),
   bodyMarkdown: z.string().min(1),
   partnershipPercentage: z.number().optional(),
+});
+
+export const UpdateMarketingEmailSendContactPayloadSchema = z.object({
+  idMarketingEmailSend: z.string(),
+  recipientName: z.string().optional(),
+  category: MarketingEmailCategorySchema.optional(),
+  recipientPhone: z.string().optional(),
+  socialMediaLink: z.string().optional(),
 });
 
 export const MarketingEmailExportSchema = z.object({
@@ -96,3 +106,6 @@ export type SendMarketingEmailPayload = z.infer<
   typeof SendMarketingEmailPayloadSchema
 >;
 export type MarketingEmailExport = z.infer<typeof MarketingEmailExportSchema>;
+export type UpdateMarketingEmailSendContactPayload = z.infer<
+  typeof UpdateMarketingEmailSendContactPayloadSchema
+>;

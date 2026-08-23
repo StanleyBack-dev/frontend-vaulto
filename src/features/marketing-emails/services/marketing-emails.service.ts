@@ -4,6 +4,7 @@ import { getMarketingEmailRecipientCooldown } from "../../../api/marketing-email
 import { listMarketingEmailSends } from "../../../api/marketing-emails/methods/listMarketingEmailSends";
 import { previewMarketingEmail } from "../../../api/marketing-emails/methods/previewMarketingEmail";
 import { sendMarketingEmail } from "../../../api/marketing-emails/methods/sendMarketingEmail";
+import { updateMarketingEmailSendContact } from "../../../api/marketing-emails/methods/updateMarketingEmailSendContact";
 import {
   ListMarketingEmailSendsQueryParamsSchema,
   MarketingEmailCooldownSchema,
@@ -21,6 +22,8 @@ import {
   type MarketingEmailSend,
   type MarketingEmailSendsResponse,
   type SendMarketingEmailPayload,
+  UpdateMarketingEmailSendContactPayloadSchema,
+  type UpdateMarketingEmailSendContactPayload,
 } from "../../../api/marketing-emails/schema";
 
 export async function fetchMarketingEmailDefaultTemplate(): Promise<MarketingEmailDefaultTemplate> {
@@ -85,6 +88,21 @@ export async function requestMarketingEmailSendsExport(
 
   if (!parsed.success) {
     throw new Error("Não foi possível interpretar o arquivo exportado.");
+  }
+
+  return parsed.data;
+}
+
+export async function requestUpdateMarketingEmailSendContact(
+  payload: UpdateMarketingEmailSendContactPayload,
+): Promise<MarketingEmailSend> {
+  const parsedPayload =
+    UpdateMarketingEmailSendContactPayloadSchema.parse(payload);
+  const response = await updateMarketingEmailSendContact(parsedPayload);
+  const parsed = MarketingEmailSendSchema.safeParse(response);
+
+  if (!parsed.success) {
+    throw new Error("Não foi possível interpretar a atualização do contato.");
   }
 
   return parsed.data;

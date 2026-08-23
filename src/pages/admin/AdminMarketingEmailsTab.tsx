@@ -1,5 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
-import { Eye, FileSpreadsheet } from "lucide-react";
+import type { ReactNode } from "react";
+import {
+  ExternalLink,
+  Eye,
+  FileSpreadsheet,
+  Mail,
+  MessageCircle,
+} from "lucide-react";
 import DataTable, {
   type DataTableColumn,
 } from "@/components/organisms/DataTable";
@@ -17,6 +24,9 @@ import {
   requestMarketingEmailPreview,
   requestMarketingEmailSendsExport,
   requestSendMarketingEmail,
+  buildMailtoLink,
+  buildWhatsAppLink,
+  normalizeExternalLink,
   MARKETING_EMAIL_CATEGORY_LABELS,
   MARKETING_EMAIL_CATEGORY_OPTIONS,
   type MarketingEmailCategory,
@@ -26,6 +36,30 @@ import { useToast } from "../../shared/toast/useToast";
 import { colors } from "@/config";
 import { downloadBase64File } from "@/utils/file";
 import { formatDateTimeDisplay, formatPhone } from "@/utils/format";
+
+function ContactLinkCell({
+  href,
+  icon,
+  label,
+}: {
+  href: string;
+  icon: ReactNode;
+  label: string;
+}) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={(event) => event.stopPropagation()}
+      className="inline-flex items-center gap-1.5 font-medium hover:underline"
+      style={{ color: colors.purple[700] }}
+    >
+      {icon}
+      {label}
+    </a>
+  );
+}
 
 const PREVIEW_DEBOUNCE_MS = 400;
 const COOLDOWN_CHECK_DEBOUNCE_MS = 500;
@@ -43,6 +77,7 @@ export default function AdminMarketingEmailsTab() {
   const [recipientName, setRecipientName] = useState("");
   const [recipientEmail, setRecipientEmail] = useState("");
   const [recipientPhone, setRecipientPhone] = useState("");
+  const [socialMediaLink, setSocialMediaLink] = useState("");
   const [subject, setSubject] = useState("");
   const [bodyMarkdown, setBodyMarkdown] = useState("");
   const [partnershipPercentage, setPartnershipPercentage] = useState(
@@ -145,6 +180,7 @@ export default function AdminMarketingEmailsTab() {
         recipientEmail,
         recipientName,
         recipientPhone: recipientPhone || undefined,
+        socialMediaLink: socialMediaLink || undefined,
         subject,
         bodyMarkdown,
         partnershipPercentage,
@@ -157,6 +193,7 @@ export default function AdminMarketingEmailsTab() {
       setRecipientName("");
       setRecipientEmail("");
       setRecipientPhone("");
+      setSocialMediaLink("");
       setCooldownBlocked(false);
       setCooldownNextAllowedAt(null);
       loadHistory();
@@ -218,11 +255,49 @@ export default function AdminMarketingEmailsTab() {
       ),
     },
     { key: "recipientName", label: "Nome" },
-    { key: "recipientEmail", label: "E-mail" },
+    {
+      key: "recipientEmail",
+      label: "E-mail",
+      render: (row) => (
+        <ContactLinkCell
+          href={buildMailtoLink(row.recipientEmail)}
+          icon={<Mail size={14} />}
+          label={row.recipientEmail}
+        />
+      ),
+    },
     {
       key: "recipientPhone",
       label: "Celular",
-      render: (row) => row.recipientPhone || "—",
+      render: (row) => {
+        const whatsAppLink = row.recipientPhone
+          ? buildWhatsAppLink(row.recipientPhone)
+          : null;
+
+        return whatsAppLink ? (
+          <ContactLinkCell
+            href={whatsAppLink}
+            icon={<MessageCircle size={14} />}
+            label={row.recipientPhone as string}
+          />
+        ) : (
+          "—"
+        );
+      },
+    },
+    {
+      key: "socialMediaLink",
+      label: "Rede Social",
+      render: (row) =>
+        row.socialMediaLink ? (
+          <ContactLinkCell
+            href={normalizeExternalLink(row.socialMediaLink)}
+            icon={<ExternalLink size={14} />}
+            label="Ver perfil"
+          />
+        ) : (
+          "—"
+        ),
     },
     {
       key: "category",
@@ -303,6 +378,14 @@ export default function AdminMarketingEmailsTab() {
               required
               value={recipientEmail}
               onChange={(event) => setRecipientEmail(event.target.value)}
+            />
+
+            <Input
+              label="Link da rede social"
+              type="url"
+              value={socialMediaLink}
+              onChange={(event) => setSocialMediaLink(event.target.value)}
+              placeholder="https://instagram.com/perfil"
             />
 
             {cooldownBlocked && (
@@ -421,6 +504,16 @@ export default function AdminMarketingEmailsTab() {
         open={selectedSend !== null}
         send={selectedSend}
         onClose={() => setSelectedSend(null)}
+        onUpdated={(updated) => {
+          setSelectedSend(updated);
+          setHistoryItems((items) =>
+            items.map((item) =>
+              item.idMarketingEmailSend === updated.idMarketingEmailSend
+                ? updated
+                : item,
+            ),
+          );
+        }}
       />
     </div>
   );

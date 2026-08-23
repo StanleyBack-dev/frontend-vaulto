@@ -7,6 +7,7 @@ import {
   MARKETING_EMAIL_RECIPIENT_COOLDOWN_QUERY,
   PREVIEW_MARKETING_EMAIL_QUERY,
   SEND_MARKETING_EMAIL_MUTATION,
+  UPDATE_MARKETING_EMAIL_SEND_CONTACT_MUTATION,
 } from "./queries.js";
 
 function requireData(value, message) {
@@ -101,5 +102,23 @@ export async function sendMarketingEmail(input, authContext, requestId) {
   return requireData(
     data.sendMarketingEmail,
     "Invalid send marketing email response.",
+  );
+}
+
+export async function updateMarketingEmailSendContact(
+  input,
+  authContext,
+  requestId,
+) {
+  const data = await executeGraphql({
+    query: UPDATE_MARKETING_EMAIL_SEND_CONTACT_MUTATION,
+    variables: { input },
+    requestId,
+    ...authContext,
+  });
+
+  return requireData(
+    data.updateMarketingEmailSendContact,
+    "Invalid update marketing email send contact response.",
   );
 }

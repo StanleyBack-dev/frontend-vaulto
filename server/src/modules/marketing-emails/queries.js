@@ -30,6 +30,7 @@ const MARKETING_EMAIL_SEND_FIELDS = `
   recipientEmail
   recipientName
   recipientPhone
+  socialMediaLink
   subject
   partnershipPercentage
   sentByAdminName
@@ -64,6 +65,14 @@ export const EXPORT_MARKETING_EMAIL_SENDS_QUERY = `
 export const SEND_MARKETING_EMAIL_MUTATION = `
   mutation SendMarketingEmail($input: SendMarketingEmailInputDto!) {
     sendMarketingEmail(input: $input) {
+      ${MARKETING_EMAIL_SEND_FIELDS}
+    }
+  }
+`;
+
+export const UPDATE_MARKETING_EMAIL_SEND_CONTACT_MUTATION = `
+  mutation UpdateMarketingEmailSendContact($input: UpdateMarketingEmailSendContactInputDto!) {
+    updateMarketingEmailSendContact(input: $input) {
       ${MARKETING_EMAIL_SEND_FIELDS}
     }
   }
