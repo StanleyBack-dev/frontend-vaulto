@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "@/components/atoms/Button";
 import Select from "@/components/atoms/Select";
+import CollapsibleFilters from "@/components/molecules/CollapsibleFilters";
 import StatCard from "@/components/molecules/StatCard";
 import SectionCard from "@/components/organisms/SectionCard";
 import { debtRoutePaths } from "@/router";
@@ -64,49 +65,55 @@ export default function DebtsDashboard() {
           </div>
         }
       >
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-          <Select
-            label="Periodo"
-            value={period}
-            onChange={(event) => setPeriod(event.target.value)}
-            style={{
-              background: colors.black[700],
-              color: colors.white,
-            }}
-          >
-            <option value="week">Ultimos 7 dias</option>
-            <option value="month">Ultimos 30 dias</option>
-            <option value="quarter">Trimestre</option>
-            <option value="year">Ano atual</option>
-          </Select>
-          <Select
-            label="Risco"
-            value={riskLevel}
-            onChange={(event) => setRiskLevel(event.target.value)}
-            style={{
-              background: colors.black[700],
-              color: colors.white,
-            }}
-          >
-            <option value="all">Todos</option>
-            <option value="critical">Critico</option>
-            <option value="attention">Atencao</option>
-            <option value="stable">Estavel</option>
-          </Select>
-          <Select
-            label="Visao"
-            value="geral"
-            onChange={() => {}}
-            style={{
-              background: colors.black[700],
-              color: colors.white,
-            }}
-          >
-            <option value="geral">Consolidada</option>
-            <option value="conta">Por conta</option>
-            <option value="status">Por status</option>
-          </Select>
-        </div>
+        <CollapsibleFilters
+          activeCount={
+            [period !== "month", riskLevel !== "all"].filter(Boolean).length
+          }
+        >
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+            <Select
+              label="Periodo"
+              value={period}
+              onChange={(event) => setPeriod(event.target.value)}
+              style={{
+                background: colors.black[700],
+                color: colors.white,
+              }}
+            >
+              <option value="week">Ultimos 7 dias</option>
+              <option value="month">Ultimos 30 dias</option>
+              <option value="quarter">Trimestre</option>
+              <option value="year">Ano atual</option>
+            </Select>
+            <Select
+              label="Risco"
+              value={riskLevel}
+              onChange={(event) => setRiskLevel(event.target.value)}
+              style={{
+                background: colors.black[700],
+                color: colors.white,
+              }}
+            >
+              <option value="all">Todos</option>
+              <option value="critical">Critico</option>
+              <option value="attention">Atencao</option>
+              <option value="stable">Estavel</option>
+            </Select>
+            <Select
+              label="Visao"
+              value="geral"
+              onChange={() => {}}
+              style={{
+                background: colors.black[700],
+                color: colors.white,
+              }}
+            >
+              <option value="geral">Consolidada</option>
+              <option value="conta">Por conta</option>
+              <option value="status">Por status</option>
+            </Select>
+          </div>
+        </CollapsibleFilters>
       </SectionCard>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">

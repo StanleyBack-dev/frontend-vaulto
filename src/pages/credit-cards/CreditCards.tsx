@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SearchIcon from "@/components/atoms/icons/SearchIcon";
 import Select from "@/components/atoms/Select";
+import CollapsibleFilters from "@/components/molecules/CollapsibleFilters";
 import DataTable from "@/components/organisms/DataTable";
 import ExportButtons from "@/components/molecules/ExportButtons";
 import FilterBar from "@/components/molecules/FilterBar";
@@ -95,32 +96,36 @@ export default function CreditCards() {
         }}
       />
 
-      <div className="grid grid-cols-1 gap-3 rounded-xl border border-[#3a2f5e] bg-[#141225] p-3 md:grid-cols-4">
-        <Select
-          label="Status"
-          value={statusFilter}
-          onChange={(event) =>
-            setStatusFilter(event.target.value as "" | "true" | "false")
-          }
-        >
-          <option value="">Todos</option>
-          <option value="true">Ativo</option>
-          <option value="false">Inativo</option>
-        </Select>
-
-        <div className="md:col-span-3 flex items-end justify-end">
-          <button
-            type="button"
-            onClick={() => {
-              setStatusFilter("");
-              setSearch("");
-            }}
-            className="rounded border border-[#3a2f5e] px-3 py-2 text-sm font-semibold text-[#c5bbeb] hover:bg-[#1f1832]"
+      <CollapsibleFilters
+        activeCount={[statusFilter, search].filter(Boolean).length}
+      >
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-4">
+          <Select
+            label="Status"
+            value={statusFilter}
+            onChange={(event) =>
+              setStatusFilter(event.target.value as "" | "true" | "false")
+            }
           >
-            Limpar filtros
-          </button>
+            <option value="">Todos</option>
+            <option value="true">Ativo</option>
+            <option value="false">Inativo</option>
+          </Select>
+
+          <div className="md:col-span-3 flex items-end justify-end">
+            <button
+              type="button"
+              onClick={() => {
+                setStatusFilter("");
+                setSearch("");
+              }}
+              className="rounded border border-[#3a2f5e] px-3 py-2 text-sm font-semibold text-[#c5bbeb] hover:bg-[#1f1832]"
+            >
+              Limpar filtros
+            </button>
+          </div>
         </div>
-      </div>
+      </CollapsibleFilters>
 
       {loading ? (
         <div className="flex items-center justify-center h-56">
