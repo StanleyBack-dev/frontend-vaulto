@@ -34,6 +34,7 @@ export {
 } from "./model/statement";
 export {
   fetchDebtById,
+  fetchDebtOptions,
   fetchDebts,
   saveDebt,
   saveDebtDetails,

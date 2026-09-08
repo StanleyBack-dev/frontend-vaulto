@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AlertCircle, Clock, CheckCircle2, CircleDot } from "lucide-react";
 import type { Debt } from "@/api/debts/schema";
 import type { Income } from "@/api/incomes/schema";
+import CollapsibleFilters from "@/components/molecules/CollapsibleFilters";
 import Input from "@/components/atoms/Input";
 import Select from "@/components/atoms/Select";
 import { colors } from "@/config";
@@ -439,84 +440,96 @@ export default function DebtsDashboardKanban() {
       </div>
 
       {/* Filtros */}
-      <div className="flex flex-wrap items-end gap-3 rounded-xl border border-[#3a2f5e] bg-[#141225] p-3">
-        <div className="flex flex-1 min-w-[200px] items-center gap-2 rounded-lg border border-[#3a2f5e] bg-[#0e0c1e] px-3 py-2">
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Buscar por título, categoria..."
-            className="flex-1 bg-transparent text-sm text-[#f7f5ff] placeholder:text-[#6b6080] outline-none"
-          />
-        </div>
-        <div className="min-w-[160px]">
-          <Input
-            label="Mês de referência"
-            type="month"
-            value={month}
-            disabled={viewAllTime}
-            onChange={(e) => setMonth(e.target.value || currentMonthValue())}
-          />
-        </div>
-        <div className="min-w-[160px]">
-          <Select
-            label="Tipo"
-            value={debtType}
-            onChange={(e) => setDebtType(e.target.value)}
-          >
-            <option value="">Todos</option>
-            {debtTypeOptions.map((t) => (
-              <option key={t.value} value={t.value}>
-                {t.label}
-              </option>
-            ))}
-          </Select>
-        </div>
-        <div className="min-w-[160px]">
-          <Select
-            label="Categoria"
-            value={idCategory}
-            onChange={(e) => setIdCategory(e.target.value)}
-          >
-            <option value="">Todas</option>
-            {debtCategories.map((c) => (
-              <option key={c.idCategory} value={c.idCategory}>
-                {c.name}
-              </option>
-            ))}
-          </Select>
-        </div>
-        <button
-          type="button"
-          onClick={() => setViewAllTime((prev) => !prev)}
-          className={`rounded-lg border px-3 py-2.5 text-sm font-semibold transition-colors ${
-            viewAllTime
-              ? "border-violet-300 bg-violet-100 text-violet-800"
-              : "border-[#2A2042] bg-white text-[#1a1333] hover:bg-gray-50"
-          }`}
-        >
-          Todo o período
-        </button>
-        {(search ||
-          debtType ||
-          idCategory ||
-          viewAllTime ||
-          month !== currentMonthValue()) && (
+      <CollapsibleFilters
+        activeCount={
+          [
+            search,
+            debtType,
+            idCategory,
+            viewAllTime,
+            month !== currentMonthValue(),
+          ].filter(Boolean).length
+        }
+      >
+        <div className="flex flex-wrap items-end gap-3">
+          <div className="flex flex-1 min-w-[200px] items-center gap-2 rounded-lg border border-[#3a2f5e] bg-[#0e0c1e] px-3 py-2">
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Buscar por título, categoria..."
+              className="flex-1 bg-transparent text-sm text-[#f7f5ff] placeholder:text-[#6b6080] outline-none"
+            />
+          </div>
+          <div className="min-w-[160px]">
+            <Input
+              label="Mês de referência"
+              type="month"
+              value={month}
+              disabled={viewAllTime}
+              onChange={(e) => setMonth(e.target.value || currentMonthValue())}
+            />
+          </div>
+          <div className="min-w-[160px]">
+            <Select
+              label="Tipo"
+              value={debtType}
+              onChange={(e) => setDebtType(e.target.value)}
+            >
+              <option value="">Todos</option>
+              {debtTypeOptions.map((t) => (
+                <option key={t.value} value={t.value}>
+                  {t.label}
+                </option>
+              ))}
+            </Select>
+          </div>
+          <div className="min-w-[160px]">
+            <Select
+              label="Categoria"
+              value={idCategory}
+              onChange={(e) => setIdCategory(e.target.value)}
+            >
+              <option value="">Todas</option>
+              {debtCategories.map((c) => (
+                <option key={c.idCategory} value={c.idCategory}>
+                  {c.name}
+                </option>
+              ))}
+            </Select>
+          </div>
           <button
             type="button"
-            onClick={() => {
-              setSearch("");
-              setDebtType("");
-              setIdCategory("");
-              setMonth(currentMonthValue());
-              setViewAllTime(false);
-            }}
-            className="rounded border border-[#3a2f5e] px-3 py-2 text-sm text-[#c5bbeb] hover:bg-[#1f1832]"
+            onClick={() => setViewAllTime((prev) => !prev)}
+            className={`rounded-lg border px-3 py-2.5 text-sm font-semibold transition-colors ${
+              viewAllTime
+                ? "border-violet-300 bg-violet-100 text-violet-800"
+                : "border-[#2A2042] bg-white text-[#1a1333] hover:bg-gray-50"
+            }`}
           >
-            Limpar
+            Todo o período
           </button>
-        )}
-      </div>
+          {(search ||
+            debtType ||
+            idCategory ||
+            viewAllTime ||
+            month !== currentMonthValue()) && (
+            <button
+              type="button"
+              onClick={() => {
+                setSearch("");
+                setDebtType("");
+                setIdCategory("");
+                setMonth(currentMonthValue());
+                setViewAllTime(false);
+              }}
+              className="rounded border border-[#3a2f5e] px-3 py-2 text-sm text-[#c5bbeb] hover:bg-[#1f1832]"
+            >
+              Limpar
+            </button>
+          )}
+        </div>
+      </CollapsibleFilters>
 
       {/* Kanban */}
       {loading ? (

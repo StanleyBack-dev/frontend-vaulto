@@ -1,6 +1,7 @@
 import { Plus } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import CollapsibleFilters from "@/components/molecules/CollapsibleFilters";
 import DataTable from "@/components/organisms/DataTable";
 import FilterBar from "@/components/molecules/FilterBar";
 import Select from "@/components/atoms/Select";
@@ -94,95 +95,107 @@ export default function Users() {
         }}
       />
 
-      <div className="grid grid-cols-1 gap-3 rounded-xl border border-[#3a2f5e] bg-[#141225] p-3 md:grid-cols-3 lg:grid-cols-6">
-        <Select
-          label="Nome"
-          value={filters.name}
-          onChange={(event) => {
-            void setFilters({ name: event.target.value });
-          }}
-        >
-          <option value="">Todos</option>
-          {nameOptions.map((name) => (
-            <option key={name} value={name}>
-              {name}
-            </option>
-          ))}
-        </Select>
-
-        <Select
-          label="Email"
-          value={filters.email}
-          onChange={(event) => {
-            void setFilters({ email: event.target.value });
-          }}
-        >
-          <option value="">Todos</option>
-          {emailOptions.map((email) => (
-            <option key={email} value={email}>
-              {email}
-            </option>
-          ))}
-        </Select>
-
-        <Select
-          label="Username"
-          value={filters.username}
-          onChange={(event) => {
-            void setFilters({ username: event.target.value });
-          }}
-        >
-          <option value="">Todos</option>
-          {usernameOptions.map((username) => (
-            <option key={username} value={username}>
-              {username}
-            </option>
-          ))}
-        </Select>
-
-        <Select
-          label="Grupo"
-          value={filters.group}
-          onChange={(event) => {
-            void setFilters({
-              group: event.target.value as typeof filters.group,
-            });
-          }}
-        >
-          <option value="">Todos</option>
-          {userGroupSelectOptions.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </Select>
-
-        <Select
-          label="Ativo"
-          value={filters.status}
-          onChange={(event) => {
-            void setFilters({
-              status: event.target.value as typeof filters.status,
-            });
-          }}
-        >
-          <option value="">Todos</option>
-          <option value="true">Ativo</option>
-          <option value="false">Inativo</option>
-        </Select>
-
-        <div className="flex items-end justify-end">
-          <button
-            type="button"
-            onClick={() => {
-              void clearFilters();
+      <CollapsibleFilters
+        activeCount={
+          [
+            filters.name,
+            filters.email,
+            filters.username,
+            filters.group,
+            filters.status,
+          ].filter(Boolean).length
+        }
+      >
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-3 lg:grid-cols-6">
+          <Select
+            label="Nome"
+            value={filters.name}
+            onChange={(event) => {
+              void setFilters({ name: event.target.value });
             }}
-            className="rounded border border-[#3a2f5e] px-3 py-2 text-sm font-semibold text-[#c5bbeb] hover:bg-[#1f1832]"
           >
-            Limpar filtros
-          </button>
+            <option value="">Todos</option>
+            {nameOptions.map((name) => (
+              <option key={name} value={name}>
+                {name}
+              </option>
+            ))}
+          </Select>
+
+          <Select
+            label="Email"
+            value={filters.email}
+            onChange={(event) => {
+              void setFilters({ email: event.target.value });
+            }}
+          >
+            <option value="">Todos</option>
+            {emailOptions.map((email) => (
+              <option key={email} value={email}>
+                {email}
+              </option>
+            ))}
+          </Select>
+
+          <Select
+            label="Username"
+            value={filters.username}
+            onChange={(event) => {
+              void setFilters({ username: event.target.value });
+            }}
+          >
+            <option value="">Todos</option>
+            {usernameOptions.map((username) => (
+              <option key={username} value={username}>
+                {username}
+              </option>
+            ))}
+          </Select>
+
+          <Select
+            label="Grupo"
+            value={filters.group}
+            onChange={(event) => {
+              void setFilters({
+                group: event.target.value as typeof filters.group,
+              });
+            }}
+          >
+            <option value="">Todos</option>
+            {userGroupSelectOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </Select>
+
+          <Select
+            label="Ativo"
+            value={filters.status}
+            onChange={(event) => {
+              void setFilters({
+                status: event.target.value as typeof filters.status,
+              });
+            }}
+          >
+            <option value="">Todos</option>
+            <option value="true">Ativo</option>
+            <option value="false">Inativo</option>
+          </Select>
+
+          <div className="flex items-end justify-end">
+            <button
+              type="button"
+              onClick={() => {
+                void clearFilters();
+              }}
+              className="rounded border border-[#3a2f5e] px-3 py-2 text-sm font-semibold text-[#c5bbeb] hover:bg-[#1f1832]"
+            >
+              Limpar filtros
+            </button>
+          </div>
         </div>
-      </div>
+      </CollapsibleFilters>
 
       {loading ? (
         <div className="flex items-center justify-center h-56">

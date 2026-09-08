@@ -11,7 +11,7 @@ import { colors } from "@/config";
 import {
   debtStatusLabel,
   fetchDebtById,
-  useDebtsContext,
+  fetchDebtOptions,
 } from "@/features/debts";
 import {
   deleteDebtPayment,
@@ -98,13 +98,40 @@ function getStatusPillStyle(status: DebtInstallment["status"]) {
 }
 
 export default function Payments() {
-  const { debts, load: loadDebts } = useDebtsContext();
   const { showError, showSuccess } = useToast();
 
+  const [debts, setDebts] = useState<Debt[]>([]);
+  const [loadingDebts, setLoadingDebts] = useState(true);
+
   useEffect(() => {
-    void loadDebts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    let cancelled = false;
+    setLoadingDebts(true);
+
+    void fetchDebtOptions()
+      .then((items) => {
+        if (!cancelled) {
+          setDebts(items);
+        }
+      })
+      .catch((error) => {
+        if (!cancelled) {
+          showError(
+            paymentUiCopy.errors.loadDebtsFallback,
+            error instanceof Error ? error.message : undefined,
+          );
+          setDebts([]);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setLoadingDebts(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [showError]);
 
   const [selectedDebtId, setSelectedDebtId] = useState("");
   const [debtDetail, setDebtDetail] = useState<Debt | null>(null);
@@ -297,9 +324,12 @@ export default function Payments() {
           label={paymentUiCopy.listing.selectDebtLabel}
           value={selectedDebtId}
           onChange={(event) => setSelectedDebtId(event.target.value)}
+          disabled={loadingDebts}
         >
           <option value="">
-            {paymentUiCopy.listing.selectDebtPlaceholder}
+            {loadingDebts
+              ? paymentUiCopy.listing.loadingDebts
+              : paymentUiCopy.listing.selectDebtPlaceholder}
           </option>
           {debts.map((debt) => (
             <option key={debt.idDebt} value={debt.idDebt}>
@@ -307,7 +337,7 @@ export default function Payments() {
             </option>
           ))}
         </Select>
-        {debts.length === 0 && (
+        {!loadingDebts && debts.length === 0 && (
           <p className="mt-2 text-sm" style={{ color: colors.brown[500] }}>
             {paymentUiCopy.listing.emptyDebtsMessage}
           </p>

@@ -1,6 +1,7 @@
 import DataTable from "@/components/organisms/DataTable";
 import ConfirmDialog from "@molecules/ConfirmDialog";
 import ExportButtons from "@/components/molecules/ExportButtons";
+import CollapsibleFilters from "@/components/molecules/CollapsibleFilters";
 import FilterBar from "@/components/molecules/FilterBar";
 import UpgradeBanner from "@molecules/UpgradeBanner";
 import UpgradeModal from "@/components/organisms/UpgradeModal";
@@ -112,69 +113,77 @@ export default function Debts() {
         }}
       />
 
-      <div className="grid grid-cols-1 gap-3 rounded-xl border border-[#3a2f5e] bg-[#141225] p-3 md:grid-cols-4">
-        <Select
-          label="Status"
-          value={filters.status}
-          onChange={(event) => {
-            void setFilters({
-              status: event.target.value as typeof filters.status,
-            });
-          }}
-        >
-          <option value="">Todos</option>
-          {debtStatusOptions.map((status) => (
-            <option key={status.value} value={status.value}>
-              {status.label}
-            </option>
-          ))}
-        </Select>
-
-        <Select
-          label="Tipo"
-          value={filters.debtType}
-          onChange={(event) => {
-            void setFilters({
-              debtType: event.target.value as typeof filters.debtType,
-            });
-          }}
-        >
-          <option value="">Todos</option>
-          {debtTypeOptions.map((type) => (
-            <option key={type.value} value={type.value}>
-              {type.label}
-            </option>
-          ))}
-        </Select>
-
-        <Select
-          label="Categoria"
-          value={filters.idCategory}
-          onChange={(event) => {
-            void setFilters({ idCategory: event.target.value });
-          }}
-        >
-          <option value="">Todas</option>
-          {debtCategories.map((cat) => (
-            <option key={cat.idCategory} value={cat.idCategory}>
-              {cat.name}
-            </option>
-          ))}
-        </Select>
-
-        <div className="flex items-end justify-end">
-          <button
-            type="button"
-            onClick={() => {
-              void clearFilters();
-              setSearch("");
+      <CollapsibleFilters
+        activeCount={
+          [filters.status, filters.debtType, filters.idCategory, search].filter(
+            Boolean,
+          ).length
+        }
+      >
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-4">
+          <Select
+            label="Status"
+            value={filters.status}
+            onChange={(event) => {
+              void setFilters({
+                status: event.target.value as typeof filters.status,
+              });
             }}
-            className="rounded border border-[#3a2f5e] px-3 py-2 text-sm font-semibold text-[#c5bbeb] hover:bg-[#1f1832]"
           >
-            Limpar filtros
-          </button>
+            <option value="">Todos</option>
+            {debtStatusOptions.map((status) => (
+              <option key={status.value} value={status.value}>
+                {status.label}
+              </option>
+            ))}
+          </Select>
+
+          <Select
+            label="Tipo"
+            value={filters.debtType}
+            onChange={(event) => {
+              void setFilters({
+                debtType: event.target.value as typeof filters.debtType,
+              });
+            }}
+          >
+            <option value="">Todos</option>
+            {debtTypeOptions.map((type) => (
+              <option key={type.value} value={type.value}>
+                {type.label}
+              </option>
+            ))}
+          </Select>
+
+          <Select
+            label="Categoria"
+            value={filters.idCategory}
+            onChange={(event) => {
+              void setFilters({ idCategory: event.target.value });
+            }}
+          >
+            <option value="">Todas</option>
+            {debtCategories.map((cat) => (
+              <option key={cat.idCategory} value={cat.idCategory}>
+                {cat.name}
+              </option>
+            ))}
+          </Select>
+
+          <div className="flex items-end justify-end">
+            <button
+              type="button"
+              onClick={() => {
+                void clearFilters();
+                setSearch("");
+              }}
+              className="rounded border border-[#3a2f5e] px-3 py-2 text-sm font-semibold text-[#c5bbeb] hover:bg-[#1f1832]"
+            >
+              Limpar filtros
+            </button>
+          </div>
         </div>
-      </div>
+      </CollapsibleFilters>
 
       {loading ? (
         <div className="flex items-center justify-center h-56">

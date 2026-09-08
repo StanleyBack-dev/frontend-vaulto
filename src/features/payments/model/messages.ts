@@ -5,6 +5,7 @@ export const paymentUiCopy = {
       "Registre pagamentos e acompanhe o saldo de cada dívida, parcelada ou não.",
     selectDebtLabel: "Dívida",
     selectDebtPlaceholder: "Selecione uma dívida",
+    loadingDebts: "Carregando dívidas...",
     emptyDebtsMessage: "Nenhuma dívida encontrada.",
     noDebtSelected: "Selecione uma dívida para ver os detalhes de pagamento.",
     columns: {

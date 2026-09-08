@@ -2,6 +2,7 @@ import { createDebt } from "@/api/debts/methods/create";
 import { deleteDebt } from "@/api/debts/methods/delete";
 import { getDebtById } from "@/api/debts/methods/get-by-id";
 import { getMyDebts } from "@/api/debts/methods/get";
+import { getMyDebtOptions } from "@/api/debts/methods/get-options";
 import { updateDebtDetails } from "@/api/debts/methods/update-details";
 import { updateDebtStatus } from "@/api/debts/methods/update-status";
 import type {
@@ -45,6 +46,38 @@ export async function fetchDebts(
       hasNextPage: response.hasNextPage,
     },
   };
+}
+
+const DEBT_OPTIONS_PAGE_SIZE = 100;
+const DEBT_OPTIONS_MAX_PAGES = 20;
+
+/**
+ * Fetches every debt of the current user for use in pickers/dropdowns, walking
+ * through the paginated endpoint so the caller is never capped at a single page.
+ */
+export async function fetchDebtOptions(): Promise<Debt[]> {
+  const items: Debt[] = [];
+
+  for (let page = 1; page <= DEBT_OPTIONS_MAX_PAGES; page += 1) {
+    const response = await getMyDebtOptions({
+      page,
+      limit: DEBT_OPTIONS_PAGE_SIZE,
+    });
+
+    const parsed = DebtSchema.array().safeParse(response.items);
+
+    if (!parsed.success) {
+      throw new Error(debtUiCopy.errors.invalidCollectionData);
+    }
+
+    items.push(...parsed.data);
+
+    if (!response.hasNextPage) {
+      break;
+    }
+  }
+
+  return items;
 }
 
 export async function fetchDebtById(idDebt: string): Promise<Debt> {
