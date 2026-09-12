@@ -6,6 +6,7 @@ import OnboardingTour from "../components/organisms/OnboardingTour";
 import TermsAcceptanceGate from "../components/organisms/TermsAcceptanceGate";
 import { OnboardingProvider } from "../features/onboarding";
 import { BillingProvider } from "../features/billing";
+import { useSidebarCollapsed } from "../shared/layout/useSidebarCollapsed";
 import type { ActiveView } from "../types/views";
 import { getActiveView, getPathForView } from "./navigation";
 
@@ -13,6 +14,8 @@ export default function AppLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const { collapsed: sidebarCollapsed, toggle: toggleSidebarCollapsed } =
+    useSidebarCollapsed();
 
   const activeView = useMemo(
     () => getActiveView(location.pathname),
@@ -40,8 +43,14 @@ export default function AppLayout() {
             onNavigate={handleNavigate}
             mobileOpen={mobileSidebarOpen}
             onClose={() => setMobileSidebarOpen(false)}
+            collapsed={sidebarCollapsed}
+            onToggleCollapse={toggleSidebarCollapsed}
           />
-          <div className="flex min-w-0 flex-1 flex-col lg:ml-64">
+          <div
+            className={`flex min-w-0 flex-1 flex-col transition-[margin] duration-300 ${
+              sidebarCollapsed ? "lg:ml-20" : "lg:ml-64"
+            }`}
+          >
             <Header
               activeView={activeView}
               onNavigate={handleNavigate}
